@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@odinternational/od-havana-conn": "^2.1.6",
     "body-parse": "^0.1.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
@@ -16,6 +17,7 @@
     "morgan": "~1.9.0",
     "nodemon": "^1.19.1",
     "od-utility": "^1.4.3",
+    "od-utility-redis": "^1.2.0",
     "request": "^2.88.0"
   }
 }
