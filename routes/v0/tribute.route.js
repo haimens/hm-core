@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 
 const func = require('od-utility');
-const VNKingAction = require('../../actions/king/king.action');
+const VNTributeAction = require('../../actions/tribute/tribute.action');
 
 
-router.get('/check/token/:king_key', async (req, res, next) => {
+router.post('/rate', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
-            await VNKingAction.checkKingWithKey(req.params),
-            'KING CHECKED'
+            await VNTributeAction.registerTributeRate(req.params, req.body, req.query),
+            'RATE REGISTERED'
         );
         res.json(resBody);
 

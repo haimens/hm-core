@@ -34,7 +34,7 @@ class VNDriver extends ODInstance {
         if (!cell) func.throwErrorWithMissingParam('cell');
         if (!email) func.throwErrorWithMissingParam('email');
         if (!username) func.throwErrorWithMissingParam('username');
-        if (!img_path) func.throwErrorWithMissingParam('img_path');
+
         if (!license_num) func.throwErrorWithMissingParam('license_num');
         if (!identifier) func.throwErrorWithMissingParam('identifier');
 
@@ -51,6 +51,13 @@ class VNDriver extends ODInstance {
             const name_parts = name.split(' ');
             const first_name = name_parts[0], last_name = name_parts.pop();
 
+            let avatar = img_path;
+            if (!img_path) {
+                const {image_path} = await driverApp.findRandomImageWithService('avatar');
+                avatar = image_path;
+            }
+
+
             const {instance_token: driver_key} = await driverApp.signupUserInstance(
                 username, username, email, first_name, last_name, cell
             );
@@ -66,7 +73,7 @@ class VNDriver extends ODInstance {
                 realm_id,
                 license_num,
                 identifier,
-                img_path,
+                img_path: avatar,
                 status: 1
             });
 

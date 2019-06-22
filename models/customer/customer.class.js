@@ -26,14 +26,13 @@ class VNCustomer extends ODInstance {
         }
     }
 
-    async registerCustomer(customer_info = {}, realm_id) {
+    async registerCustomer(customer_info = {}, realm_id, address_id) {
         if (!customer_info) func.throwErrorWithMissingParam('customer_info');
 
         const {name, cell, email, img_path} = customer_info;
         if (!name) func.throwErrorWithMissingParam('name');
         if (!cell) func.throwErrorWithMissingParam('cell');
         if (!email) func.throwErrorWithMissingParam('email');
-        if (!img_path) func.throwErrorWithMissingParam('img_path');
 
 
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
@@ -42,8 +41,6 @@ class VNCustomer extends ODInstance {
         try {
             const customerApp = new HNApp(process.env.CUSTOMER_APP_TOKEN, process.env.CUSTOMER_APP_KEY);
 
-            const {is_exist} = await customerApp.checkUsernameExist(username);
-            if (is_exist) func.throwError('USERNAME HAS BEEN TAKEN', 402);
 
             let avatar = img_path;
             if (!img_path) {
@@ -82,6 +79,7 @@ class VNCustomer extends ODInstance {
                 udate: 'now()',
                 realm_id,
                 img_path: avatar,
+                address_id: address_id || 0,
                 status: 1
             });
 

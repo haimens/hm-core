@@ -26,9 +26,9 @@ class VNLord extends ODInstance {
         }
     }
 
-    async registerLord(lord_info = {}, realm_info = {}) {
+    async registerLord(lord_info = {}, realm_id) {
         if (!lord_info) func.throwErrorWithMissingParam('lord_info');
-        if (!realm_info) func.throwErrorWithMissingParam('realm_info');
+
 
         const {name, cell, email, username} = lord_info;
 
@@ -37,7 +37,7 @@ class VNLord extends ODInstance {
         if (!email) func.throwErrorWithMissingParam('email');
         if (!username) func.throwErrorWithMissingParam('username');
 
-        const {realm_id} = realm_info;
+
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
 
         try {

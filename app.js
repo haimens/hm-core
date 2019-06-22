@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 dotenv.config();
-const CLIENT_NAME = process.env.CLIENT_NAME
+const CLIENT_NAME = process.env.CLIENT_NAME;
 const express = require('express');
 const createError = require('http-errors');
 const path = require('path');
@@ -11,7 +11,7 @@ const apiRoute = require('./routes/api.route');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 
 // TODO: custom routes
@@ -35,6 +35,7 @@ app.use((err, req, res, next) => {
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
     // render the error page
+    console.log(err);
     res.status(err.status || 500);
     res.json({
         status: false,

@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const func = require('od-utility');
-const VNDriverAction = require('../../models/driver/driver.class');
+const VNDriverAction = require('../../actions/driver/driver.action');
 
 
-router.get('/check/token/:driver_token', async (req, res, next) => {
+router.get('/check/token/:driver_key', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
             await VNDriverAction.checkDriverWithKey(req.params),

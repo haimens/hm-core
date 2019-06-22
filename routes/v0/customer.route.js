@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const func = require('od-utility');
-const VNCustomerAction = require('../../models/customer/customer.class');
+const VNCustomerAction = require('../../actions/customer/customer.action');
 
 
-router.get('/check/token/:customer_token', async (req, res, next) => {
+router.get('/check/token/:customer_key', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
             await VNCustomerAction.checkCustomerWithKey(req.params),

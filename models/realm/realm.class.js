@@ -32,8 +32,7 @@ class VNRealm extends ODInstance {
                 status: 1
             });
 
-            const realm_token = func.encodeUnify(this.instance_id, 'realm');
-
+            const realm_token = `REALM-${ func.encodeUnify(this.instance_id, 'realm')}`;
             await this.updateInstance({realm_token, status: 2});
 
             return {realm_id: this.instance_id, realm_token};
@@ -42,7 +41,6 @@ class VNRealm extends ODInstance {
             throw e;
         }
     }
-
 
 
 }

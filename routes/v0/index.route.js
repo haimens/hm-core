@@ -1,9 +1,25 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
+const func = require("od-utility");
 
-router.use('/', async (req, res, next) => {
-    res.json({status: false, message: 'V0 INDEX REACHED'});
+const kingRoute = require('./king.route');
+const driverRoute = require('./driver.route');
+const customerRoute = require('./customer.route');
+const lordRoute = require('./lord.route');
+
+router.use("/king", kingRoute);
+router.use("/driver", driverRoute);
+router.use("/customer", customerRoute);
+router.use("/lord", lordRoute);
+
+
+router.use("/", async (req, res, next) => {
+    try {
+        func.throwError("CORE V0 INDEX REACHED");
+    } catch (err) {
+        next(err.message);
+    }
 });
 
 module.exports = router;

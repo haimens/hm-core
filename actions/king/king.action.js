@@ -16,7 +16,7 @@ class VNKingAction extends VNAction {
             if (!king_token) func.throwError('This user is not registered in this system');
 
             const kingObj = new VNKing(king_token);
-            const {king_status, ...king_info} = await kingObj.findInstanceDetailWithToken([
+            const {king_status, vn_king_id, ...king_info} = await kingObj.findInstanceDetailWithToken([
                 'name', 'cell', 'email', 'username', 'cdate', 'udate', 'king_key', 'status AS king_status', 'king_token'
             ]);
 

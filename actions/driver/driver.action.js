@@ -5,6 +5,26 @@ const VNRealm = require('../../models/realm/realm.class');
 const redis = require('od-utility-redis');
 
 class VNDriverAction extends VNAction {
+
+
+    static async registerDriver(params, body, query) {
+        try {
+            const {realm_token} = params;
+            if (!realm_token) func.throwErrorWithMissingParam('realm_token');
+            const realmObj = new VNRealm(realm_token);
+
+            const {vn_realm_id: realm_id} = await realmObj.findInstanceDetailWithToken();
+
+            const driverObj = new VNDriver();
+
+            const {driver_token} = await driverObj.registerDriver(body, realm_id);
+
+            return {driver_token};
+        } catch (e) {
+            throw e;
+        }
+    }
+
     static async checkDriverWithKey(params, body, query) {
         const {driver_key} = params;
         if (!driver_key) func.throwErrorWithMissingParam('driver_key');
@@ -17,9 +37,9 @@ class VNDriverAction extends VNAction {
             if (!driver_token) func.throwError('This user is not registered in this system');
 
             const driverObj = new VNDriver(driver_token);
-            const {driver_status, realm_id, ...driver_info} = await driverObj.findInstanceDetailWithToken([
+            const {driver_status, realm_id, vn_driver_id, ...driver_info} = await driverObj.findInstanceDetailWithToken([
                 'name', 'cell', 'email', 'username', 'cdate', 'udate',
-                'driver_key', 'status AS driver_status', 'driver_token', 'realm_id'
+                'driver_key', 'status AS driver_status', 'driver_token', 'realm_id', 'img_path'
             ]);
 
             if (driver_status !== 2) return {isValid: false, message: 'DRIVER SUSPENDED'};
