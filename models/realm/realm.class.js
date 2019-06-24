@@ -24,6 +24,10 @@ class VNRealm extends ODInstance {
             if (!tribute_id) func.throwErrorWithMissingParam('tribute_id');
             if (!address_id) func.throwErrorWithMissingParam('address_id');
 
+            const title_count = VNRealm._findRealmTitleCountWithTitle(company_title);
+
+            if (title_count !== 0) func.throwError('COMPANY TITLE OCCUPIED', 400);
+
             this.instance_id = await this.insertInstance({
                 cdate: 'now()', udate: 'now()',
                 company_name, logo_path, icon_path,
@@ -36,6 +40,26 @@ class VNRealm extends ODInstance {
             await this.updateInstance({realm_token, status: 2});
 
             return {realm_id: this.instance_id, realm_token};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async _findRealmTitleCountWithTitle(title) {
+        try {
+            if (!title) return 0;
+
+            const query = `
+            SELECT COUNT(id) AS count 
+            FROM vn_realm 
+            WHERE company_title = '${title}' 
+            AND status != 0 `;
+
+            const [{count}] = await this.performQuery(query);
+
+
+            return count || 0;
 
         } catch (e) {
             throw e;
