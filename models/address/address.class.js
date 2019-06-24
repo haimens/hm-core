@@ -9,7 +9,7 @@ class VNAddress extends ODInstance {
     }
 
     async registerAddress(address_info = {}) {
-        const {street_line_1, street_line_2, city, state, zip} = address_info;
+        const {street_line_1, street_line_2, city, state, zip, addr_str, lat, lng} = address_info;
 
         try {
             if (!street_line_1) func.throwErrorWithMissingParam('street_line_1');
@@ -17,19 +17,19 @@ class VNAddress extends ODInstance {
             if (!city) func.throwErrorWithMissingParam('city');
             if (!state) func.throwErrorWithMissingParam('state');
             if (!zip) func.throwErrorWithMissingParam('zip');
+            if (!addr_str) func.throwErrorWithMissingParam('addr_str');
+            if (!lat) func.throwErrorWithMissingParam('lat');
+            if (!lng) func.throwErrorWithMissingParam('lng');
 
-            const addr_str = `${street_line_1} ${street_line_2 || ''}, ${city}, ${state}, ${zip}`;
-
-            //TODO: lat, lng HERE
-
-
+            let address_str = addr_str;
+            if (!address_str) address_str = `${street_line_1} ${street_line_2 || ''}, ${city}, ${state}, ${zip}`;
             this.instance_id = await this.insertInstance(
                 {
-                    addr_str, street_line_1,
+                    addr_str: address_str, street_line_1,
                     street_line_2: street_line_2 || '',
-                    city, state, zip, cdate: 'now()', udate: 'now()', status: 0
+                    city, state, zip, cdate: 'now()', udate: 'now()', status: 0,
+                    lat, lng
                 });
-
             this.instance_token = `ADDR-${func.encodeUnify(this.instance_id, 'addr')}`;
 
             await this.updateInstance({address_token: this.instance_token, status: 1});

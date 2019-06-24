@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@google/maps": "^0.5.5",
     "@odinternational/exodus_v2_qa": "^1.1.2",
     "@odinternational/od-havana-conn": "^2.1.6",
     "body-parse": "^0.1.0",
