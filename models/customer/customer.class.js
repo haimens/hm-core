@@ -1,4 +1,5 @@
 const ODInstance = require('../instance.model');
+const ODCondition = require('../condition.model');
 const func = require('od-utility');
 const HNApp = require('@odinternational/od-havana-conn');
 
@@ -68,7 +69,6 @@ class VNCustomer extends ODInstance {
                 username, username, email, first_name, last_name, cell
             );
 
-
             this.instance_id = await this.insertInstance({
                 name,
                 cell,
@@ -109,6 +109,40 @@ class VNCustomer extends ODInstance {
             return record || {};
         } catch (err) {
             throw err;
+        }
+    }
+
+
+    static async findCustomerListInRealm(realm_id, search_query) {
+        try {
+            if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+
+
+            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
+            const conditions = new ODCondition();
+
+
+            conditions
+                .configComplexConditionKeys('vn_customer', ['name', 'cell', 'email', 'img_path', 'username'])
+                .configComplexConditionKeys('vn_address', ['addr_str', 'lat', 'lng'])
+                .configComplexConditionJoin('vn_customer', 'address_id', 'vn_address')
+                .configComplexConditionQueryItem('vn_customer', 'realm_id', realm_id)
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_customer')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_customer')
+                .configStatusCondition(status, 'vn_customer')
+                .configKeywordCondition(['cell', 'name', 'email', 'username'], keywords, 'vn_customer')
+                .configKeywordCondition(['addr_str'], keywords, 'vn_address')
+                .configQueryLimit(start, 30);
+
+            const count = await VNCustomer.findCountOfInstance('vn_customer', conditions);
+
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await VNCustomer.findInstanceListWithComplexCondition('vn_customer', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length}
+        } catch (e) {
+            throw e;
         }
     }
 }

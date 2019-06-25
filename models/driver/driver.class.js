@@ -1,4 +1,5 @@
 const ODInstance = require('../instance.model');
+const ODCondition = require('../condition.model');
 const func = require('od-utility');
 const HNApp = require('@odinternational/od-havana-conn');
 
@@ -103,6 +104,33 @@ class VNDriver extends ODInstance {
             return record || {};
         } catch (err) {
             throw err;
+        }
+    }
+
+    static async findDriverListInRealm(realm_id, search_query) {
+        if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+        try {
+            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys('vn_driver', ['name', 'cell', 'email', 'img_path', 'license_num', 'username'])
+                .configComplexConditionQueryItem('vn_driver', 'realm_id', realm_id)
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_driver')
+                .configStatusCondition(status, 'vn_driver')
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_driver')
+                .configKeywordCondition(['name', 'cell', 'email', 'username', 'license_num'], keywords, 'vn_driver')
+                .configQueryLimit(start, 30);
+
+
+            const count = await this.findCountOfInstance('vn_driver', conditions);
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_driver', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+        } catch (e) {
+            throw e;
         }
     }
 }

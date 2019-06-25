@@ -126,7 +126,7 @@ class ODCondition {
     }
 
     configDateCondition(date_pack, table_name) {
-        const { date_from, date_to, from_key, to_key } = date_pack;
+        const {date_from, date_to, from_key, to_key} = date_pack;
         if (date_from) this.configComplexConditionQueryItem(table_name, (from_key || 'cdate'), date_from, '>=');
         if (date_to) this.configComplexConditionQueryItem(table_name, (to_key || 'cdate'), date_to, '<=');
 
@@ -143,6 +143,29 @@ class ODCondition {
             return this;
         } catch (e) {
             throw e;
+        }
+    }
+
+
+    configSimpleCondition(condition) {
+        if (!condition) return this;
+
+        try {
+            this.conditions.push(condition);
+            return this;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    configKeywordCondition(keys = [], keywords_str, table_name) {
+        if(!keywords_str) return this;
+
+        try {
+            this.conditions.push(`(${keywords_str.split('+').map(keyword => keys.map(key => `${table_name ? table_name+'.' : ''}${key} LIKE '%${keyword}%'`).join(' OR\n')).join(' OR\n')})`);
+            return this;
+        } catch (err) {
+            throw err;
         }
     }
 }
