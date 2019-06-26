@@ -22,7 +22,7 @@ class VNRealmAction extends VNAction {
 
             const address_info = await VNGoogleMap.findFormattedAddress(address_str);
 
-            console.log(address_info);
+            if (!address_info) func.throwError('ADDRESS CANNOT BE FOUND', 400);
 
             const {address_id, address_token} = await addressObj.registerAddress(address_info);
 
@@ -31,6 +31,41 @@ class VNRealmAction extends VNAction {
             const {realm_token} = await realmObj.registerRealm(realm_info, tribute_rate_id, address_id);
 
             return {address_token, realm_token};
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findRealmList(params, body, query) {
+        try {
+            return await VNRealm.findRealmListInSystem(query);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async modifyBasicRealmDetail(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const realmObj = new VNRealm(realm_token);
+
+            const response = await realmObj.modifyInstanceDetailWithToken(
+                body,
+                ['company_name', 'company_title', 'status', 'logo_path', 'icon_path', 'status']
+            );
+            return {response};
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async modifyResourceInRealm(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const realmObj = new VNRealm(realm_token);
+
         } catch (e) {
             throw e;
         }

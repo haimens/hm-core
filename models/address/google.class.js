@@ -10,10 +10,9 @@ class VNGoogleMap {
 
             googleMapsClient.geocode({address: address}, (err, response) => {
                     if (!err) {
-
-                        const result = response.json.results;
-                        const [{address_components, formatted_address, geometry}] = result;
-
+                        const results = response.json.results;
+                        if (results.length < 1) reject(new Error('CANNOT FIND RELATED ADDRESS FROM GOOGLE'));
+                        const [{address_components, formatted_address, geometry}] = results;
 
                         let city, state, zip, street_line_2;
                         let street_number = '', route = '';
@@ -63,6 +62,7 @@ class VNGoogleMap {
                         resolve(address_info);
 
                     } else {
+
                         reject(err);
                     }
                 }

@@ -1,4 +1,5 @@
 const ODInstance = require('../instance.model');
+const ODCondition = require('../condition.model');
 const func = require('od-utility');
 
 class VNRealm extends ODInstance {
@@ -7,7 +8,7 @@ class VNRealm extends ODInstance {
         super('vn_realm', 'realm_token', realm_token, realm_id);
     }
 
-    async registerRealm(realm_info = {}, tribute_id, address_id) {
+    async registerRealm(realm_info = {}, tribute_rate_id, address_id) {
 
 
         try {
@@ -21,10 +22,10 @@ class VNRealm extends ODInstance {
             if (!company_title) func.throwErrorWithMissingParam('company_title');
 
 
-            if (!tribute_id) func.throwErrorWithMissingParam('tribute_id');
+            if (!tribute_rate_id) func.throwErrorWithMissingParam('tribute_id');
             if (!address_id) func.throwErrorWithMissingParam('address_id');
 
-            const title_count = VNRealm._findRealmTitleCountWithTitle(company_title);
+            const title_count = await VNRealm._findRealmTitleCountWithTitle(company_title);
 
             if (title_count !== 0) func.throwError('COMPANY TITLE OCCUPIED', 400);
 
@@ -32,7 +33,7 @@ class VNRealm extends ODInstance {
                 cdate: 'now()', udate: 'now()',
                 company_name, logo_path, icon_path,
                 company_title,
-                tribute_id, address_id,
+                tribute_rate_id, address_id,
                 status: 1
             });
 
@@ -45,6 +46,47 @@ class VNRealm extends ODInstance {
             throw e;
         }
     }
+
+
+    static async findRealmListInSystem(search_query) {
+        try {
+            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
+
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys(
+                    'vn_realm',
+                    ['company_name', 'company_title', 'cdate', 'udate', 'logo_path', 'icon_path']
+                )
+                .configComplexConditionKeys('vn_tribute_rate', ['rate', 'tribute_rate_token'])
+                .configComplexConditionKeys('vn_address', ['addr_str', 'lat', 'lng', 'address_token'])
+                .configComplexConditionKey('vn_realm_status', 'name', 'status_str')
+                .configComplexConditionJoins(
+                    'vn_realm',
+                    [{key: 'address_id', tar: 'vn_address'}, {key: 'tribute_rate_id', tar: 'vn_tribute_rate'}]
+                )
+                .configStatusCondition(status, 'vn_realm')
+                .configStatusJoin('vn_realm', 'vn_realm_status')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_realm')
+                .configKeywordCondition(['company_name', 'company_title'], keywords, 'vn_realm')
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_realm')
+                .configQueryLimit(start, 30);
+
+            const count = await this.findCountOfInstance('vn_realm', conditions);
+            if (count === 0) return {record_list: [], count, end: 0};
+
+
+            const record_list = await this.findInstanceListWithComplexCondition(
+                'vn_realm', conditions
+            );
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+        } catch (e) {
+            throw e;
+        }
+    }
+
 
     static async _findRealmTitleCountWithTitle(title) {
         try {
