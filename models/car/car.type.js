@@ -10,13 +10,14 @@ class VNCarType extends ODInstance {
     }
 
     async registerCarType(info = {}, realm_id) {
-        const {name, price_prefix, img_path} = info;
+        const {name, price_prefix, img_path, max_capacity} = info;
         if (!name) func.throwErrorWithMissingParam('name');
 
         if (!price_prefix) func.throwErrorWithMissingParam('price_prefix');
         if (!img_path) func.throwErrorWithMissingParam('img_path');
 
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+        if (!max_capacity) func.throwErrorWithMissingParam('max_capacity');
 
         try {
             const count = await VNCarType._findCarTypeCountInRealm(realm_id);
@@ -25,7 +26,7 @@ class VNCarType extends ODInstance {
 
             this.instance_id = await this.insertInstance(
                 {
-                    name, price_prefix,
+                    name, price_prefix, max_capacity,
                     img_path, realm_id, cdate: 'now()', udate: 'now()',
                     status: 0
                 }
@@ -69,7 +70,13 @@ class VNCarType extends ODInstance {
             const conditions = new ODCondition();
 
             conditions
-                .configComplexConditionKeys('vn_car_type', ['name', 'price_prefix', 'id AS car_type_id', 'img_path'])
+                .configComplexConditionKeys(
+                    'vn_car_type',
+                    [
+                        'name', 'price_prefix',
+                        'id AS car_type_id', 'img_path', 'max_capacity'
+                    ]
+                )
                 .configComplexConditionQueryItem('vn_car_type', 'realm_id', realm_id)
                 .configStatusCondition(1, 'vn_car_type')
                 .configQueryLimit(0, 30);

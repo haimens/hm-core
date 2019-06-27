@@ -10,7 +10,7 @@ class VNQuote extends ODInstance {
         super('vn_quote', 'quote_token', quote_token, quote_id);
     }
 
-    async registerQuote(amount, realm_id, car_type_id, from_address_id, to_address_id) {
+    async registerQuote(amount, realm_id, car_type_id, from_address_id, to_address_id, pickup_time) {
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
         if (!car_type_id) func.throwErrorWithMissingParam('car_type_id');
         if (!amount) func.throwErrorWithMissingParam('amount');
@@ -23,6 +23,7 @@ class VNQuote extends ODInstance {
                 {
                     realm_id, car_type_id, amount,
                     from_address_id, to_address_id,
+                    pickup_time,
                     cdate: 'now()', udate: 'now()',
                     status: 0
                 }
@@ -47,6 +48,27 @@ class VNQuote extends ODInstance {
         const car_prefix = parseInt(car_type_prefix);
 
         return Math.ceil(base + mile_fee + time_fee + car_prefix);
+    }
+
+    async findFullQuoteWithToken(realm_id) {
+        if (!this.instance_token) func.throwErrorWithMissingParam('quote_token');
+
+        try {
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys('vn_quote', ['from_address_id', 'to_address_id', 'pickup_time', 'amount'])
+                .configComplexConditionQueryItem('vn_quote', 'realm_id', realm_id)
+                .configStatusCondition(1, 'vn_quote')
+                .configComplexConditionQueryItem('vn_quote', 'quote_token', this.instance_token)
+                .configQueryLimit(0, 1);
+
+            const [record] = await VNQuote.findInstanceListWithComplexCondition('vn_quote', conditions);
+
+            return record;
+        } catch (e) {
+            throw e;
+        }
     }
 
 

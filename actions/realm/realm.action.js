@@ -13,11 +13,13 @@ const VNCarType = require('../../models/car/car.type');
 
 const sedan = {
     name: 'SEDAN', price_prefix: '0',
-    img_path: 'https://image.od-havana.com/doc/avatar/415891807ba81eb828a345b682618a2f/a1e60dc78feea85181d7b56979a766e4.jpeg'
+    img_path: 'https://image.od-havana.com/doc/avatar/415891807ba81eb828a345b682618a2f/a1e60dc78feea85181d7b56979a766e4.jpeg',
+    max_capacity: 4
 };
 const minivan = {
     name: 'MINIVAN', price_prefix: '1000',
-    img_path: 'https://image.od-havana.com/doc/avatar/415891807ba81eb828a345b682618a2f/a3fcff7ad2625723da1c84bf35ef101b.jpeg'
+    img_path: 'https://image.od-havana.com/doc/avatar/415891807ba81eb828a345b682618a2f/a3fcff7ad2625723da1c84bf35ef101b.jpeg',
+    max_capacity: 6
 };
 
 class VNRealmAction extends VNAction {

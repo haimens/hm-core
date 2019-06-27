@@ -62,25 +62,26 @@ class VNQuoteAction extends VNAction {
             const {address_id: to_address_id} = equation_results[5];
 
             const quote_raw_list = car_type_list.map(car_type_info => {
-                const {price_prefix, name: car_type_name, car_type_id, img_path} = car_type_info;
+                const {price_prefix, name: car_type_name, car_type_id, img_path, max_capacity} = car_type_info;
                 const amount = VNQuote.givePriceQuote(price_base, price_mile, price_minute, distance_value, duration_value, price_prefix);
                 return {
                     amount,
                     car_type_name,
                     car_type_id,
-                    img_path
+                    img_path,
+                    max_capacity
                 }
             });
 
             const quote_promise_list = quote_raw_list.map(raw_info => {
                 return new Promise((resolve, reject) => {
                     const quoteObj = new VNQuote();
-                    const {amount, car_type_id, img_path, car_type_name} = raw_info;
-                    quoteObj.registerQuote(amount, realm_id, car_type_id, from_address_id, to_address_id)
+                    const {amount, car_type_id, img_path, car_type_name, max_capacity} = raw_info;
+                    quoteObj.registerQuote(amount, realm_id, car_type_id, from_address_id, to_address_id, pickup_time)
                         .then(quote_result => {
                             const {quote_token} = quote_result;
                             resolve({
-                                quote_token, img_path, car_type_name, amount,
+                                quote_token, img_path, car_type_name, amount, max_capacity
                             })
                         })
                         .catch(err => reject(err));
@@ -91,7 +92,7 @@ class VNQuoteAction extends VNAction {
                 distance_text, duration_text
                 , distance_value, duration_value, from_lat, from_lng, to_lat, to_lng,
                 price_base, price_mile, price_minute,
-                pickup_time
+                pickup_time, from_formatted, to_formatted
 
             };
             const quote_list = await Promise.all(quote_promise_list);
