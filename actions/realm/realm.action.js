@@ -6,6 +6,19 @@ const VNAddress = require('../../models/address/address.class');
 
 const VNGoogleMap = require('../../models/address/google.class');
 
+const VNSetting = require('../../models/setting/setting.class');
+
+const VNCarType = require('../../models/car/car.type');
+
+
+const sedan = {
+    name: 'SEDAN', price_prefix: '0',
+    img_path: 'https://image.od-havana.com/doc/avatar/415891807ba81eb828a345b682618a2f/a1e60dc78feea85181d7b56979a766e4.jpeg'
+};
+const minivan = {
+    name: 'MINIVAN', price_prefix: '1000',
+    img_path: 'https://image.od-havana.com/doc/avatar/415891807ba81eb828a345b682618a2f/a3fcff7ad2625723da1c84bf35ef101b.jpeg'
+};
 
 class VNRealmAction extends VNAction {
 
@@ -28,7 +41,19 @@ class VNRealmAction extends VNAction {
 
             const realmObj = new VNRealm();
 
-            const {realm_token} = await realmObj.registerRealm(realm_info, tribute_rate_id, address_id);
+            const {realm_token, realm_id} = await realmObj.registerRealm(realm_info, tribute_rate_id, address_id);
+
+
+            await Promise.all(
+                [
+                    new VNSetting().registerSetting('price_base', 3000, realm_id),
+                    new VNSetting().registerSetting('price_minute', 35, realm_id),
+                    new VNSetting().registerSetting('price_mile', 175, realm_id),
+                    new VNCarType().registerCarType(sedan, realm_id),
+                    new VNCarType().registerCarType(minivan, realm_id)
+                ]
+            );
+
 
             return {address_token, realm_token};
         } catch (e) {

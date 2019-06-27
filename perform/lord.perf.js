@@ -15,7 +15,7 @@ const VNLordAction = require('../actions/lord/lord.action');
         throw e;
     }
 
-})({realm_token: 'f3bd1960f347eca3e05ee4d04c46fad0'},
-    {name: 'Chris Yao', cell: '8145664700', email: 'chrisyao.od@gmail.com', username: 'vn-lord-01'});
+})({realm_token: 'REALM-428190c75115fe0b3dff74eb8cd00a09'},
+    {name: 'Chris Yao', cell: '8145664700', email: 'chrisyao.od@gmail.com', username: 'vn-lord-02'});
 
 

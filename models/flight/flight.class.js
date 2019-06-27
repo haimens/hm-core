@@ -30,8 +30,18 @@ class VNFlight extends ODInstance {
             const pre_saved = await this.findFlightInfoWithKey();
             if (pre_saved) return pre_saved;
 
-            this.instance_id = await
+            this.instance_id = await this.insertInstance(
+                {
+                    flight_key, dep_date, arr_date, carrier_code,
+                    flight_num, dep_airport, arr_airport, dep_terminal, arr_terminal,
+                    cdate: 'now()', udate: 'now()', status: 0
+                }
+            );
+            this.instance_token = `FLGT-${func.encodeUnify(this.instance_id, 'fkgl')}`;
 
+            await this.updateInstance({flight_token: this.instance_token, status: 1});
+
+            return {flight_id: this.instance_id, flight_token: this.instance_token, flight_key: this.flight_key};
 
         } catch (e) {
             throw e;

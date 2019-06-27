@@ -25,9 +25,11 @@ class VNTributeRate extends ODInstance {
                 return {tribute_rate_id, tribute_rate_token}
             }
 
-            this.instance_id = await this.insertInstance({
-                rate, cdate: 'now()', udate: 'now()', status: 0
-            });
+            this.instance_id = await this.insertInstance(
+                {
+                    rate, cdate: 'now()', udate: 'now()', status: 0
+                }
+            );
             this.instance_token = `TRBR-${func.encodeUnify(this.instance_id, 'trb-rt')}`;
             await this.updateInstance({tribute_rate_token: this.instance_token, status: 1});
 

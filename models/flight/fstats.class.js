@@ -19,9 +19,9 @@ class VNFlightStats {
 
             const {flightStatuses} = result;
 
-            if (!flightStatuses) func.throwError('CANNOT FIND RESULT');
+            if (!flightStatuses) return {flight_list: []};
 
-            if (flightStatuses.length < 1) func.throwError('CANNOT FIND FLIGHT WITH GIVEN CONDITION');
+            if (flightStatuses.length < 1) return {flight_list: []};
 
 
             const flight_list = flightStatuses.map(rawFlight => {
@@ -57,7 +57,7 @@ class VNFlightStats {
 
             return {flight_list};
         } catch (e) {
-            throw e;
+            return {flight_list: []};
         }
     }
 }

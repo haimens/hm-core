@@ -93,6 +93,28 @@ class VNLord extends ODInstance {
             throw err;
         }
     }
+
+    static async findLordListInSystem(search_query = {}) {
+        try {
+            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
+            const conditions = new ODCondition();
+
+
+            conditions
+                .configComplexConditionKeys('vn_lord', ['name', 'cell', 'email', 'username', 'img_path'])
+                .configComplexConditionKey('vn_realm', 'company_name')
+                .configComplexConditionJoin('vn_lord', 'realm_id', 'vn_realm')
+                .configComplexConditionKey('vn_lord_status', 'name', 'status_str')
+                .configStatusCondition(status, 'vn_lord_status')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_lord')
+                .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_lord')
+                .configKeywordCondition(['company_name', 'company_title'], keywords, 'vn_realm')
+
+        } catch (e) {
+            throw e;
+        }
+
+    }
 }
 
 module.exports = VNLord;
