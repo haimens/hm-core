@@ -16,6 +16,14 @@ class VNTributeAction extends VNAction {
             throw e;
         }
     }
+
+    static async findTributeRateList(params, body, query) {
+        try {
+            return await VNTributeRate.findAllTributeRate();
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
-module.export = VNTributeAction;
+module.exports = VNTributeAction;

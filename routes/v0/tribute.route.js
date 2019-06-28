@@ -18,5 +18,17 @@ router.post('/rate', async (req, res, next) => {
     }
 });
 
+router.get('/all/rate', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNTributeAction.findTributeRateList(req.prams, req.body, req.query),
+            'TRIBUTE RATE LSIT FOUND'
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 
 module.exports = router;

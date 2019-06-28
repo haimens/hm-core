@@ -1,4 +1,5 @@
 const ODInstance = require('../instance.model');
+const ODCondition = require('../condition.model');
 const func = require('od-utility');
 
 
@@ -54,6 +55,22 @@ class VNTributeRate extends ODInstance {
 
             const [record] = await this.performQuery(query);
             return record;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findAllTributeRate() {
+        try {
+            const conditions = new ODCondition();
+
+            conditions.configComplexConditionKeys('vn_tribute_rate', ['rate', 'tribute_rate_token', 'cdate', 'udate'])
+                .configComplexConditionQueryItem('vn_tribute_rate', 'status', 1)
+                .configQueryLimit(0, 100);
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_tribute_rate', conditions);
+
+            return {record_list};
         } catch (e) {
             throw e;
         }

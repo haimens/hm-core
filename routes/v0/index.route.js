@@ -10,7 +10,7 @@ const lordRoute = require('./lord.route');
 
 const quoteRoute = require('./quote.route');
 const realmRoute = require('./realm.route');
-
+const tributeRoute = require('./tribute.route');
 
 
 router.use("/king", kingRoute);
@@ -21,6 +21,7 @@ router.use("/lord", lordRoute);
 
 router.use('/quote', quoteRoute);
 router.use('/realm', realmRoute);
+router.use('/tribute', tributeRoute);
 
 router.use("/", async (req, res, next) => {
     try {
