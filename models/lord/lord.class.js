@@ -1,4 +1,5 @@
 const ODInstance = require('../instance.model');
+const ODCondition = require('../condition.model');
 const func = require('od-utility');
 const HNApp = require('@odinternational/od-havana-conn');
 
@@ -65,7 +66,7 @@ class VNLord extends ODInstance {
                 status: 1
             });
 
-            this.instance_token = `KING-${func.encodeUnify(this.instance_id, 'kg')}`;
+            this.instance_token = `LORD-${func.encodeUnify(this.instance_id, 'kg')}`;
 
             await this.updateInstance({lord_token: this.instance_token, username, status: 2});
 
@@ -101,11 +102,12 @@ class VNLord extends ODInstance {
 
 
             conditions
-                .configComplexConditionKeys('vn_lord', ['name', 'cell', 'email', 'username', 'img_path'])
+                .configComplexConditionKeys('vn_lord', ['name', 'cell', 'email', 'username'])
                 .configComplexConditionKey('vn_realm', 'company_name')
                 .configComplexConditionJoin('vn_lord', 'realm_id', 'vn_realm')
                 .configComplexConditionKey('vn_lord_status', 'name', 'status_str')
-                .configStatusCondition(status, 'vn_lord_status')
+                .configStatusCondition(status, 'vn_lord')
+                .configStatusJoin('vn_lord', 'vn_lord_status')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_lord')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_lord')
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_lord')
@@ -131,11 +133,13 @@ class VNLord extends ODInstance {
 
 
             conditions
-                .configComplexConditionKeys('vn_lord', ['name', 'cell', 'email', 'username', 'img_path'])
+                .configComplexConditionKeys('vn_lord', ['name', 'cell', 'email', 'username'])
                 .configComplexConditionKey('vn_lord_status', 'name', 'status_str')
-                .configStatusCondition(status, 'vn_lord_status')
+                .configStatusJoin('vn_lord', 'vn_lord_status')
+                .configStatusCondition(status, 'vn_lord')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_lord')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_lord')
+                .configComplexConditionQueryItem('vn_lord', 'realm_id', realm_id)
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_lord');
 
             const count = await this.findCountOfInstance('vn_lord', conditions);
