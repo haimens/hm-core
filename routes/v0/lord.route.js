@@ -18,5 +18,45 @@ router.get('/check/token/:lord_key', async (req, res, next) => {
     }
 });
 
+router.get('/all/detail/system', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNLordAction.findLordListInSystem(req.params, req.body, req.query),
+            'LORD LIST FOUND'
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNLordAction.findLordListInRealm(req.params, req.body, req.query),
+            'LORD LIST FOUND'
+        );
+        res.json(resBody);
+
+    } catch (e) {
+        next(e);
+    }
+});
+
+
+router.post('/detail/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNLordAction.registerLord(
+                req.params, req.body, req.query
+            ),
+            'LORD REGISTER'
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 
 module.exports = router;

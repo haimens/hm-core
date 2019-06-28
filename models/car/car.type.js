@@ -90,6 +90,16 @@ class VNCarType extends ODInstance {
         }
     }
 
+    static async findCarTypeInRealm(search_query = {}, realm_id) {
+        if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+        try {
+
+            const conditions = new ODCondition();
+        } catch (e) {
+            throw e;
+        }
+    }
+
 }
 
 module.exports = VNCarType;

@@ -64,6 +64,32 @@ class VNLordAction extends VNAction {
             throw err;
         }
     }
+
+    static async findLordListInSystem(params, body, query) {
+        try {
+            return await VNLord.findLordListInSystem(query);
+        } catch (e) {
+            throw e;
+        }
+
+    }
+
+    static async findLordListInRealm(params, body, query) {
+
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+
+            return await VNLord.findLordListInRealm(query, realm_id);
+
+        } catch (e) {
+            throw e;
+        }
+
+    }
 }
 
 module.exports = VNLordAction;

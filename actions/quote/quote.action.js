@@ -69,19 +69,20 @@ class VNQuoteAction extends VNAction {
                     car_type_name,
                     car_type_id,
                     img_path,
-                    max_capacity
+                    max_capacity,
+                    price_prefix
                 }
             });
 
             const quote_promise_list = quote_raw_list.map(raw_info => {
                 return new Promise((resolve, reject) => {
                     const quoteObj = new VNQuote();
-                    const {amount, car_type_id, img_path, car_type_name, max_capacity} = raw_info;
+                    const {amount, car_type_id, img_path, car_type_name, max_capacity, price_prefix} = raw_info;
                     quoteObj.registerQuote(amount, realm_id, car_type_id, from_address_id, to_address_id, pickup_time)
                         .then(quote_result => {
                             const {quote_token} = quote_result;
                             resolve({
-                                quote_token, img_path, car_type_name, amount, max_capacity
+                                quote_token, img_path, car_type_name, amount, max_capacity,price_prefix
                             })
                         })
                         .catch(err => reject(err));

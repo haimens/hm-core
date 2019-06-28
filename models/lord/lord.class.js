@@ -107,13 +107,46 @@ class VNLord extends ODInstance {
                 .configComplexConditionKey('vn_lord_status', 'name', 'status_str')
                 .configStatusCondition(status, 'vn_lord_status')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_lord')
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_lord')
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_lord')
-                .configKeywordCondition(['company_name', 'company_title'], keywords, 'vn_realm')
+                .configKeywordCondition(['company_name', 'company_title'], keywords, 'vn_realm');
+
+            const count = await this.findCountOfInstance('vn_lord', conditions);
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_lord', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length}
 
         } catch (e) {
             throw e;
         }
 
+    }
+
+    static async findLordListInRealm(search_query = {}, realm_id) {
+        try {
+            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
+            const conditions = new ODCondition();
+
+
+            conditions
+                .configComplexConditionKeys('vn_lord', ['name', 'cell', 'email', 'username', 'img_path'])
+                .configComplexConditionKey('vn_lord_status', 'name', 'status_str')
+                .configStatusCondition(status, 'vn_lord_status')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_lord')
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_lord')
+                .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_lord');
+
+            const count = await this.findCountOfInstance('vn_lord', conditions);
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_lord', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+        } catch (e) {
+            throw e;
+        }
     }
 }
 
