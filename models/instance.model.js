@@ -57,7 +57,7 @@ class ODInstance {
 
             const instance = await this.findInstanceDetail(condition);
             if (!instance) func.throwError(`CANNOT FIND INSTANCE - ${this.table_name} WITH GIVEN ID`);
-            this.instance_id = instance[`id AS ${this.table_name}_id`];
+            this.instance_id = instance[`${this.table_name}_id`];
 
             return instance;
         } catch (e) {

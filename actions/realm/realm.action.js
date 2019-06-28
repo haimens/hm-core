@@ -63,7 +63,7 @@ class VNRealmAction extends VNAction {
         }
     }
 
-    static async findRealmList(params, body, query) {
+    static async findRealmListInSystem(params, body, query) {
         try {
             return await VNRealm.findRealmListInSystem(query);
         } catch (e) {
