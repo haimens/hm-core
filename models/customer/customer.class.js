@@ -162,7 +162,7 @@ class VNCustomer extends ODInstance {
 
             const [record] = await this.findInstanceListWithComplexCondition('vn_customer', conditions);
 
-            return record;
+            return record || {};
         } catch
             (e) {
             throw e;
