@@ -65,6 +65,12 @@ router.post('/receive', async (req, res, next) => {
 
 router.post('/init', async (req, res, next) => {
 
+    try {
+        console.log('init', req.body);
+    } catch (e) {
+        next(e);
+    }
+
 });
 
 
