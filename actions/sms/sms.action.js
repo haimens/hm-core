@@ -55,7 +55,6 @@ class VNSMSAction extends VNAction {
     }
 
     static async sendSMSWithOrder(params, body, query) {
-
         try {
         } catch (e) {
             throw e;
@@ -75,7 +74,7 @@ class VNSMSAction extends VNAction {
         try {
             const {SmsSid, To, From, Body} = body;
 
-            const sms_info = {sys_cell: To, tar_cell: From, message: Body, smsid: SmsSid, type: 4};
+            const sms_info = {sys_cell: To, tar_cell: From, message: Body, smsid: SmsSid, type: 4, is_read: 0};
 
             let customer_id, realm_id;
 
@@ -97,6 +96,18 @@ class VNSMSAction extends VNAction {
 
             return {sms_token, smsid: SmsSid};
 
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findSMSHistoryListWithRealm(params, body, query) {
+        try {
+            const {realm_token} = params;
+            if (!realm_token) func.throwErrorWithMissingParam('realm_token');
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+            return await VNCustomerSMS.findSMSListWithRealm(query, realm_id);
         } catch (e) {
             throw e;
         }

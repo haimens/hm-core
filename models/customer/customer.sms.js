@@ -11,7 +11,7 @@ class VNCustomerSMS extends ODInstance {
     }
 
     async registerCustomerSMS(info = {}, customer_id, realm_id) {
-        const {tar_cell, sys_cell, message, type, smsid} = info;
+        const {tar_cell, sys_cell, message, type, smsid, is_read} = info;
         if (!tar_cell) func.throwErrorWithMissingParam('tar_cell');
         if (!sys_cell) func.throwErrorWithMissingParam('sys_cell');
         if (!message) func.throwErrorWithMissingParam('message');
@@ -23,6 +23,7 @@ class VNCustomerSMS extends ODInstance {
                     tar_cell, sys_cell, message, type, smsid,
                     cdate: 'now()', udate: 'now()',
                     customer_id: (customer_id || 0), realm_id: (realm_id || 0),
+                    is_read: (is_read || 1),
                     status: 0
                 }
             );
@@ -63,6 +64,36 @@ class VNCustomerSMS extends ODInstance {
 
         } catch (e) {
 
+        }
+    }
+
+    static async findSMSListWithRealm(search_query = {}, realm_id) {
+        try {
+            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys('vn_customer_sms',
+                    ['tar_cell', 'sys_cell', 'cdate', 'udate', 'message', 'type', 'is_read']
+                )
+                .configComplexConditionKeys('vn_customer', ['name', 'username', 'email', 'img_path'])
+                .configComplexConditionJoin('vn_customer_sms', 'customer_id', 'vn_customer')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_customer_sms')
+                .configKeywordCondition(['message'], keywords, 'vn_customer_sms')
+                .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_customer')
+                .configComplexConditionQueryItem('vn_customer_sms', 'realm_id', realm_id)
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_customer_sms')
+                .configQueryLimit(start, 30);
+
+            const count = await this.findCountOfInstance('vn_customer_sms', conditions);
+
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_customer_sms', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+        } catch (e) {
+            throw e;
         }
     }
 }

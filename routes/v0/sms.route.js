@@ -73,10 +73,24 @@ router.post('/init', async (req, res, next) => {
 
     try {
         console.log('init', req.body);
+        res.json(body);
     } catch (e) {
         next(e);
     }
 
+});
+
+
+router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNSMSAction.findSMSHistoryListWithRealm(req.params, req.body, req.query)
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
 });
 
 
