@@ -55,6 +55,11 @@ router.post('/send/trip/:realm_token/:trip_token', async (req, res, next) => {
 
 
 router.post('/receive', async (req, res, next) => {
+    try {
+        console.log('receive', req.body);
+    } catch (e) {
+        next(e);
+    }
 
 });
 

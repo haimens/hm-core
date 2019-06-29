@@ -30,7 +30,8 @@ class VNSMSAction extends VNAction {
 
             const response = await VNSender.sendSMS(smsResource, msg, cell);
 
-            console.log(response);
+
+            return {smsid: response};
 
 
         } catch (e) {
