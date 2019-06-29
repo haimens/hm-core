@@ -42,6 +42,7 @@ class VNCustomerSMS extends ODInstance {
 
         try {
 
+
             const conditions = new ODCondition();
 
             conditions

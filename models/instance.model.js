@@ -198,6 +198,8 @@ class ODInstance {
             ${condition.limit || 'LIMIT 0, 30'}
             `;
 
+            console.log(query);
+
 
             return await this.performQuery(query);
         } catch (e) {
