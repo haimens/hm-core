@@ -9,9 +9,10 @@ class VNAction {
 
             const realmObj = new VNRealm(realm_token);
 
-            const {vn_realm_id: realm_id} = await realmObj.findInstanceDetailWithToken();
+            const {vn_realm_id: realm_id, company_name, company_title} = await realmObj.findInstanceDetailWithToken(
+                ['company_name', 'company_title']);
 
-            return {realm_token, realm_id};
+            return {realm_token, realm_id, company_name, company_title, realmObj};
         } catch (e) {
             throw e;
         }

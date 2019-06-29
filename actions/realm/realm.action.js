@@ -10,6 +10,8 @@ const VNSetting = require('../../models/setting/setting.class');
 
 const VNCarType = require('../../models/car/car.type');
 
+const VNMessageResource = require('../../models/realm/message.resource');
+
 
 const sedan = {
     name: 'SEDAN', price_prefix: '0',
@@ -93,6 +95,28 @@ class VNRealmAction extends VNAction {
 
             const realmObj = new VNRealm(realm_token);
 
+        } catch (e) {
+            throw e;
+        }
+    }
+
+
+    static async registerMessageResource(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id, realmObj} = await this.findRealmIdWithToken(realm_token);
+            const messageResourceObj = new VNMessageResource();
+
+            const {message_resource_token, message_resource_id} = await messageResourceObj.registerMessageResource(body, realm_id);
+
+
+            await realmObj.modifyInstanceDetailWithId(
+                {primary_message_resource_id: message_resource_id},
+                ['primary_message_resource_id']
+            );
+
+            return {message_resource_token};
         } catch (e) {
             throw e;
         }

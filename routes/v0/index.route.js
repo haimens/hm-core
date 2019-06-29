@@ -12,6 +12,8 @@ const quoteRoute = require('./quote.route');
 const realmRoute = require('./realm.route');
 const tributeRoute = require('./tribute.route');
 
+const messageRoute = require('./sms.route');
+
 
 router.use("/king", kingRoute);
 router.use("/driver", driverRoute);
@@ -22,6 +24,7 @@ router.use("/lord", lordRoute);
 router.use('/quote', quoteRoute);
 router.use('/realm', realmRoute);
 router.use('/tribute', tributeRoute);
+router.use('/message', messageRoute);
 
 router.use("/", async (req, res, next) => {
     try {

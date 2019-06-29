@@ -9,6 +9,8 @@
     "@google/maps": "^0.5.5",
     "@odinternational/exodus_v2_qa": "^1.1.2",
     "@odinternational/od-havana-conn": "^2.1.6",
+    "@odinternational/od-sms": "^1.0.1",
+    "@sendgrid/mail": "^6.4.0",
     "body-parse": "^0.1.0",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",

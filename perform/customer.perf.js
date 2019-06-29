@@ -19,4 +19,4 @@ const VNCustomerAction = require('../actions/customer/customer.action');
     } catch (e) {
         console.log(e);
     }
-})('vn-driver-02', 'Chris Yao', '8145664700', 'chrisyao.od@gmail.com', '887SUYYS', 'chris', 'f3bd1960f347eca3e05ee4d04c46fad0');
+})('vn-customer-03', 'Chris Yao', '8145664700', 'chrisyao.od@gmail.com', '887SUYYS', 'chris', 'REALM-3ec72d3a5be4deb52333787fceefec19');
