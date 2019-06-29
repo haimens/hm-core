@@ -48,7 +48,7 @@ class VNCustomerSMS extends ODInstance {
             conditions
                 .configComplexConditionKeys(
                     'vn_customer_sms',
-                    ['id AS customer_id', 'realm_id']
+                    ['customer_id', 'realm_id']
                 )
                 .configComplexConditionQueryItem('vn_customer_sms', 'tar_cell', tar_cell)
                 .configComplexConditionQueryItem('vn_customer_sms', 'sys_cell', sys_cell)

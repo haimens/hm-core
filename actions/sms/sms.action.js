@@ -86,7 +86,7 @@ class VNSMSAction extends VNAction {
             customer_id = log_customer_id;
             realm_id = log_realm_id;
 
-            console.log('log_customer', log_customer_id);
+
             if (!log_customer_id) {
                 const {customer_id: exist_customer_id, realm_id: exist_realm_id} = await VNCustomer.findCustomerInfoWithIncomingSMS(From);
                 customer_id = exist_customer_id;
