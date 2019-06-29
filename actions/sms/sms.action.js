@@ -77,10 +77,21 @@ class VNSMSAction extends VNAction {
 
             const sms_info = {sys_cell: To, tar_cell: From, message: Body, smsid: SmsSid, type: 4};
 
-            const {customer_id, realm_id} = await VNCustomer.findCustomerInfoWithIncomingSMS(From);
+            let customer_id, realm_id;
+
+            const {customer_id: log_customer_id, realm_id: log_realm_id} = await VNCustomerSMS.findCustomerSMSRecordWithIncomingReply(
+                From, To
+            );
+
+            customer_id = log_customer_id;
+            realm_id = log_realm_id;
+            if (!log_customer_id) {
+                const {customer_id: exist_customer_id, realm_id: exist_realm_id} = await VNCustomer.findCustomerInfoWithIncomingSMS(From);
+                customer_id = exist_customer_id;
+                realm_id = exist_realm_id;
+            }
 
             const {sms_token} = new VNCustomerSMS().registerCustomerSMS(sms_info, customer_id, realm_id);
-
 
             return {sms_token, smsid: SmsSid};
 

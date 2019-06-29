@@ -35,6 +35,35 @@ class VNCustomerSMS extends ODInstance {
             throw e;
         }
     }
+
+    static async findCustomerSMSRecordWithIncomingReply(tar_cell, sys_cell) {
+        if (!tar_cell) func.throwErrorWithMissingParam('tar_cell');
+        if (!sys_cell) func.throwErrorWithMissingParam('sys_cell');
+
+        try {
+
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys(
+                    'vn_customer_sms',
+                    ['id AS customer_id', 'realm_id']
+                )
+                .configComplexConditionQueryItem('vn_customer_sms', 'tar_cell', tar_cell)
+                .configComplexConditionQueryItem('vn_customer_sms', 'sys_cell', sys_cell)
+                .configComplexOrder('udate', 'DESC', ['udate'], 'vn_customer_sms')
+                .configComplexConditionQueryItem('vn_customer_sms', 'status', 1)
+                .configQueryLimit(0, 1);
+
+            const [record] = await this.findInstanceListWithComplexCondition('vn_customer_sms', conditions);
+
+            return record || {};
+
+
+        } catch (e) {
+
+        }
+    }
 }
 
 module.exports = VNCustomerSMS;
