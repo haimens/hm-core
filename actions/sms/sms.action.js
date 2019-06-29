@@ -33,7 +33,13 @@ class VNSMSAction extends VNAction {
             const twilio_response = await VNSender.sendSMS(smsResource, msg, cell);
 
 
-            const sms_info = {sys_cell: twilio_from_num, tar_cell: cell, message: msg, smsid: twilio_response, type};
+            const sms_info = {
+                sys_cell: twilio_from_num,
+                tar_cell: cell,
+                message: msg,
+                smsid: twilio_response,
+                type: type || 3
+            };
 
 
             const customerSMSObj = new VNCustomerSMS();
