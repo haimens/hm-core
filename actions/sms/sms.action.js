@@ -6,6 +6,7 @@ const VNMessageResource = require('../../models/realm/message.resource');
 const VNSender = require('../../models/realm/sender.class');
 
 const VNCustomer = require('../../models/customer/customer.class');
+const VNCustomerSMS = require('../../models/customer/customer.sms');
 
 
 class VNSMSAction extends VNAction {
@@ -19,21 +20,29 @@ class VNSMSAction extends VNAction {
             const smsResource = await VNMessageResource.findPrimaryMessageResourceWithRealm(realm_id);
 
 
+            const {twilio_from_num} = smsResource;
             const customerObj = new VNCustomer(customer_token);
 
-            const {message, title} = body;
+            const {message, title, type} = body;
             if (!message) func.throwError('CANNOT SEND EMPTY MESSAGE', 400);
-            const {name, cell} = await customerObj.findInstanceDetailWithToken(['name', 'cell']);
+            const {name, cell, vn_customer_id: customer_id} = await customerObj.findInstanceDetailWithToken(['name', 'cell']);
             if (!cell) func.throwErrorWithMissingParam('customer_cell');
 
             const msg = `${title ? ('#' + title + '#\n') : ''}${name ? ('Dear ' + name + ': \n') : ''}${message + '\n'}${company_name}`;
 
-            const response = await VNSender.sendSMS(smsResource, msg, cell);
+            const twilio_response = await VNSender.sendSMS(smsResource, msg, cell);
 
 
-            return {smsid: response};
+            const sms_info = {sys_cell: twilio_from_num, tar_cell: cell, message: msg, smsid: twilio_response, type};
 
 
+            const customerSMSObj = new VNCustomerSMS();
+
+            const {sms_token} = await customerSMSObj.registerCustomerSMS(sms_info, customer_id, realm_id);
+
+            return {sms_token, smsid: twilio_response};
+
+            // return {smsid: response};
         } catch (e) {
             throw e;
         }
@@ -50,6 +59,24 @@ class VNSMSAction extends VNAction {
     static async sendSMSWithTrip(params, body, query) {
 
         try {
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async receiveSMSReply(pamas, body, query) {
+        try {
+            const {SmsSid, To, From, Body} = body;
+
+            const sms_info = {sys_cell: To, tar_cell: From, message: Body, smsid: SmsSid, type: 4};
+
+            const {customer_id, realm_id} = await VNCustomer.findCustomerInfoWithIncomingSMS(From);
+
+            const {sms_token} = new VNCustomerSMS().registerCustomerSMS(sms_info, customer_id, realm_id);
+
+
+            return {sms_token, smsid: SmsSid};
 
         } catch (e) {
             throw e;

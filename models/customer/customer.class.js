@@ -145,6 +145,30 @@ class VNCustomer extends ODInstance {
             throw e;
         }
     }
+
+    static async findCustomerInfoWithIncomingSMS(cell) {
+        try {
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionJoin('vn_customer', 'realm_id', 'vn_realm')
+                .configComplexConditionKeys('vn_customer', ['id AS customer_id', 'realm_id'])
+                .configComplexConditionQueryItem('vn_customer', 'cell', cell)
+                .configComplexOrder('udate', 'DESC', ['udate'], 'vn_customer')
+                .configQueryLimit(0, 1)
+                .configStatusCondition(2, 'vn_customer')
+                .configStatusCondition(2, 'vn_realm');
+
+
+            const [record] = await this.findInstanceListWithComplexCondition('vn_customer', conditions);
+
+            return record;
+        } catch
+            (e) {
+            throw e;
+        }
+    }
 }
 
-module.exports = VNCustomer;
+module
+    .exports = VNCustomer;

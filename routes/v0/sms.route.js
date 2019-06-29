@@ -56,7 +56,13 @@ router.post('/send/trip/:realm_token/:trip_token', async (req, res, next) => {
 
 router.post('/receive', async (req, res, next) => {
     try {
-        console.log('receive', req.body);
+        const resBody = func.configSuccess(
+            await VNSMSAction.receiveSMSReply(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
     } catch (e) {
         next(e);
     }
