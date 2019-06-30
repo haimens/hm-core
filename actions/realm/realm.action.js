@@ -307,7 +307,7 @@ class VNRealmAction extends VNAction {
             } = await new VNRealm(realm_token).findInstanceDetailWithToken([
                 'primary_message_resource_id', 'primary_email_resource_id', 'primary_payment_resource_id',
                 'address_id',
-                'tribute_rate_id', 'comany_name', 'company_title', 'realm_token', 'cdate', 'udate', 'status'
+                'tribute_rate_id', 'company_name', 'company_title', 'realm_token', 'cdate', 'udate', 'status'
             ]);
 
             let message_resource_info = {};
@@ -342,8 +342,9 @@ class VNRealmAction extends VNAction {
                 ['addr_str', 'lat', 'lng', 'street_line_1', 'street_line_2', 'city', 'state', 'zip']
             );
 
-            const tribuate_rate_info = new VNTributeRate(null, tribute_rate_id).findInstanceDetailWithId(
-                ['rate', 'tribuate_rate_token']
+            const tribute_rate_info = await
+             new VNTributeRate(null, tribute_rate_id).findInstanceDetailWithId(
+                ['rate', 'tribute_rate_token']
             );
 
             return {
@@ -352,7 +353,7 @@ class VNRealmAction extends VNAction {
                 email_resource_info,
                 payment_resource_info,
                 address_info,
-                tribuate_rate_info
+                tribute_rate_info
             };
         } catch (e) {
             throw e;
