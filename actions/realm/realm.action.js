@@ -302,20 +302,21 @@ class VNRealmAction extends VNAction {
 
             const {
                 primary_message_resource_id, primary_email_resource_id, primary_payment_resource_id,
-                tribute_rate_id,
+                tribute_rate_id, address_id,
                 ...basic_info
             } = await new VNRealm(realm_token).findInstanceDetailWithToken([
                 'primary_message_resource_id', 'primary_email_resource_id', 'primary_payment_resource_id',
+                'address_id',
                 'tribute_rate_id', 'comany_name', 'company_title', 'realm_token', 'cdate', 'udate', 'status'
             ]);
 
             let message_resource_info = {};
             if (primary_message_resource_id) {
-                const {twilio_account_id, twilio_account_id, twilio_from_num} =
+                const {twilio_account_id, twilio_auth_token, twilio_from_num} =
                     await new VNMessageResource(null, primary_message_resource_id).findInstanceDetailWithId(
-                        ['twilio_account_id', 'twilio_account_id', 'twilio_from_num']);
+                        ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num']);
 
-                message_resource_info = {twilio_account_id, twilio_account_id, twilio_from_num};
+                message_resource_info = {twilio_account_id, twilio_auth_token, twilio_from_num};
             }
 
             let payment_resource_info = {};
@@ -337,7 +338,22 @@ class VNRealmAction extends VNAction {
                 email_resource_info = {sendgrid_api_key, sendgrid_from_email};
             }
 
-            return {basic_info, message_resource_info, email_resource_info, payment_resource_info};
+            const address_info = await new VNAddress(null, address_id).findInstanceDetailWithId(
+                ['addr_str', 'lat', 'lng', 'street_line_1', 'street_line_2', 'city', 'state', 'zip']
+            );
+
+            const tribuate_rate_info = new VNTributeRate(null, tribute_rate_id).findInstanceDetailWithId(
+                ['rate', 'tribuate_rate_token']
+            );
+
+            return {
+                basic_info,
+                message_resource_info,
+                email_resource_info,
+                payment_resource_info,
+                address_info,
+                tribuate_rate_info
+            };
         } catch (e) {
             throw e;
         }
