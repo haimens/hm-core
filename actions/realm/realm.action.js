@@ -296,6 +296,53 @@ class VNRealmAction extends VNAction {
     }
 
 
+    static async findRealmDetail(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {
+                primary_message_resource_id, primary_email_resource_id, primary_payment_resource_id,
+                tribute_rate_id,
+                ...basic_info
+            } = await new VNRealm(realm_token).findInstanceDetailWithToken([
+                'primary_message_resource_id', 'primary_email_resource_id', 'primary_payment_resource_id',
+                'tribute_rate_id', 'comany_name', 'company_title', 'realm_token', 'cdate', 'udate', 'status'
+            ]);
+
+            let message_resource_info = {};
+            if (primary_message_resource_id) {
+                const {twilio_account_id, twilio_account_id, twilio_from_num} =
+                    await new VNMessageResource(null, primary_message_resource_id).findInstanceDetailWithId(
+                        ['twilio_account_id', 'twilio_account_id', 'twilio_from_num']);
+
+                message_resource_info = {twilio_account_id, twilio_account_id, twilio_from_num};
+            }
+
+            let payment_resource_info = {};
+            if (primary_payment_resource_id) {
+                const {square_application_id, square_location_id, square_access_token} =
+                    await new VNPaymentResource(null, primary_payment_resource_id).findInstanceDetailWithId(
+                        ['square_application_id', 'square_location_id', 'square_access_token']);
+
+                payment_resource_info = {square_application_id, square_location_id, square_access_token};
+            }
+
+
+            let email_resource_info = {};
+            if (primary_email_resource_id) {
+                const {sendgrid_api_key, sendgrid_from_email} =
+                    await new VNEmailResource(null, primary_email_resource_id).findInstanceDetailWithId(
+                        ['sendgrid_api_key', 'sendgrid_from_email']);
+
+                email_resource_info = {sendgrid_api_key, sendgrid_from_email};
+            }
+
+            return {basic_info, message_resource_info, email_resource_info, payment_resource_info};
+        } catch (e) {
+            throw e;
+        }
+    }
+
 }
 
 
