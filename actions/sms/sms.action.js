@@ -38,7 +38,8 @@ class VNSMSAction extends VNAction {
                 tar_cell: cell,
                 message: msg,
                 smsid: twilio_response,
-                type: type || 3
+                type: type || 3,
+                is_read: 1
             };
 
 

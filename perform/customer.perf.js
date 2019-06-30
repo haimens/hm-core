@@ -19,4 +19,4 @@ const VNCustomerAction = require('../actions/customer/customer.action');
     } catch (e) {
         console.log(e);
     }
-})('vn-customer-03', 'Chris Yao', '8145664700', 'chrisyao.od@gmail.com', '887SUYYS', 'chris', 'REALM-3ec72d3a5be4deb52333787fceefec19');
+})('vn-customer-03', 'Binny Tsai', '+16264178309', 'tracy15932@gmail.com', '887SUYYS', 'chris', 'REALM-3ec72d3a5be4deb52333787fceefec19');

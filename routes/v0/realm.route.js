@@ -52,4 +52,95 @@ router.post('/message/:realm_token', async (req, res, next) => {
 });
 
 
+router.get('/detail/:realm_token', async (req, res, next) => {
+
+    try {
+        const resBody = func.configSuccess(
+
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+
+});
+
+
+router.patch('/detail/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNRealmAction.modifyBasicRealmDetail(req.params, req.body, req.query),
+            'REALM BASIC INFO UPDATED'
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+
+});
+
+router.patch('/resource/:realm_token', async (req, res, next) => {
+
+    try {
+        const resBody = func.configSuccess(
+            await VNRealmAction.modifyPrimaryResourceInRealm(req.params, req.body, req.query),
+            'REALM PRIMARY RESOURCE INFO UPDATED'
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+
+});
+
+router.patch('/email/:realm_token/:email_resource_token', async (req, res, next) => {
+
+    try {
+
+        const resBody = func.configSuccess(
+            await VNRealmAction.modifyEmailResource(req.params, req.body, req.query),
+            'REALM EMAIL RESOURCE INFO UPDATED'
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+
+});
+
+router.patch('/message/:realm_token/:message_resource_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNRealmAction.modifyMessageResource(req.params, req.body, req.query),
+            'REALM MESSAGE RESOURCE INFO UPDATED'
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+
+});
+
+router.patch('/payment/:realm_token/:payment_resource_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNRealmAction.modifyPaymentResource(req.params, req.body, req.query),
+            'REALM PAYMENT RESOURCE INFO UPDATED'
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+
+});
+
+
+
+
+
 module.exports = router;

@@ -11,6 +11,8 @@ const VNSetting = require('../../models/setting/setting.class');
 const VNCarType = require('../../models/car/car.type');
 
 const VNMessageResource = require('../../models/realm/message.resource');
+const VNEmailResource = require('../../models/realm/email.resource');
+const VNPaymentResource = require('../../models/realm/payment.resource');
 
 
 const sedan = {
@@ -89,11 +91,37 @@ class VNRealmAction extends VNAction {
         }
     }
 
-    static async modifyResourceInRealm(params, body, query) {
+    static async modifyPrimaryResourceInRealm(params, body, query) {
         try {
             const {realm_token} = params;
 
             const realmObj = new VNRealm(realm_token);
+
+            const {message_resource_token, email_resource_token, payment_resource_token} = body;
+            const update_pack = {};
+            if (message_resource_token) {
+                const {vn_message_resource_id} = await new VNMessageResource(message_resource_token).findInstanceDetailWithToken();
+                update_pack['primary_message_resource_id'] = vn_message_resource_id
+            }
+
+            if (email_resource_token) {
+                const {vn_email_resource_id} = await new VNEmailResource(email_resource_token).findInstanceDetailWithToken();
+                update_pack['primary_email_resource_id'] = vn_email_resource_id
+            }
+
+
+            if (payment_resource_token) {
+                const {vn_payment_resource_id} = await new VNPaymentResource(payment_resource_token).findInstanceDetailWithToken();
+                update_pack['primary_payment_resource_id'] = vn_payment_resource_id
+            }
+
+
+            const response = await realmObj.modifyInstanceDetailWithId(update_pack,
+                ['primary_message_resource_id', 'primary_email_resource_id', 'primary_payment_resource_id']
+            );
+
+            return {response};
+
 
         } catch (e) {
             throw e;
@@ -121,6 +149,154 @@ class VNRealmAction extends VNAction {
             throw e;
         }
     }
+
+
+    static async registerPaymentResource(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id, realmObj} = await this.findRealmIdWithToken(realm_token);
+            const paymentResourceObj = new VNPaymentResource();
+
+            const {payment_resource_token, payment_resource_id} = await paymentResourceObj.registerPaymentResource(body, realm_id);
+
+
+            await realmObj.modifyInstanceDetailWithId(
+                {primary_payment_resource_id: payment_resource_id},
+                ['primary_payment_resource_id']
+            );
+
+            return {payment_resource_token};
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async registerEmailResource(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id, realmObj} = await this.findRealmIdWithToken(realm_token);
+            const emailResourceObj = new VNEmailResource();
+
+            const {email_resource_token, email_resource_id} = await emailResourceObj.registerEmailResource(body, realm_id);
+
+
+            await realmObj.modifyInstanceDetailWithId(
+                {primary_email_resource_id: email_resource_id},
+                ['primary_email_resource_id']
+            );
+
+            return {email_resource_token};
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findEmailResourceList(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNEmailResource.findEmailResourceListWithRealm(query, realm_id);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findMessageResourceList(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNMessageResource.findMessageResourceListWithRealm(query, realm_id);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async modifyMessageResource(params, body, query) {
+        try {
+            const {realm_token, message_resource_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const messageResourceObj = new VNMessageResource(message_resource_token);
+
+            const {realm_id: auth_realm_id} = await messageResourceObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== auth_realm_id) func.throwError('REALM NOT MATCH');
+            const response = await messageResourceObj.modifyInstanceDetailWithId(
+                body,
+                ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num', 'status']);
+
+            return {response};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findPaymentResourceList(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNPaymentResource.findPaymentResourceListWithRealm(query, realm_id);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async modifyEmailResource(params, body, query) {
+        try {
+            const {realm_token, email_resource_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const emailResourceObj = new VNEmailResource(email_resource_token);
+
+            const {realm_id: auth_realm_id} = await emailResourceObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== auth_realm_id) func.throwError('REALM NOT MATCH');
+            const response = await emailResourceObj.modifyInstanceDetailWithId(
+                body,
+                ['sendgrid_api_key', 'sendgrid_from_email', 'status']);
+
+            return {response};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async modifyPaymentResource(params, body, query) {
+        try {
+            const {realm_token, payment_resource_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const paymentResourceObj = new VNPaymentResource(payment_resource_token);
+
+            const {realm_id: auth_realm_id} = await paymentResourceObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== auth_realm_id) func.throwError('REALM NOT MATCH');
+            const response = await paymentResourceObj.modifyInstanceDetailWithId(
+                body,
+                ['square_application_id', 'square_location_id', 'square_access_token', 'status']);
+
+            return {response};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+
 }
+
 
 module.exports = VNRealmAction;

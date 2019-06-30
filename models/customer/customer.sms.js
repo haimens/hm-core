@@ -23,7 +23,7 @@ class VNCustomerSMS extends ODInstance {
                     tar_cell, sys_cell, message, type, smsid,
                     cdate: 'now()', udate: 'now()',
                     customer_id: (customer_id || 0), realm_id: (realm_id || 0),
-                    is_read: (is_read || 1),
+                    is_read,
                     status: 0
                 }
             );
@@ -82,7 +82,7 @@ class VNCustomerSMS extends ODInstance {
                 .configKeywordCondition(['message'], keywords, 'vn_customer_sms')
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_customer')
                 .configComplexConditionQueryItem('vn_customer_sms', 'realm_id', realm_id)
-                .configStatusCondition(1, 'vn_customer')
+                .configStatusCondition(1, 'vn_customer_sms')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_customer_sms')
                 .configQueryLimit(start, 30);
 

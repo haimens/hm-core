@@ -57,7 +57,7 @@ class VNRealm extends ODInstance {
             conditions
                 .configComplexConditionKeys(
                     'vn_realm',
-                    ['company_name', 'company_title', 'cdate', 'udate', 'logo_path', 'icon_path']
+                    ['company_name', 'company_title', 'cdate', 'udate', 'logo_path', 'icon_path','realm_token']
                 )
                 .configComplexConditionKeys('vn_tribute_rate', ['rate', 'tribute_rate_token'])
                 .configComplexConditionKeys('vn_address', ['addr_str', 'lat', 'lng', 'address_token'])
@@ -103,6 +103,29 @@ class VNRealm extends ODInstance {
 
             return count || 0;
 
+        } catch (e) {
+            throw e;
+        }
+    }
+    static async findPaymentResourceList(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNPaymentResource.findPaymentResourceListWithRealm(query, realm_id);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findEmailResourceList(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNPaymentResource.findPaymentResourceListWithRealm(query, realm_id);
         } catch (e) {
             throw e;
         }
