@@ -41,7 +41,8 @@ class VNPaymentResource extends ODInstance {
             const conditions = new ODCondition();
 
             conditions
-                .configComplexConditionKeys('vn_payment_resource', ['square_application_id', 'square_location_id', 'square_access_token'])
+                .configComplexConditionKeys('vn_payment_resource',
+                    ['square_application_id', 'square_location_id', 'square_access_token', 'payment_resource_token'])
                 .configComplexConditionQueryItem('vn_payment_resource', 'realm_id', realm_id)
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_payment_resource')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_payment_resource')
@@ -73,7 +74,7 @@ class VNPaymentResource extends ODInstance {
                 .configComplexConditionKey('vn_realm', 'company_name')
                 .configComplexConditionKeys(
                     'vn_payment_resource',
-                    ['square_application_id', 'square_location_id', 'square_access_token']
+                    ['square_application_id', 'square_location_id', 'square_access_token', 'payment_resource_token']
                 )
                 .configComplexConditionJoin('vn_realm', 'primary_payment_resource_id', 'vn_payment_resource')
                 .configComplexConditionQueryItem('vn_realm', 'id', realm_id)

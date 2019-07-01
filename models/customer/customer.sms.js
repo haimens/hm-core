@@ -76,7 +76,7 @@ class VNCustomerSMS extends ODInstance {
                 .configComplexConditionKeys('vn_customer_sms',
                     ['tar_cell', 'sys_cell', 'cdate', 'udate', 'message', 'type', 'is_read']
                 )
-                .configComplexConditionKeys('vn_customer', ['name', 'username', 'email', 'img_path'])
+                .configComplexConditionKeys('vn_customer', ['name', 'username', 'email', 'img_path', 'customer_token'])
                 .configComplexConditionJoin('vn_customer_sms', 'customer_id', 'vn_customer')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_customer_sms')
                 .configKeywordCondition(['message'], keywords, 'vn_customer_sms')

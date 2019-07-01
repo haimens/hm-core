@@ -45,7 +45,8 @@ class VNMessageResource extends ODInstance {
             const conditions = new ODCondition();
 
             conditions
-                .configComplexConditionKeys('vn_message_resource', ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num'])
+                .configComplexConditionKeys('vn_message_resource',
+                    ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num', 'message_resource_token'])
                 .configComplexConditionQueryItem('vn_message_resource', 'realm_id', realm_id)
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_message_resource')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_message_resource')
@@ -75,7 +76,8 @@ class VNMessageResource extends ODInstance {
 
             conditions
                 .configComplexConditionKey('vn_realm', 'company_name')
-                .configComplexConditionKeys('vn_message_resource', ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num'])
+                .configComplexConditionKeys('vn_message_resource',
+                    ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num', 'message_resource_token'])
                 .configComplexConditionJoin('vn_realm', 'primary_message_resource_id', 'vn_message_resource')
                 .configComplexConditionQueryItem('vn_realm', 'id', realm_id)
                 .configQueryLimit(0, 1);

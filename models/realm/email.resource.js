@@ -39,7 +39,8 @@ class VNEmailResource extends ODInstance {
             const conditions = new ODCondition();
 
             conditions
-                .configComplexConditionKeys('vn_email_resource', ['sendgrid_api_key',  'sendgrid_from_email'])
+                .configComplexConditionKeys('vn_email_resource',
+                    ['sendgrid_api_key', 'sendgrid_from_email', 'email_resource_token'])
                 .configComplexConditionQueryItem('vn_email_resource', 'realm_id', realm_id)
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_email_resource')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_email_resource')
@@ -69,7 +70,9 @@ class VNEmailResource extends ODInstance {
 
             conditions
                 .configComplexConditionKey('vn_realm', 'company_name')
-                .configComplexConditionKeys('vn_email_resource', ['sendgrid_api_key',  'sendgrid_from_email'])
+                .configComplexConditionKeys('vn_email_resource',
+                    ['sendgrid_api_key', 'sendgrid_from_email', 'email_resource_token']
+                )
                 .configComplexConditionJoin('vn_realm', 'primary_email_resource_id', 'vn_email_resource')
                 .configComplexConditionQueryItem('vn_realm', 'id', realm_id)
                 .configQueryLimit(0, 1);
