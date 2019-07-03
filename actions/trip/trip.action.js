@@ -28,7 +28,7 @@ class VNTripAction extends VNAction {
 
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
-            const {amount, note} = body;
+            const {amount, note, type} = body;
 
             const {vn_order_id: order_id, realm_id: order_realm_id, customer_id} =
                 await new VNOrder(order_token).findInstanceDetailWithToken(
@@ -44,7 +44,7 @@ class VNTripAction extends VNAction {
             if (order_id !== trip_order_id) func.throwError('ORDER_ID NOT MATCH');
 
             const {addon_token} = await new VNAddon().registerAddon(
-                {amount, note}, trip_id, order_id, customer_id, realm_id
+                {amount, note, type}, trip_id, order_id, customer_id, realm_id
             );
 
             return {addon_token};
@@ -149,7 +149,13 @@ class VNTripAction extends VNAction {
 
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
-            return new VNTrip(trip_token).modifyInstanceDetailWithToken(
+            const tripObj = new VNTrip(trip_token);
+
+            const {realm_id: trip_realm_id} = await tripObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (trip_realm_id !== realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            return tripObj.modifyInstanceDetailWithId(
                 body,
                 ['amount', 'is_paid', 'eta_time', 'cob_time', 'arrive_time', 'flight_str', 'start_time', 'cad_time', 'status']
             );
@@ -193,10 +199,12 @@ class VNTripAction extends VNAction {
 
             const alert_count = await VNAlert.checkTripAlerts(trip_id, realm_id);
 
-            const {car_id, driver_id} = await tripObj.findInstanceDetailWithId(['car_id', 'driver_id']);
+            const {car_id, driver_id, status} = await tripObj.findInstanceDetailWithId(['car_id', 'driver_id', 'status']);
 
             if (alert_count > 0 && car_id && driver_id) {
-                await tripObj.modifyInstanceDetailWithId({status: 3}, ['status']);
+                if (status === 2) {
+                    await tripObj.modifyInstanceDetailWithId({status: 3}, ['status']);
+                }
             }
 
             return {trip_token};
@@ -205,6 +213,7 @@ class VNTripAction extends VNAction {
         }
     }
 
+    static
 
 }
 

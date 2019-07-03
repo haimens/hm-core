@@ -17,6 +17,23 @@ class VNTributeAction extends VNAction {
         }
     }
 
+
+    static async modifyTributeRate(params, body, query) {
+        try {
+            const {tribute_rate_token} = body;
+
+            const tributeRateObj = new VNTributeRate(tribute_rate_token);
+
+            await tributeRateObj.modifyInstanceDetailWithToken(
+                body, ['status']
+            );
+
+            return {tribute_rate_token};
+        } catch (e) {
+            throw e;
+        }
+    }
+
     static async findTributeRateList(params, body, query) {
         try {
             return await VNTributeRate.findAllTributeRate();

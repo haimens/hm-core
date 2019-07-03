@@ -10,7 +10,7 @@ class VNAlertAction extends VNAction {
 
         try {
             const {realm_token} = params;
-            const {realm_id} = await this.findAlertListInRealm(realm_token);
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
             return await VNAlert.findAlertListInRealm(query, realm_id);
         } catch (e) {
@@ -18,6 +18,24 @@ class VNAlertAction extends VNAction {
         }
     }
 
+
+    static async modifyAlert(params, body, query) {
+        try {
+            const {realm_token, alert_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const alertObj = new VNAlert(alert_token);
+
+            const {realm_id: alert_realm_id} = await alertObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== alert_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            await alertObj.modifyInstanceDetailWithId(body, ['status']);
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
 module.exports = VNAlertAction;
