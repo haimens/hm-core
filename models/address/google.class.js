@@ -14,7 +14,7 @@ class VNGoogleMap {
                         if (results.length < 1) reject(new Error('CANNOT FIND RELATED ADDRESS FROM GOOGLE'));
                         const [{address_components, formatted_address, geometry}] = results;
 
-                        let city, state, zip, street_line_2;
+                        let city='', state='', zip='', street_line_2;
                         let street_number = '', route = '';
                         let lat, lng;
 

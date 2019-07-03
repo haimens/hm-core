@@ -59,9 +59,11 @@ class ODCondition {
         }
     }
 
-    configComplexConditionJoin(org_table, self_key, tar_table, join_method = 'LEFT JOIN') {
+    configComplexConditionJoin(org_table, self_key, tar_table, join_method = 'LEFT JOIN', identifier) {
         try {
-            this.joins.push(`${join_method} ${tar_table} ON ${tar_table}.id = ${org_table}.${self_key}`);
+            this.joins.push(
+                `${join_method} ${tar_table} ${identifier ? ('AS ' + identifier) : ''} 
+                ON ${identifier ? identifier : tar_table}.id = ${org_table}.${self_key} `);
 
             return this;
         } catch (e) {
@@ -159,10 +161,10 @@ class ODCondition {
     }
 
     configKeywordCondition(keys = [], keywords_str, table_name) {
-        if(!keywords_str) return this;
+        if (!keywords_str) return this;
 
         try {
-            this.conditions.push(`(${keywords_str.split('+').map(keyword => keys.map(key => `${table_name ? table_name+'.' : ''}${key} LIKE '%${keyword}%'`).join(' OR\n')).join(' OR\n')})`);
+            this.conditions.push(`(${keywords_str.split('+').map(keyword => keys.map(key => `${table_name ? table_name + '.' : ''}${key} LIKE '%${keyword}%'`).join(' OR\n')).join(' OR\n')})`);
             return this;
         } catch (err) {
             throw err;

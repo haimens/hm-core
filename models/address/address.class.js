@@ -27,12 +27,12 @@ class VNAddress extends ODInstance {
             const addr_record = await VNAddress._findAddressWithAddressStr(address_str);
 
             if (addr_record) return addr_record;
-            
+
             this.instance_id = await this.insertInstance(
                 {
                     addr_str: address_str, street_line_1,
                     street_line_2: street_line_2 || '',
-                    city, state, zip, cdate: 'now()', udate: 'now()', status: 0,
+                    city, state: state, zip, cdate: 'now()', udate: 'now()', status: 0,
                     lat, lng
                 });
             this.instance_token = `ADDR-${func.encodeUnify(this.instance_id, 'addr')}`;
