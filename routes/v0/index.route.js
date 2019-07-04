@@ -15,6 +15,9 @@ const tributeRoute = require('./tribute.route');
 const messageRoute = require('./sms.route');
 const tripRoute = require('./trip.route');
 
+const orderRoute = require('./order.route');
+const alertRoute = require('./alert.route');
+
 
 router.use("/king", kingRoute);
 router.use("/driver", driverRoute);
@@ -26,6 +29,8 @@ router.use('/quote', quoteRoute);
 router.use('/realm', realmRoute);
 router.use('/tribute', tributeRoute);
 router.use('/message', messageRoute);
+router.use('/order', orderRoute);
+router.use('/alert', alertRoute);
 
 router.use('/trip', tripRoute);
 
