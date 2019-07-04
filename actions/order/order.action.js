@@ -99,8 +99,43 @@ class VNOrderAction extends VNAction {
         }
     }
 
+    static async modifyOrderDetail(params, body, query) {
+        try {
+
+            const {realm_token, order_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+
+            const orderObj = new VNOrder(order_token);
+
+            const {realm_id: order_realm_id} = await orderObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
+
+            await orderObj.modifyInstanceDetailWithId(body, ['status', 'contace_name', 'contace_cell']);
+
+            return {order_token};
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findOrderListInRealm(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNOrder.findOrderListInRealm(query, realm_id);
+        } catch
+            (e) {
+            throw e;
+        }
+    }
 
 
 }
 
-module.exports = VNOrderAction;
+module
+    .exports = VNOrderAction;

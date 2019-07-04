@@ -93,6 +93,30 @@ class VNAlert extends ODInstance {
         }
     }
 
+    static async findAlertListInTrip(trip_id, realm_id) {
+        try {
+
+
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys('vn_alert', ['record_time', 'status', 'type', 'cdate', 'udate', 'alert_token'])
+                .configComplexConditionKey('vn_alert_type', 'name', 'type_str')
+                .configComplexConditionKey('vn_alert_status', 'name', 'status_str')
+                .configComplexConditionJoin('vn_alert', 'type', 'vn_alert_type')
+                .configComplexConditionJoin('vn_alert', 'status', 'vn_alert_status')
+                .configStatusCondition('all', 'vn_alert')
+                .configComplexConditionQueryItem('vn_alert', 'realm_id', realm_id)
+                .configQueryLimit(0, 10);
+            
+            const record_list = await this.findInstanceListWithComplexCondition('vn_alert', conditions);
+            return {record_list};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
     static async checkTripAlerts(trip_id, realm_id) {
         if (!trip_id) func.throwErrorWithMissingParam('trip_id');
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');

@@ -136,7 +136,10 @@ class VNTripAction extends VNAction {
                 )) : {},
 
                 //ADDON LIST 6
-                VNAddon.findAddonListInTrip(trip_id, realm_id)
+                VNAddon.findAddonListInTrip(trip_id, realm_id),
+
+                //ALERT LIST 7
+                VNAlert.findAlertListInRealm(trip_id, realm_id)
             ];
 
             const result_list = await Promise.all(promise_list);
@@ -150,11 +153,14 @@ class VNTripAction extends VNAction {
 
             const {record_list: addon_list} = result_list[6];
 
+            const {record_list: alert_list} = result_list[7];
+
 
             return {
                 driver_info, car_info, customer_info,
                 from_address_info,
                 to_address_info, flight_info, addon_list,
+                alert_list,
                 basic_info
             };
 
