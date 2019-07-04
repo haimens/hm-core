@@ -14,12 +14,14 @@ class VNTrip extends ODInstance {
 
     async registerTrip(info = {}, customer_id, order_id, realm_id) {
 
-        const {pickup_time, pickup_time_local, from_address_id, to_address_id, vehicle_type} = info;
+        const {pickup_time, pickup_time_local, from_address_id, to_address_id, vehicle_type, amount} = info;
 
         if (!pickup_time) func.throwErrorWithMissingParam('pickup_time');
         if (!pickup_time_local) func.throwErrorWithMissingParam('pickup_time_local');
         if (!from_address_id) func.throwErrorWithMissingParam('from_address_id');
         if (!to_address_id) func.throwErrorWithMissingParam('to_address_id');
+
+        if (!amount) func.throwErrorWithMissingParam('amount');
 
         if (!customer_id) func.throwErrorWithMissingParam('customer_id');
         if (!order_id) func.throwErrorWithMissingParam('order_id');
@@ -32,6 +34,7 @@ class VNTrip extends ODInstance {
                     pickup_time, pickup_time_local, from_address_id, to_address_id,
                     vehicle_type,
                     customer_id, order_id, realm_id,
+                    amount,
                     cdate: 'now()', udate: 'now()',
                     status: 0
                 }
@@ -48,7 +51,7 @@ class VNTrip extends ODInstance {
     }
 
 
-    async findFullTripInfo() {
+    async findFullTripInfo(realm_id) {
         try {
             if (!this.instance_id) {
                 if (!this.instance_token) func.throwErrorWithMissingParam('trip_token');
@@ -62,8 +65,9 @@ class VNTrip extends ODInstance {
                 .configComplexConditionKeys(
                     'vn_trip',
                     [
+                        'id AS trip_id',
                         'trip_token', 'cdate', 'udate',
-                        'driver_id', 'car_id', 'customer_id', 'from_address_id', 'to_address_id', 'order_id',
+                        'driver_id', 'car_id', 'customer_id', 'from_address_id', 'to_address_id',
                         'realm_id', 'pickup_time', 'pickup_time_local', 'start_time', 'eta_time', 'cob_time', 'arrive_time',
                         'flight_id', 'amount', 'flight_str', 'cad_time', 'is_paid',
                         'is_paid', 'note', 'vehicle_type', 'status'
@@ -261,17 +265,17 @@ class VNTrip extends ODInstance {
         try {
             const {date_from, date_to, from_key, to_key, status} = search_query;
 
-            const conditions = new ODCondition([], [], [], '', '', 'DATE(vn_trip.pickup_time_local)');
+            const conditions = new ODCondition([], [], [], '', '', 'GROUP BY DATE(vn_trip.pickup_time_local)');
 
             conditions
-                .configComplexConditionKey('vn_trip', 'COUNT(vn_trip.id)', 'count')
-                .configComplexConditionKey('vn_trip', 'DATE(vn_trip.pickup_time_local)')
+                .configComplexConditionKey('', 'COUNT(vn_trip.id)', 'count')
+                .configComplexConditionKey('', 'DATE(vn_trip.pickup_time_local)', 'date')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_trip')
                 .configComplexConditionQueryItem('vn_trip', 'realm_id', realm_id)
                 .configStatusCondition(status, 'vn_trip')
-                .configQueryLimit(0, 32);
+                .configQueryLimit(0, 100);
 
-            const record_list = await this.findInstanceListWithComplexCondition('nv_trip', conditions);
+            const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
 
             return record_list || [];
         } catch (e) {

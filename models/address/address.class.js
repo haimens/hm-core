@@ -43,8 +43,6 @@ class VNAddress extends ODInstance {
         } catch (e) {
             throw e;
         }
-
-
     }
 
     static async _findAddressWithAddressStr(addr_str) {

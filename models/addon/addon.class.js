@@ -69,6 +69,37 @@ class VNAddon extends ODInstance {
             throw e;
         }
     }
+
+    static async findAddonListInTrip(trip_id, realm_id) {
+        if (!trip_id) func.throwErrorWithMissingParam('order_id');
+        if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+
+        try {
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys(
+                    'vn_addon',
+                    ['amount', 'type', 'note', 'cdate', 'udate', 'addon_token', "status"]
+                )
+                .configComplexConditionQueryItem(
+                    'vn_addon',
+                    'realm_id', realm_id
+                )
+                .configComplexConditionQueryItem(
+                    'vn_addon',
+                    'trip_id', trip_id
+                )
+                .configQueryLimit(0, 30);
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_addon', conditions);
+
+            return {record_list};
+
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
 module.exports = VNAddon;

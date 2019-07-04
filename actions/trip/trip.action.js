@@ -14,6 +14,10 @@ const VNFlight = require('../../models/flight/flight.class');
 
 const VNAlert = require('../../models/alert/alert.class');
 
+const VNCustomer = require('../../models/customer/customer.class');
+
+const VNAddress = require('../../models/address/address.class');
+
 const func = require('od-utility');
 
 
@@ -91,7 +95,68 @@ class VNTripAction extends VNAction {
 
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
-            return await new VNTrip(trip_token).findFullTripInfo(realm_id);
+            const {realm_id: trip_realm_id, trip_id, driver_id, car_id, customer_id, from_address_id, to_address_id, flight_id, ...basic_info} =
+                await new VNTrip(trip_token).findFullTripInfo(realm_id);
+
+            if (realm_id !== trip_realm_id) func.throwError('REALM NOT MATCH');
+
+            const promise_list = [
+
+                //DRIVER 0
+                driver_id ? (new VNDriver(null, driver_id).findInstanceDetailWithId(
+                    ['name', 'cell', 'license_num', 'email', 'img_path', 'cdate', 'udate', 'driver_token']))
+                    : {},
+
+                //CAR 1
+                car_id ? (new VNCar(null, car_id).findInstanceDetailWithId([
+                    'img_path', 'identifier', 'description', 'cdate', 'udate',
+                    'car_token', 'plate_num'
+                ])) : {},
+
+                //CUSTOMER 2
+                customer_id ? (new VNCustomer(null, customer_id).findInstanceDetailWithId(
+                    ['name', 'cell', 'email', 'img_path', 'customer_token', 'cdate', 'udate']
+                )) : {},
+
+                //FROM ADDRESS 3
+                from_address_id ? (new VNAddress(null, from_address_id).findInstanceDetailWithId(
+                    ['street_line_1', 'street_line_2', 'city', 'state', 'zip', 'addr_str', 'lat', 'lng']
+                )) : {},
+
+                //TO ADDRESS 4
+                to_address_id ? (new VNAddress(null, to_address_id).findInstanceDetailWithId(
+                    ['street_line_1', 'street_line_2', 'city', 'state', 'zip', 'addr_str', 'lat', 'lng']
+                )) : {},
+
+                //FLIGHT INFO 5
+                flight_id ? (new VNFlight(null, flight_id).findInstanceDetailWithId(
+                    ['flight_key', 'dep_date', 'arr_date', 'carrier_code',
+                        'flight_num', 'dep_airport', 'arr_airport',
+                        'dep_terminal', 'arr_terminal', 'flight_token', 'cdate', 'udate']
+                )) : {},
+
+                //ADDON LIST 6
+                VNAddon.findAddonListInTrip(trip_id, realm_id)
+            ];
+
+            const result_list = await Promise.all(promise_list);
+
+            const driver_info = result_list[0];
+            const car_info = result_list[1];
+            const customer_info = result_list[2];
+            const from_address_info = result_list[3];
+            const to_address_info = result_list[4];
+            const flight_info = result_list[5];
+
+            const {record_list: addon_list} = result_list[6];
+
+
+            return {
+                driver_info, car_info, customer_info,
+                from_address_info,
+                to_address_info, flight_info, addon_list,
+                basic_info
+            };
 
         } catch (e) {
             throw e;
@@ -213,7 +278,18 @@ class VNTripAction extends VNAction {
         }
     }
 
-    static
+    static async findMonthCountForTripInRealm(params, body, query) {
+        try {
+
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNTrip.findTripCountForMonth(query, realm_id);
+        } catch (e) {
+            throw e;
+        }
+    }
 
 }
 

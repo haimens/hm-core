@@ -53,6 +53,35 @@ router.post('/message/:realm_token', async (req, res, next) => {
 });
 
 
+router.post('/email/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNRealmAction.registerEmailResource(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
+router.post('/payment/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNRealmAction.registerPaymentResource(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
 //4
 router.get('/detail/:realm_token', async (req, res, next) => {
 

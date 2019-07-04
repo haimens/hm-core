@@ -60,6 +60,8 @@ class VNQuote extends ODInstance {
             conditions
                 .configComplexConditionKeys('vn_quote', ['from_address_id', 'to_address_id',
                     'pickup_time', 'pickup_time_local', 'amount'])
+                .configComplexConditionKey('vn_car_type', 'name', 'vehicle_type')
+                .configComplexConditionJoin('vn_quote', 'car_type_id', 'vn_car_type')
                 .configComplexConditionQueryItem('vn_quote', 'realm_id', realm_id)
                 .configStatusCondition(1, 'vn_quote')
                 .configComplexConditionQueryItem('vn_quote', 'quote_token', this.instance_token)
