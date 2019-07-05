@@ -97,7 +97,10 @@ class VNRealmAction extends VNAction {
 
             const realmObj = new VNRealm(realm_token);
 
-            const {message_resource_token, email_resource_token, payment_resource_token, address_token} = body;
+            const {
+                message_resource_token, email_resource_token,
+                payment_resource_token, address_token, tribute_rate_token
+            } = body;
             const update_pack = {};
             if (message_resource_token) {
                 const {vn_message_resource_id} = await new VNMessageResource(message_resource_token).findInstanceDetailWithToken();
@@ -121,8 +124,14 @@ class VNRealmAction extends VNAction {
                 update_pack['address_id'] = vn_address_id;
             }
 
+            if (tribute_rate_token) {
+                const {vn_tribute_rate_id} = await new VNTributeRate(tribute_rate_token).findInstanceDetailWithToken();
+                update_pack['tribute_rate_id'] = vn_tribute_rate_id;
+            }
+
             const response = await realmObj.modifyInstanceDetailWithToken(update_pack,
-                ['primary_message_resource_id', 'primary_email_resource_id', 'primary_payment_resource_id', 'address_id']
+                ['primary_message_resource_id', 'primary_email_resource_id',
+                    'primary_payment_resource_id', 'address_id', 'vn_tribute_rate_id']
             );
 
             return {response};
