@@ -312,30 +312,30 @@ class VNRealmAction extends VNAction {
 
             let message_resource_info = {};
             if (primary_message_resource_id) {
-                const {twilio_account_id, twilio_auth_token, twilio_from_num} =
+                const {twilio_account_id, twilio_auth_token, twilio_from_num, message_resource_token} =
                     await new VNMessageResource(null, primary_message_resource_id).findInstanceDetailWithId(
                         ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num', 'message_resource_token']);
 
-                message_resource_info = {twilio_account_id, twilio_auth_token, twilio_from_num};
+                message_resource_info = {twilio_account_id, twilio_auth_token, twilio_from_num, message_resource_token};
             }
 
             let payment_resource_info = {};
             if (primary_payment_resource_id) {
-                const {square_application_id, square_location_id, square_access_token} =
+                const {square_application_id, square_location_id, square_access_token, payment_resource_token} =
                     await new VNPaymentResource(null, primary_payment_resource_id).findInstanceDetailWithId(
                         ['square_application_id', 'square_location_id', 'square_access_token', 'payment_resource_token']);
 
-                payment_resource_info = {square_application_id, square_location_id, square_access_token};
+                payment_resource_info = {square_application_id, square_location_id, square_access_token, payment_resource_token};
             }
 
 
             let email_resource_info = {};
             if (primary_email_resource_id) {
-                const {sendgrid_api_key, sendgrid_from_email} =
+                const {sendgrid_api_key, sendgrid_from_email, email_resource_token} =
                     await new VNEmailResource(null, primary_email_resource_id).findInstanceDetailWithId(
                         ['sendgrid_api_key', 'sendgrid_from_email', 'email_resource_token']);
 
-                email_resource_info = {sendgrid_api_key, sendgrid_from_email};
+                email_resource_info = {sendgrid_api_key, sendgrid_from_email, email_resource_token};
             }
 
             const address_info = await new VNAddress(null, address_id).findInstanceDetailWithId(
