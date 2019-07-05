@@ -93,6 +93,58 @@ class VNAlert extends ODInstance {
         }
     }
 
+    static async findAlertListWithDriver(search_query = {}, realm_id, driver_id) {
+        try {
+            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
+
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys('vn_alert', ['record_time', 'status', 'type', 'cdate', 'udate', 'alert_token'])
+                .configComplexConditionKeys('vn_order', ['order_token', 'contact_name', 'contact_cell'])
+                .configComplexConditionKeys('vn_driver',
+                    [
+                        'driver_token',
+                        'name AS driver_name',
+                        'img_path AS driver_img_path', 'cell AS driver_cell',
+                        'email AS driver_email'
+                    ])
+                .configComplexConditionKeys('vn_customer',
+                    [
+                        'customer_token',
+                        'name AS customer_name',
+                        'img_path AS customer_img_path', 'cell AS customer_cell',
+                        'email AS customer_email'
+                    ])
+                .configComplexConditionKey('vn_alert_type', 'name', 'type_str')
+                .configComplexConditionKey('vn_alert_status', 'name', 'status_str')
+                .configComplexConditionKey('vn_trip', 'trip_token')
+                .configComplexConditionJoin('vn_alert', 'order_id', 'vn_order')
+                .configComplexConditionJoin('vn_alert', 'trip_id', 'vn_trip')
+                .configComplexConditionJoin('vn_alert', 'type', 'vn_alert_type')
+                .configComplexConditionJoin('vn_alert', 'status', 'vn_alert_status')
+                .configComplexConditionJoin('vn_trip', 'driver_id', 'vn_driver')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_alert')
+                .configStatusCondition(status, 'vn_alert')
+                .configComplexConditionQueryItem('vn_alert', 'realm_id', realm_id)
+                .configComplexConditionQueryItem('vn_trip', 'driver_id', driver_id)
+                .configKeywordCondition(['name', 'cell', 'email'], keywords, 'vn_driver')
+                .configKeywordCondition(['name', 'cell', 'email'], keywords, 'vn_customer')
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate', 'record_time'], 'vn_alert')
+                .configQueryLimit(start, 30);
+
+            const count = await this.findCountOfInstance('vn_alert', conditions);
+
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_alert', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+        } catch (e) {
+            throw e;
+        }
+    }
+
     static async findAlertListInTrip(trip_id, realm_id) {
         try {
 
@@ -108,7 +160,7 @@ class VNAlert extends ODInstance {
                 .configStatusCondition('all', 'vn_alert')
                 .configComplexConditionQueryItem('vn_alert', 'realm_id', realm_id)
                 .configQueryLimit(0, 10);
-            
+
             const record_list = await this.findInstanceListWithComplexCondition('vn_alert', conditions);
             return {record_list};
 

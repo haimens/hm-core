@@ -179,7 +179,6 @@ class VNOrderAction extends VNAction {
 
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
 
-
             const {code} = body;
 
             const {discount_id} = await new VNDiscount().findDiscountInfoWithKey(code, realm_id);
@@ -188,33 +187,69 @@ class VNOrderAction extends VNAction {
                 await new VNOrderDiscount().registerOrderDiscount(order_id, customer_id, realm_id, discount_id);
 
             return {order_discount_token};
+
         } catch (e) {
             throw e;
 
         }
     }
 
+    static async registerAddonInOrder(params, body, query) {
 
-    static async modifyOrderDiscount(params, body, query) {
         try {
-            const {realm_token, order_token, order_discount_token} = params;
+            const {realm_token, order_token} = params;
+
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
-            const {vn_order_id: order_id, realm_id: order_realm_id} =
-                await new VNOrder(order_token).findInstanceDetailWithToken(['realm_id']);
+
+            const {vn_order_id: order_id, realm_id: order_realm_id, customer_id} =
+                await new VNOrder(order_token).findInstanceDetailWithToken(['realm_id', 'customer_id']);
+
 
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
 
+            const {addon_token} = await new VNAddon().registerAddon(
+                body,
+            )
 
-            const orderDiscountObj = new VNOrderDiscount(order_discount_token);
-            const {order_id: auth_order_id, realm_id: discount_realm_id} =
-                await orderDiscountObj.findInstanceDetailWithToken([
-                    'order_id', 'realm_id'
-                ])
         } catch (e) {
             throw e;
         }
+
+
     }
+
+    static async modifyAddonInOrder(params, body, query) {
+
+    }
+
+
+    // static async modifyOrderDiscount(params, body, query) {
+    //     try {
+    //         const {realm_token, order_token, order_discount_token} = params;
+    //         const {realm_id} = await this.findRealmIdWithToken(realm_token);
+    //
+    //         const {vn_order_id: order_id, realm_id: order_realm_id} =
+    //             await new VNOrder(order_token).findInstanceDetailWithToken(['realm_id']);
+    //
+    //         if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
+    //
+    //
+    //         const orderDiscountObj = new VNOrderDiscount(order_discount_token);
+    //         const {order_id: auth_order_id, realm_id: discount_realm_id} =
+    //             await orderDiscountObj.findInstanceDetailWithToken([
+    //                 'order_id', 'realm_id'
+    //             ]);
+    //
+    //         if (order_id !== auth_order_id) func.throwError('ORDER_ID NOT MATCH');
+    //         if (realm_id !== discount_realm_id) func.throwError('REALM_ID NOT MATCH');
+    //
+    //         await orderDiscountObj.modifyInstanceDetailWithId(body, ['status']);
+    //         return {order_discount_token};
+    //     } catch (e) {
+    //         throw e;
+    //     }
+    // }
 
 
 }

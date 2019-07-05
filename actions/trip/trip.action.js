@@ -57,6 +57,43 @@ class VNTripAction extends VNAction {
         }
     }
 
+    static async modifyAddonInTrip(params, body, query) {
+        try {
+
+            const {realm_token, order_token, trip_token, addon_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {vn_order_id: order_id, realm_id: order_realm_id} =
+                await new VNOrder(order_token).findInstanceDetailWithToken(
+                    ['realm_id', 'customer_id']
+                );
+
+            if (realm_id !== order_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            const {vn_trip_id: trip_id, order_id: trip_order_id, realm_id: trip_realm_id} =
+                await new VNTrip(trip_token).findInstanceDetailWithToken(['order_id', 'realm_id']);
+
+            if (realm_id !== trip_realm_id) func.throwError('REALM_ID NOT MATCH');
+            if (order_id !== trip_order_id) func.throwError('ORDER_ID NOT MATCH');
+
+            const addonObj = new VNAddon(addon_token);
+            const {order_id: addon_order_id, realm_id: addon_realm_id, trip_id: addon_trip_id}
+                = await addonObj.findInstanceDetailWithToken(['realm_id', 'order_id', 'trip_id']);
+
+            if (order_id !== addon_order_id) func.throwError('ORDER_ID NOT MATCH');
+            if (!realm_id !== addon_realm_id) func.throwError('REALM_ID NOT MATCH');
+            if (!addon_trip_id !== trip_id) func.throwError('TRIP_ID NOT MATCH');
+
+            await addonObj.modifyInstanceDetailWithId(body, ['amount', 'note', 'status']);
+
+            return {addon_token};
+        } catch (e) {
+            throw e;
+        }
+    }
+
+
     static async findTripListInRealm(params, body, query) {
         try {
             const {realm_token} = params;
@@ -169,7 +206,7 @@ class VNTripAction extends VNAction {
         }
     }
 
-    static async registerTripAlert(params, body, query) {
+    static async registerTripAlerts(params, body, query) {
         try {
             const {realm_token, trip_token} = params;
 

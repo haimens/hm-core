@@ -21,6 +21,19 @@ router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
     }
 });
 
+
+router.get('/all/detail/driver/:realm_token/:driver_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNAlertAction.findAlertListWithDriver()
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 router.patch('/detail/:realm_token/:alert_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(

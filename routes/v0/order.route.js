@@ -51,15 +51,43 @@ router.get('/all/detail/customer/:realmt_token/:customer_token', async (req, res
 });
 
 
-router.get('/all/discount/:realm_token/:order_token', async (req, res, next) => {
+router.patch('/discount/:realm_token/:order_token/:order_discount_token', async (req, res, next) => {
     try {
-
         const resBody = func.configSuccess(
-            await VNOrderAction.find
-        )
+            await VNOrderAction.modifyOrderDiscountItem(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
     } catch (e) {
         next(e);
     }
 });
 
+router.post('/discount/:realm_token/:order_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNOrderAction.registerOrderDiscountInOrder(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
+router.post('/addon/:realm_token/:order_token', async (req, res, next) => {
+    try {
+
+        const resBody = func.configSuccess(
+            await VNOrderAction.registerOrderDiscountInOrder()
+        )
+    } catch (e) {
+        next(e);
+    }
+});
 module.exports = router;
