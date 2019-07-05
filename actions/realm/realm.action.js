@@ -306,7 +306,7 @@ class VNRealmAction extends VNAction {
                 ...basic_info
             } = await new VNRealm(realm_token).findInstanceDetailWithToken([
                 'primary_message_resource_id', 'primary_email_resource_id', 'primary_payment_resource_id',
-                'address_id',
+                'address_id', 'logo_path', 'icon_path',
                 'tribute_rate_id', 'company_name', 'company_title', 'realm_token', 'cdate', 'udate', 'status'
             ]);
 
@@ -325,7 +325,12 @@ class VNRealmAction extends VNAction {
                     await new VNPaymentResource(null, primary_payment_resource_id).findInstanceDetailWithId(
                         ['square_application_id', 'square_location_id', 'square_access_token', 'payment_resource_token']);
 
-                payment_resource_info = {square_application_id, square_location_id, square_access_token, payment_resource_token};
+                payment_resource_info = {
+                    square_application_id,
+                    square_location_id,
+                    square_access_token,
+                    payment_resource_token
+                };
             }
 
 
