@@ -20,7 +20,7 @@ class VNTributeAction extends VNAction {
 
     static async modifyTributeRate(params, body, query) {
         try {
-            const {tribute_rate_token} = body;
+            const {tribute_rate_token} = params;
 
             const tributeRateObj = new VNTributeRate(tribute_rate_token);
 
