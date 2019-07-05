@@ -208,6 +208,9 @@ class VNOrderAction extends VNAction {
 
             const orderDiscountObj = new VNOrderDiscount(order_discount_token);
             const {order_id: auth_order_id, realm_id: discount_realm_id} =
+                await orderDiscountObj.findInstanceDetailWithToken([
+                    'order_id', 'realm_id'
+                ])
         } catch (e) {
             throw e;
         }
