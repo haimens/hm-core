@@ -1,5 +1,7 @@
 const func = require('od-utility');
 const VNTributeRate = require('../../models/tribute/rate.class');
+
+const VNTribute = require('../../models/tribute/tribute.class');
 const VNAction = require('../action.model');
 
 
@@ -37,6 +39,13 @@ class VNTributeAction extends VNAction {
     static async findTributeRateList(params, body, query) {
         try {
             return await VNTributeRate.findAllTributeRate();
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findTributeListInRealm(params, body, query) {
+        try {
         } catch (e) {
             throw e;
         }

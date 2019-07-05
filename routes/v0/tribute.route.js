@@ -30,6 +30,17 @@ router.get('/all/rate', async (req, res, next) => {
     }
 });
 
+router.get('/all/detail/realm/:realm_token', async(req,res,next)=>{
+    try{
+        const resBody = func.configSuccess(
+            await VNTributeAction.fin
+        )
+    }catch (e) {
+        next(e);
+    }
+});
+
+
 router.patch('/rate/:tribute_rate_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(

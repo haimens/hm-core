@@ -18,6 +18,8 @@ const tripRoute = require('./trip.route');
 const orderRoute = require('./order.route');
 const alertRoute = require('./alert.route');
 
+const addressRoute = require('./address.route');
+
 
 router.use("/king", kingRoute);
 router.use("/driver", driverRoute);
@@ -33,6 +35,7 @@ router.use('/order', orderRoute);
 router.use('/alert', alertRoute);
 
 router.use('/trip', tripRoute);
+router.use('/address', addressRoute);
 
 router.use("/", async (req, res, next) => {
     try {

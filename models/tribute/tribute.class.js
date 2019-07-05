@@ -8,8 +8,13 @@ class VNTribute extends ODInstance {
         super('vn_tribute', 'tribute_token', tribute_token, tribute_id);
     }
 
-    async registerTribute(rate) {
 
+    static async findTributeListWithRealm(search_query = {}, realm_id) {
+        try {
+            
+        } catch (e) {
+            throw e;
+        }
     }
 
 }
