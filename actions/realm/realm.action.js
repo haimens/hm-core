@@ -314,7 +314,7 @@ class VNRealmAction extends VNAction {
             if (primary_message_resource_id) {
                 const {twilio_account_id, twilio_auth_token, twilio_from_num} =
                     await new VNMessageResource(null, primary_message_resource_id).findInstanceDetailWithId(
-                        ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num']);
+                        ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num', 'message_resource_token']);
 
                 message_resource_info = {twilio_account_id, twilio_auth_token, twilio_from_num};
             }
@@ -323,7 +323,7 @@ class VNRealmAction extends VNAction {
             if (primary_payment_resource_id) {
                 const {square_application_id, square_location_id, square_access_token} =
                     await new VNPaymentResource(null, primary_payment_resource_id).findInstanceDetailWithId(
-                        ['square_application_id', 'square_location_id', 'square_access_token']);
+                        ['square_application_id', 'square_location_id', 'square_access_token', 'payment_resource_token']);
 
                 payment_resource_info = {square_application_id, square_location_id, square_access_token};
             }
@@ -333,7 +333,7 @@ class VNRealmAction extends VNAction {
             if (primary_email_resource_id) {
                 const {sendgrid_api_key, sendgrid_from_email} =
                     await new VNEmailResource(null, primary_email_resource_id).findInstanceDetailWithId(
-                        ['sendgrid_api_key', 'sendgrid_from_email']);
+                        ['sendgrid_api_key', 'sendgrid_from_email', 'email_resource_token']);
 
                 email_resource_info = {sendgrid_api_key, sendgrid_from_email};
             }
@@ -343,9 +343,9 @@ class VNRealmAction extends VNAction {
             );
 
             const tribute_rate_info = await
-             new VNTributeRate(null, tribute_rate_id).findInstanceDetailWithId(
-                ['rate', 'tribute_rate_token']
-            );
+                new VNTributeRate(null, tribute_rate_id).findInstanceDetailWithId(
+                    ['rate', 'tribute_rate_token']
+                );
 
             return {
                 basic_info,

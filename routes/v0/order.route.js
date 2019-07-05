@@ -50,4 +50,16 @@ router.get('/all/detail/customer/:realmt_token/:customer_token', async (req, res
 
 });
 
+
+router.get('/all/discount/:realm_token/:order_token', async (req, res, next) => {
+    try {
+
+        const resBody = func.configSuccess(
+            await VNOrderAction.find
+        )
+    } catch (e) {
+        next(e);
+    }
+});
+
 module.exports = router;
