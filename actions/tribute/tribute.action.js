@@ -46,6 +46,12 @@ class VNTributeAction extends VNAction {
 
     static async findTributeListInRealm(params, body, query) {
         try {
+
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNTribute.findTributeListWithRealm(query, realm_id);
         } catch (e) {
             throw e;
         }

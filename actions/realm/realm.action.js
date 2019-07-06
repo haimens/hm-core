@@ -131,7 +131,7 @@ class VNRealmAction extends VNAction {
 
             const response = await realmObj.modifyInstanceDetailWithToken(update_pack,
                 ['primary_message_resource_id', 'primary_email_resource_id',
-                    'primary_payment_resource_id', 'address_id', 'vn_tribute_rate_id']
+                    'primary_payment_resource_id', 'address_id', 'tribute_rate_id']
             );
 
             return {response};
