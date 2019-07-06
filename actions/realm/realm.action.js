@@ -104,18 +104,18 @@ class VNRealmAction extends VNAction {
             const update_pack = {};
             if (message_resource_token) {
                 const {vn_message_resource_id} = await new VNMessageResource(message_resource_token).findInstanceDetailWithToken();
-                update_pack['primary_message_resource_id'] = vn_message_resource_id
+                update_pack['primary_message_resource_id'] = vn_message_resource_id;
             }
 
             if (email_resource_token) {
                 const {vn_email_resource_id} = await new VNEmailResource(email_resource_token).findInstanceDetailWithToken();
-                update_pack['primary_email_resource_id'] = vn_email_resource_id
+                update_pack['primary_email_resource_id'] = vn_email_resource_id;
             }
 
 
             if (payment_resource_token) {
                 const {vn_payment_resource_id} = await new VNPaymentResource(payment_resource_token).findInstanceDetailWithToken();
-                update_pack['primary_payment_resource_id'] = vn_payment_resource_id
+                update_pack['primary_payment_resource_id'] = vn_payment_resource_id;
             }
 
 

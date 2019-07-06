@@ -19,3 +19,5 @@ router.post('/detail', async (req, res, next) => {
         throw e;
     }
 });
+
+module.exports = VNAddressAction;
