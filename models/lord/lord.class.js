@@ -109,7 +109,7 @@ class VNLord extends ODInstance {
 
 
             conditions
-                .configComplexConditionKeys('vn_lord', ['name', 'cell', 'email', 'username'])
+                .configComplexConditionKeys('vn_lord', ['name', 'cell', 'email', 'username', 'img_path', 'lord_token'])
                 .configComplexConditionKey('vn_realm', 'company_name')
                 .configComplexConditionJoin('vn_lord', 'realm_id', 'vn_realm')
                 .configComplexConditionKey('vn_lord_status', 'name', 'status_str')
@@ -140,7 +140,7 @@ class VNLord extends ODInstance {
 
 
             conditions
-                .configComplexConditionKeys('vn_lord', ['name', 'cell', 'email', 'username'])
+                .configComplexConditionKeys('vn_lord', ['name', 'cell', 'email', 'username', 'img_path', 'lord_token'])
                 .configComplexConditionKey('vn_lord_status', 'name', 'status_str')
                 .configStatusJoin('vn_lord', 'vn_lord_status')
                 .configStatusCondition(status, 'vn_lord')
