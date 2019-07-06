@@ -31,7 +31,7 @@ class VNLord extends ODInstance {
         if (!lord_info) func.throwErrorWithMissingParam('lord_info');
 
 
-        const {name, cell, email, username} = lord_info;
+        const {name, cell, email, username, img_path} = lord_info;
 
         if (!name) func.throwErrorWithMissingParam('name');
         if (!cell) func.throwErrorWithMissingParam('cell');
@@ -47,6 +47,12 @@ class VNLord extends ODInstance {
             const {is_exist} = await lordApp.checkUsernameExist(username);
             if (is_exist) func.throwError('USERNAME HAS BEEN TAKEN', 402);
 
+
+            let avatar = img_path;
+            if (!img_path) {
+                const {image_path} = await lordApp.findRandomImageWithService('avatar');
+                avatar = image_path;
+            }
             const name_parts = name.split(' ');
             const first_name = name_parts[0], last_name = name_parts.pop();
 
@@ -63,6 +69,7 @@ class VNLord extends ODInstance {
                 cdate: 'now()',
                 udate: 'now()',
                 realm_id,
+                img_path: avatar,
                 status: 1
             });
 

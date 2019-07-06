@@ -15,7 +15,7 @@ class VNTribute extends ODInstance {
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
 
         try {
-            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
+            const {date_from, date_to, from_key, to_key, start, order_key, order_direction, status} = search_query;
             const conditions = new ODCondition();
 
 
@@ -54,11 +54,11 @@ class VNTribute extends ODInstance {
 
     static async findTributeSumWithRealm(realm_id) {
         try {
+
         } catch (e) {
-            throw e;
+
         }
     }
-
 }
 
 module.exports = VNTribute;
