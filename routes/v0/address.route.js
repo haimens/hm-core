@@ -9,6 +9,7 @@ const VNAddressAction = require('../../actions/address/address.action');
 
 router.post('/detail', async (req, res, next) => {
     try {
+
         const resBody = func.configSuccess(
             await VNAddressAction.registerAddress(
                 req.params, req.body, req.query
@@ -20,4 +21,4 @@ router.post('/detail', async (req, res, next) => {
     }
 });
 
-module.exports = VNAddressAction;
+module.exports = router;
