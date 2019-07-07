@@ -109,15 +109,16 @@ class VNInvoice extends ODInstance {
     }
 
 
-    static async findInvoiceSumWithRealm(realm_id) {
+    static async findInvoiceSumWithRealm(search_query = {}, realm_id) {
         try {
 
+            const {status} = search_query;
             const query = `
                 SELECT SUM(vn_coin.amount) AS sum 
                 FROM vn_invoice 
                 LEFT JOIN vn_coin ON vn_invoice.coin_id = vn_coin.id 
                 WHERE vn_invoice.realm_id = ${realm_id} 
-                AND vn_tribute.status = 1 
+                AND vn_tribute.status = ${status || '2'}
             `;
 
             const [{sum}] = await this.performQuery(query);
