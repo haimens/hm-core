@@ -80,8 +80,20 @@ class VNTribute extends ODInstance {
     static async findTributeSumWithRealm(realm_id) {
         try {
 
-        } catch (e) {
+            const query = `
+                SELECT SUM(vn_coin.amount) AS sum 
+                FROM vn_tribute 
+                LEFT JOIN vn_coin ON vn_tribute.coin_id = vn_coin.id 
+                WHERE vn_tribute.realm_id = ${realm_id} 
+                AND vn_tribute.status = 1 
+            `;
 
+            const [{sum}] = await this.performQuery(query);
+
+            return parseInt(sum) || 0;
+
+        } catch (e) {
+            throw e;
         }
     }
 }

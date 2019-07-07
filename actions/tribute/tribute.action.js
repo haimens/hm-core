@@ -66,11 +66,23 @@ class VNTributeAction extends VNAction {
 
             const {note, coin_token} = body;
 
-            const {vn_coin_id: coin_id} =  await new VNCoin(coin_token).findInstanceDetailWithToken();
+            const {vn_coin_id: coin_id} = await new VNCoin(coin_token).findInstanceDetailWithToken();
 
             const {tribute_token} = await new VNTribute().registerTributeDetail({note}, realm_id, coin_id);
 
             return {tribute_token};
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findTributeSumWithRealm(params, body, query) {
+        try {
+
+            const {realm_token} = params;
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNTribute.findTributeSumWithRealm(realm_id);
         } catch (e) {
             throw e;
         }
