@@ -61,7 +61,7 @@ class VNTribute extends ODInstance {
                 )
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_tribute')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_tribute')
-                .configStatusCondition(status, 30)
+                .configStatusCondition(status, 'vn_tribute')
                 .configQueryLimit(start, 30);
 
             const count = await this.findCountOfInstance('vn_tribute', conditions);
