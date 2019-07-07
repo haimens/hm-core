@@ -58,4 +58,19 @@ router.patch('/rate/:tribute_rate_token', async (req, res, next) => {
 });
 
 
+router.post('/detail/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNTributeAction.registerTributeDetail(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
 module.exports = router;

@@ -1,7 +1,8 @@
 const ODInstance = require('../instance.model');
-const func = require('od-utility');
+
 
 const ODCondition = require('../condition.model');
+const func = require('od-utility');
 
 
 class VNTribute extends ODInstance {
@@ -17,7 +18,6 @@ class VNTribute extends ODInstance {
         const {note} = info;
 
         try {
-
             this.instance_id = await this.insertInstance(
                 {
                     realm_id, note: note || '', coin_id, cdate: 'now()', udate: 'now()',

@@ -2,6 +2,7 @@ const func = require('od-utility');
 const VNTributeRate = require('../../models/tribute/rate.class');
 
 const VNTribute = require('../../models/tribute/tribute.class');
+const VNCoin = require('../../models/coin/coin.class');
 const VNAction = require('../action.model');
 
 
@@ -65,9 +66,11 @@ class VNTributeAction extends VNAction {
 
             const {note, coin_token} = body;
 
+            const {vn_coin_id: coin_id} =  await new VNCoin(coin_token).findInstanceDetailWithToken();
 
+            const {tribute_token} = await new VNTribute().registerTributeDetail({note}, realm_id, coin_id);
 
-            return await
+            return {tribute_token};
         } catch (e) {
             throw e;
         }

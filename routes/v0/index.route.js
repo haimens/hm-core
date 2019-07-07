@@ -19,6 +19,7 @@ const orderRoute = require('./order.route');
 const alertRoute = require('./alert.route');
 
 const addressRoute = require('./address.route');
+const coinRoute = require('./coin.route');
 
 
 router.use("/king", kingRoute);
@@ -36,6 +37,7 @@ router.use('/alert', alertRoute);
 
 router.use('/trip', tripRoute);
 router.use('/address', addressRoute);
+router.use('/coin', coinRoute);
 
 router.use("/", async (req, res, next) => {
     try {
