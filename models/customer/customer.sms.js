@@ -97,6 +97,37 @@ class VNCustomerSMS extends ODInstance {
             throw e;
         }
     }
+
+    static async findSMSListWithCustomer(search_query = {}, customer_id) {
+        try {
+            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys('vn_customer_sms',
+                    ['tar_cell', 'sys_cell', 'cdate', 'udate', 'message', 'type', 'is_read']
+                )
+                .configComplexConditionKeys('vn_customer', ['name', 'username', 'email', 'img_path', 'customer_token'])
+                .configComplexConditionJoin('vn_customer_sms', 'customer_id', 'vn_customer')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_customer_sms')
+                .configKeywordCondition(['message'], keywords, 'vn_customer_sms')
+                .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_customer')
+                .configComplexConditionQueryItem('vn_customer_sms', 'customer_id', customer_id)
+                .configStatusCondition(1, 'vn_customer_sms')
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_customer_sms')
+                .configQueryLimit(start, 30);
+
+            const count = await this.findCountOfInstance('vn_customer_sms', conditions);
+
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_customer_sms', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
 module.exports = VNCustomerSMS;

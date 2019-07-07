@@ -114,6 +114,21 @@ class VNSMSAction extends VNAction {
         }
     }
 
+    static async findSMSHistoryListWithCustomer(params, body, query) {
+        try {
+            const {customer_token} = params;
+            if (!customer_token) func.throwErrorWithMissingParam('customer_token');
+
+            const {vn_customer_id: customer_id} = await new VNCustomer(customer_token).findInstanceDetailWithToken();
+
+
+            return await VNCustomerSMS.findSMSListWithCustomer(query, customer_id);
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
 }
 
 module.exports = VNSMSAction;

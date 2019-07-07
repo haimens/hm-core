@@ -94,4 +94,9 @@ router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
 });
 
 
+router.get('/all/detail/customer/:customer_token', async(req,res,next)=>{
+
+});
+
+
 module.exports = router;

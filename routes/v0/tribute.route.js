@@ -30,12 +30,15 @@ router.get('/all/rate', async (req, res, next) => {
     }
 });
 
-router.get('/all/detail/realm/:realm_token', async(req,res,next)=>{
-    try{
+router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
+    try {
         const resBody = func.configSuccess(
-            await VNTributeAction.fin
-        )
-    }catch (e) {
+            await VNTributeAction.findTributeListInRealm(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
         next(e);
     }
 });
