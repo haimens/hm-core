@@ -56,6 +56,22 @@ class VNTributeAction extends VNAction {
             throw e;
         }
     }
+
+    static async registerTributeDetail(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {note, coin_token} = body;
+
+
+
+            return await
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
 module.exports = VNTributeAction;

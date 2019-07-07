@@ -10,6 +10,31 @@ class VNTribute extends ODInstance {
         super('vn_tribute', 'tribute_token', tribute_token, tribute_id);
     }
 
+    async registerTributeDetail(info = {}, realm_id, coin_id, order_id) {
+        if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+        if (!coin_id) func.throwErrorWithMissingParam('coin_id');
+
+        const {note} = info;
+
+        try {
+
+            this.instance_id = await this.insertInstance(
+                {
+                    realm_id, note: note || '', coin_id, cdate: 'now()', udate: 'now()',
+                    order_id: order_id || 0,
+                    status: 0
+                }
+            );
+
+            this.instance_token = `TBR-${func.encodeUnify(this.instance_id, 'asda')}`;
+
+            await this.updateInstance({tribute_token: this.instance_token, status: 1});
+
+            return {tribute_token: this.instance_token, tribute_id: this.instance_id};
+        } catch (e) {
+            throw e;
+        }
+    }
 
     static async findTributeListWithRealm(search_query = {}, realm_id) {
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
