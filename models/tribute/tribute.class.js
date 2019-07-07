@@ -47,7 +47,7 @@ class VNTribute extends ODInstance {
             conditions
                 .configComplexConditionKeys(
                     'vn_tribute',
-                    ['tribute_token', 'cdate', 'udate', 'status']
+                    ['tribute_token', 'cdate', 'udate', 'status', 'note']
                 )
                 .configComplexConditionKey(
                     'vn_coin',
