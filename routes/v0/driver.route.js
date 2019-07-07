@@ -19,4 +19,31 @@ router.get('/check/token/:driver_key', async (req, res, next) => {
 });
 
 
+router.get('/location/:realm_token/:driver_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNDriverAction.findDriverLocation(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+router.post('/location/:realm_token/:driver_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNDriverAction.registerDriverLocation(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
 module.exports = router;

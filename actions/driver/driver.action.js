@@ -2,6 +2,8 @@ const func = require('od-utility');
 const VNAction = require('../action.model');
 const VNDriver = require('../../models/driver/driver.class');
 const VNRealm = require('../../models/realm/realm.class');
+
+const VNDriverLocation = require('../../models/driver/driver.location');
 const redis = require('od-utility-redis');
 
 class VNDriverAction extends VNAction {
@@ -61,6 +63,45 @@ class VNDriverAction extends VNAction {
             return response;
         } catch (err) {
             throw err;
+        }
+    }
+
+    static async findDriverLocation(params, body, query) {
+        try {
+            const {realm_token, driver_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {vn_driver_id: driver_id, realm_id: driver_realm_id} =
+                await new VNDriver(driver_token).findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            return await VNDriverLocation.findDriverLocationWithDriver(driver_id, driver_realm_id);
+
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async registerDriverLocation(params, body, query) {
+        try {
+            const {realm_token, driver_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {vn_driver_id: driver_id, realm_id: driver_realm_id} =
+                await new VNDriver(driver_token).findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            const driverLocationObj = new VNDriverLocation();
+
+            return await driverLocationObj.registerDriverLocation(body, realm_id, driver_id);
+
+        } catch (e) {
+            throw e;
         }
     }
 }
