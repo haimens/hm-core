@@ -90,6 +90,20 @@ class VNLordAction extends VNAction {
         }
 
     }
+
+    static async modifyLordDetail(params, body, query) {
+        try {
+            const {lord_token} = params;
+
+            const lordObj = new VNLord(lord_token);
+
+            await lordObj.modifyInstanceDetailWithToken(body, ['name', 'cell', 'email', 'img_path', 'status']);
+
+            return {lord_token};
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
 module.exports = VNLordAction;

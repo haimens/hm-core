@@ -41,6 +41,20 @@ router.get('/all/detail/system', async (req, res, next) => {
 });
 
 
+router.post('/detail/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNInvoiceAction.registerInvoice(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
 router.get('/sum/realm/:realm_token', async (req, res, next) => {
 
     try {
