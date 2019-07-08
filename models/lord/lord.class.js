@@ -118,6 +118,7 @@ class VNLord extends ODInstance {
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_lord')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_lord')
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_lord')
+                .configQueryLimit(start, 30)
                 .configKeywordCondition(['company_name', 'company_title'], keywords, 'vn_realm');
 
             const count = await this.findCountOfInstance('vn_lord', conditions);
@@ -147,6 +148,7 @@ class VNLord extends ODInstance {
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_lord')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_lord')
                 .configComplexConditionQueryItem('vn_lord', 'realm_id', realm_id)
+                .configQueryLimit(start, 30)
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_lord');
 
             const count = await this.findCountOfInstance('vn_lord', conditions);

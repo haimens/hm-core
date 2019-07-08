@@ -84,8 +84,11 @@ router.post('/addon/:realm_token/:order_token', async (req, res, next) => {
     try {
 
         const resBody = func.configSuccess(
-            await VNOrderAction.registerOrderDiscountInOrder()
-        )
+            await VNOrderAction.registerAddonInOrder(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
     } catch (e) {
         next(e);
     }
