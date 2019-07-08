@@ -18,6 +18,7 @@ const VNCustomer = require('../../models/customer/customer.class');
 
 const VNAddress = require('../../models/address/address.class');
 
+
 const func = require('od-utility');
 
 
@@ -145,6 +146,8 @@ class VNTripAction extends VNAction {
             throw e;
         }
     }
+
+
 
     static async findTripDetail(params, body, query) {
         try {

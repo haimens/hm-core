@@ -3,6 +3,8 @@ const VNAlert = require('../../models/alert/alert.class');
 
 const VNDriver = require('../../models/driver/driver.class');
 
+const VNTrip = require('../../models/trip/trip.class');
+
 const func = require('od-utility');
 
 
@@ -53,6 +55,26 @@ class VNAlertAction extends VNAction {
             if (realm_id !== alert_realm_id) func.throwError('REALM_ID NOT MATCH');
 
             await alertObj.modifyInstanceDetailWithId(body, ['status']);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findAlertListInTrip(params, body, query) {
+        try {
+            const {realm_token, trip_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+            if (!trip_token) func.throwErrorWithMissingParam('trip_token');
+
+
+            const tripObj = new VNTrip(trip_token);
+
+            const {vn_trip_id: trip_id, realm_id: trip_realm_id} = await tripObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== trip_realm_id) func.throwError('REAM_ID NOT MATCH');
+
+            return await VNAlert.findAlertListInTrip(trip_id, realm_id);
         } catch (e) {
             throw e;
         }

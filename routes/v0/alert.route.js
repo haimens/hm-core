@@ -25,9 +25,25 @@ router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
 router.get('/all/detail/driver/:realm_token/:driver_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
-            await VNAlertAction.findAlertListWithDriver()
+            await VNAlertAction.findAlertListWithDriver(
+                req.params, req.body, req.query
+            )
         );
 
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+router.get('/all/detail/trip/:realm_token/:trip_token', async (req, res, next) => {
+    try {
+
+        const resBody = func.configSuccess(
+            await VNAlertAction.findAlertListInTrip(
+                req.params, req.body, req.query
+            )
+        );
         res.json(resBody);
     } catch (e) {
         next(e);

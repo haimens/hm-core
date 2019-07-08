@@ -130,6 +130,26 @@ class VNInvoice extends ODInstance {
         }
     }
 
+    static async findInvoiceSumInSystem(search_query = {}, realm_id) {
+        try {
+
+            const {status} = search_query;
+            const query = `
+                SELECT SUM(vn_coin.amount) AS sum 
+                FROM vn_invoice 
+                LEFT JOIN vn_coin ON vn_invoice.coin_id = vn_coin.id 
+                WHERE vn_invoice.status = ${status || '2'}
+            `;
+            
+            const [{sum}] = await this.performQuery(query);
+
+            return parseInt(sum) || 0;
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
 }
 
 module.exports = VNInvoice;
