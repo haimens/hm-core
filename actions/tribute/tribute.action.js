@@ -81,8 +81,9 @@ class VNTributeAction extends VNAction {
 
             const {realm_token} = params;
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
+            const sum = await VNTribute.findTributeSumWithRealm(realm_id);
 
-            return await VNTribute.findTributeSumWithRealm(realm_id);
+            return {sum};
         } catch (e) {
             throw e;
         }

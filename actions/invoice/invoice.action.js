@@ -51,8 +51,9 @@ class VNInvoiceAction extends VNAction {
 
             const {realm_token} = params;
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
+            const sum = await VNInvoice.findInvoiceSumWithRealm(query, realm_id);
 
-            return await VNInvoice.findInvoiceSumWithRealm(query, realm_id);
+            return {sum};
         } catch (e) {
             throw e;
         }
