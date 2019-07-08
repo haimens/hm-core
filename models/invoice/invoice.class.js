@@ -118,7 +118,7 @@ class VNInvoice extends ODInstance {
                 FROM vn_invoice 
                 LEFT JOIN vn_coin ON vn_invoice.coin_id = vn_coin.id 
                 WHERE vn_invoice.realm_id = ${realm_id} 
-                AND vn_tribute.status = ${status || '2'}
+                AND vn_invoice.status = ${status || '2'}
             `;
 
             const [{sum}] = await this.performQuery(query);
