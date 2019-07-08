@@ -106,7 +106,7 @@ class VNTripAction extends VNAction {
         }
     }
 
-    static async findTripWithDriver(params, body, query) {
+    static async findTripListWithDriver(params, body, query) {
         try {
             const {realm_token, driver_token} = params;
 
@@ -120,6 +120,26 @@ class VNTripAction extends VNAction {
             if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
 
             return await VNTrip.findTripListWithDriver(query, realm_id, driver_id);
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findActiveTripListWithDriver(params, body, query) {
+        try {
+            const {realm_token, driver_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {vn_driver_id: driver_id, realm_id: driver_realm_id} =
+                await new VNDriver(driver_token).findInstanceDetailWithToken(
+                    ['realm_id']
+                );
+
+            if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            return await VNTrip.findActiveTripListWithDriver(query, realm_id, driver_id);
 
         } catch (e) {
             throw e;

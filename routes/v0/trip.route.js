@@ -67,7 +67,7 @@ router.patch('/addon/:realm_token/:order_token/:trip_token/:addon_token', async 
 router.get('/all/detail/driver/:realm_token/:driver_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
-            await VNTripAction.findTripWithDriver(req.params, req.body, req.query)
+            await VNTripAction.findTripListWithDriver(req.params, req.body, req.query)
         );
         res.json(resBody);
 
@@ -75,6 +75,20 @@ router.get('/all/detail/driver/:realm_token/:driver_token', async (req, res, nex
         next(e);
     }
 });
+
+
+router.get('/all/active/driver/:realm_token/:driver_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNTripAction.findActiveTripListWithDriver(req.params, req.body, req.query)
+        );
+        res.json(resBody);
+
+    } catch (e) {
+        next(e);
+    }
+});
+
 
 router.post('/addon/:realm_token/:order_token/:trip_token', async (req, res, next) => {
     try {
