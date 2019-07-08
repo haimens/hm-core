@@ -2,6 +2,9 @@ const func = require('od-utility');
 const VNAction = require('../action.model');
 const VNCustomer = require('../../models/customer/customer.class');
 const VNRealm = require('../../models/realm/realm.class');
+
+const VNAddress = require('../../models/address/address.class');
+
 const redis = require('od-utility-redis');
 
 class VNCustomerAction extends VNAction {
@@ -25,9 +28,9 @@ class VNCustomerAction extends VNAction {
 
             const customerObj = new VNCustomer();
 
-            const {customer_token, username} = await customerObj.registerCustomer(customer_info, realm_id, address_id);
+            const {customer_token, username, user_token, instance_token} = await customerObj.registerCustomer(customer_info, realm_id, address_id);
 
-            return {customer_token, username};
+            return {customer_token, username, user_token, instance_token};
         } catch (e) {
             throw e;
         }
@@ -70,6 +73,85 @@ class VNCustomerAction extends VNAction {
         } catch (err) {
             throw err;
         }
+    }
+
+
+    static async findCustomerListWithRealm(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNCustomer.findCustomerListInRealm(query, realm_id);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findCustomerDetail(params, body, query) {
+        try {
+
+            const {realm_token, customer_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await new VNCustomer(customer_token).findCustomerDetail(realm_id);
+
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async modifyCustomerDetail(params, body, query) {
+        try {
+            const {realm_token, customer_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const customerObj = new VNCustomer(customer_token);
+
+            const {realm_id: customer_realm_id} = await customerObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== customer_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            await customerObj.modifyInstanceDetailWithToken(body, ['name', 'cell', 'email', 'img_path']);
+
+            return {customer_token};
+        } catch (e) {
+            throw e;
+        }
+
+    }
+
+    static async modifyCustomerInfo(params, body, query) {
+        try {
+            const {realm_token, customer_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const customerObj = new VNCustomer(customer_token);
+
+            const {address_token} = body;
+
+            const update_pack = {};
+
+            if (address_token) {
+                const {vn_address_id: address_id} = await new VNAddress(address_token).findInstanceDetailWithToken();
+                update_pack['address_id'] = address_id;
+            }
+
+            const {realm_id: customer_realm_id} = await customerObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== customer_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            await customerObj.modifyInstanceDetailWithToken(update_pack, ['address_id']);
+
+            return {customer_token};
+        } catch (e) {
+            throw e;
+        }
+
     }
 }
 

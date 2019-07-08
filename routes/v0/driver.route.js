@@ -46,4 +46,34 @@ router.post('/location/:realm_token/:driver_token', async (req, res, next) => {
 });
 
 
+router.get('/all/location/realm/:realm_token', async (req, res, next) => {
+
+    try {
+
+        const resBody = func.configSuccess(
+            await VNDriverAction.findDriverLocationListInRealm(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+
+});
+
+router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNDriverAction.findDriverListInRealm(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+
+});
+
 module.exports = router;

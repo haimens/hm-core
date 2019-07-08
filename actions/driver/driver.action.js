@@ -104,6 +104,30 @@ class VNDriverAction extends VNAction {
             throw e;
         }
     }
+
+    static async findDriverListInRealm(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNDriver.findDriverListInRealm(query, realm_id);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findDriverLocationListInRealm(params, body, query) {
+        try {
+            const {realm_token} = params;
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNDriver.findDriverLocationListInRealm(query, realm_id);
+
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
 module.exports = VNDriverAction;

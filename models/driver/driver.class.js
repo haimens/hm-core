@@ -107,7 +107,7 @@ class VNDriver extends ODInstance {
         }
     }
 
-    static async findDriverListInRealm(realm_id, search_query) {
+    static async findDriverListInRealm(search_query = {}, realm_id) {
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
         try {
             const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
@@ -130,6 +130,63 @@ class VNDriver extends ODInstance {
 
             return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
         } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findDriverLocationListInRealm(search_query = {}, realm_id) {
+        if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+
+        try {
+
+            const {keywords, start, status} = search_query;
+            const query = `
+                SELECT vn_driver.name, vn_driver.cell, vn_driver.email, 
+                vn_driver.img_path, vn_driver.license_num, vn_driver.username, 
+                vn_driver.cdate, vn_driver.udate, 
+                location_info.lat, location_info.lng, location.info.udate AS location_udate,
+                FROM vn_driver 
+                LEFT JOIN (
+                    SELECT vn_location.lat, vn_location.lng, vn_location.cdate, vn_location.udate, vn_location.driver_id
+                    FROM vn_location 
+                    WHERE vn_location.realm_id = ${realm_id}  
+                    AND vn_location.status = 1 
+                    ORDER BY vn_location.udate DESC 
+                    GROUP BY vn_location.driver_id
+                ) AS location_info 
+                WHERE vn_driver.realm_id = ${realm_id} 
+                AND vn_driver.status = ${status || '2'}
+                AND (
+                    vn_driver.name LIKE '%${keywords}%' OR
+                    vn_driver.cell LIKE '%${keywords}%' OR
+                    vn_driver.email LIKE '%${keywords}%' OR
+                    vn_driver.license_num LIKE '%${keywords}%'
+                    ) 
+                 LIMIT ${start || 0}, 30
+            `;
+
+            const [{count}] = await this.performQuery(
+                `
+                SELECT COUNT(vn_driver.id) AS count 
+                FROM vn_driver 
+                WHERE vn_driver.realm_id = ${realm_id} 
+                AND vn_driver.status = ${status || '2'}
+                AND (
+                    vn_driver.name LIKE '%${keywords}%' OR
+                    vn_driver.cell LIKE '%${keywords}%' OR
+                    vn_driver.email LIKE '%${keywords}%' OR
+                    vn_driver.license_num LIKE '%${keywords}%'
+                    ) 
+                    `
+            );
+
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.performQuery(query);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+        } catch
+            (e) {
             throw e;
         }
     }

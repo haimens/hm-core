@@ -36,7 +36,7 @@ class VNCar extends ODInstance {
         }
     }
 
-    static async findCarListInRealm(realm_id, search_query = {}) {
+    static async findCarListInRealm(search_query = {}, realm_id) {
 
         try {
 

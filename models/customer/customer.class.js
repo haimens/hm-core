@@ -65,7 +65,7 @@ class VNCustomer extends ODInstance {
                 count++;
             }
 
-            const {instance_token: customer_key} = await customerApp.signupUserInstance(
+            const {instance_token: customer_key, user_token} = await customerApp.signupUserInstance(
                 username, username, email, first_name, last_name, cell
             );
 
@@ -87,7 +87,12 @@ class VNCustomer extends ODInstance {
 
             await this.updateInstance({customer_token: this.instance_token, username, status: 2});
 
-            return {customer_id: this.instance_id, customer_token: this.instance_token, username, name};
+            return {
+                customer_id: this.instance_id,
+                customer_token: this.instance_token,
+                username, name,
+                user_token, instance_token: customer_key
+            };
         } catch (err) {
             throw err;
         }
@@ -112,18 +117,54 @@ class VNCustomer extends ODInstance {
         }
     }
 
-
-    static async findCustomerListInRealm(realm_id, search_query) {
+    async findCustomerDetail(realm_id) {
         try {
-            if (!realm_id) func.throwErrorWithMissingParam('realm_id');
 
+            if (!this.instance_id) {
+                if (!this.instance_token) func.throwErrorWithMissingParam('instance_token');
+                const {vn_customer_id} = await this.findInstanceDetailWithToken();
+                this.instance_id = vn_customer_id;
+            }
+
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys(
+                    'vn_customer',
+                    ['name', 'cell', 'email', 'username', 'customer_token', 'status', 'img_path', 'cdate', 'udate'])
+                .configComplexConditionKeys(
+                    'vn_address',
+                    ['addr_str', 'street_line_1', 'street_line_2', 'city', 'state', 'zip', 'address_token', 'lat', 'lng']
+                )
+                .configComplexConditionKey('vn_customer_status', 'name', 'status_str')
+                .configComplexConditionJoin('vn_customer', 'address_id', 'vn_address')
+                .configStatusJoin('vn_customer', 'vn_customer_status')
+                .configComplexConditionQueryItem('vn_customer', 'id', this.instance_id)
+                .configComplexConditionQueryItem('vn_customer', 'realm_id', realm_id)
+                .configStatusCondition('all', 'vn_customer')
+                .configQueryLimit(0, 1);
+
+            const [record] = await VNCustomer.findInstanceListWithComplexCondition('vn_customer', conditions);
+
+            return record;
+
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+
+    static async findCustomerListInRealm(search_query = {}, realm_id) {
+        if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+        try {
 
             const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
             const conditions = new ODCondition();
 
 
             conditions
-                .configComplexConditionKeys('vn_customer', ['name', 'cell', 'email', 'img_path', 'username'])
+                .configComplexConditionKeys('vn_customer', ['name', 'cell', 'email', 'img_path', 'username', 'customer_token'])
                 .configComplexConditionKeys('vn_address', ['addr_str', 'lat', 'lng'])
                 .configComplexConditionJoin('vn_customer', 'address_id', 'vn_address')
                 .configComplexConditionQueryItem('vn_customer', 'realm_id', realm_id)
@@ -168,7 +209,8 @@ class VNCustomer extends ODInstance {
             throw e;
         }
     }
+
+
 }
 
-module
-    .exports = VNCustomer;
+module.exports = VNCustomer;
