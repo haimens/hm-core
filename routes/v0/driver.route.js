@@ -18,6 +18,19 @@ router.get('/check/token/:driver_key', async (req, res, next) => {
     }
 });
 
+router.post('/detail/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNDriverAction.registerDriver(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 
 router.get('/location/:realm_token/:driver_token', async (req, res, next) => {
     try {

@@ -37,6 +37,8 @@ class VNTributeAction extends VNAction {
         }
     }
 
+
+
     static async findTributeRateList(params, body, query) {
         try {
             return await VNTributeRate.findAllTributeRate();
