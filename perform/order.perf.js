@@ -16,7 +16,7 @@ const VNOrderAction = require('../actions/order/order.action');
                 pickup_time_local
             }, {});
 
-        const {quote_token} = result.quote_list[0];
+        const {quote_token} = result.quote_list[1];
 
         const order_result = await VNOrderAction.registerOrder(
             {realm_token: 'REALM-3ec72d3a5be4deb52333787fceefec19'},
@@ -29,8 +29,8 @@ const VNOrderAction = require('../actions/order/order.action');
     } catch (e) {
         console.log(e);
     }
-})('3629 Lynoak Dr, Chino Hills', 'LAX International Airport', '2019-07-03 14:56:00',
-    '2019-07-03 22:56:00', 'CTM-a4e701c3aaf638e840b9baea8f0dcd1e');
+})('4183 Chino Hills Pkwy, Chino Hills, CA 91709', 'LAX International Airport', '2019-07-11 12:44:00',
+    '2019-07-11 20:44:00', 'CTM-a4e701c3aaf638e840b9baea8f0dcd1e');
 
 //
 // (async (order_token, realm_token) => {

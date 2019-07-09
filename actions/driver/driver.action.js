@@ -4,6 +4,9 @@ const VNDriver = require('../../models/driver/driver.class');
 const VNRealm = require('../../models/realm/realm.class');
 
 const VNDriverLocation = require('../../models/driver/driver.location');
+const VNDriverCar = require('../../models/driver/driver.car');
+
+const VNCar = require('../../models/car/car.class');
 const redis = require('od-utility-redis');
 
 class VNDriverAction extends VNAction {
@@ -117,6 +120,29 @@ class VNDriverAction extends VNAction {
         }
     }
 
+    static async modifyDriverDetail(params, body, query) {
+        try {
+            const {realm_token, driver_token} = params;
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const driverObj = new VNDriver(driver_token);
+            const {realm_id: driver_realm_id} =
+                await driverObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+
+            await driverObj.modifyInstanceDetailWithId(body,
+                ['name', 'cell', 'email', 'identifier', 'license_num', 'img_path', 'status']
+            );
+
+            return {driver_token};
+        } catch (e) {
+            throw e;
+        }
+    }
+
+
     static async findDriverLocationListInRealm(params, body, query) {
         try {
             const {realm_token} = params;
@@ -124,6 +150,77 @@ class VNDriverAction extends VNAction {
 
             return await VNDriver.findDriverLocationListInRealm(query, realm_id);
 
+        } catch (e) {
+            throw e;
+        }
+    }
+
+
+    static async registerDriverCar(params, body, query) {
+        try {
+
+
+            const {realm_token, driver_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {vn_driver_id: driver_id, realm_id: driver_realm_id} =
+                await new VNDriver(driver_token).findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            const {car_token} = body;
+
+            const carObj = new VNCar(car_token);
+
+            const {vn_car_id: car_id, realm_id: car_realm_id} =
+                await carObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== car_realm_id) func.throwErrorWithMissingParam('REALM_ID NOT MATCH');
+
+
+            const driverCarObj = new VNDriverCar();
+
+            const {driver_car_token} = await driverCarObj.registerDriverCar(realm_id, car_id, driver_id);
+
+            return {driver_car_token};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findDriverCarListWithDriver(params, body, query) {
+        try {
+            const {realm_token, driver_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {vn_driver_id: driver_id, realm_id: driver_realm_id} =
+                await new VNDriver(driver_token).findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            return await VNDriverCar.findDriverCarRecordWithDriver(query, realm_id, driver_id);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async modifyDriverCar(params, body, query) {
+        try {
+            const {realm_token, driver_car_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const driverCarObj = new VNDriverCar(driver_car_token);
+            const {realm_id: driver_realm_id} =
+                await driverCarObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            await driverCarObj.modifyInstanceDetailWithId(body, ['status']);
+            return {driver_car_token};
         } catch (e) {
             throw e;
         }

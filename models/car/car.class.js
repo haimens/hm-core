@@ -45,7 +45,7 @@ class VNCar extends ODInstance {
             const conditions = new ODCondition();
 
             conditions
-                .configComplexConditionKeys('vn_car', ['plate_num', 'description', 'identifier', 'img_path'])
+                .configComplexConditionKeys('vn_car', ['plate_num', 'description', 'identifier', 'img_path', 'car_token'])
                 .configComplexConditionQueryItem('vn_car', 'status', 1)
                 .configComplexConditionQueryItem('vn_car', 'realm_id', realm_id)
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_car')

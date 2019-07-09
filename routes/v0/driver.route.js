@@ -76,4 +76,64 @@ router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
 
 });
 
+router.patch('/detail/:realm_token/:driver_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNDriverAction.modifyDriverDetail(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
+router.post('/car/:realm_token/:driver_token', async (req, res, next) => {
+
+    try {
+
+        const resBody = func.configSuccess(
+            await VNDriverAction.registerDriverCar(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+router.get('/all/car/:realm_token/:driver_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNDriverAction.findDriverCarListWithDriver(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
+
+    } catch (e) {
+        next(e);
+    }
+});
+
+router.patch('/car/:realm_token/:driver_car_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNDriverAction.modifyDriverCar(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 module.exports = router;

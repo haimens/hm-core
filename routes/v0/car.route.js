@@ -54,5 +54,46 @@ router.patch('/detail/:realm_token/:car_token', async (req, res, next) => {
     }
 });
 
+router.post('/driver/:realm_token/:car_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNCarAction.registerDriverCar(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+router.get('/all/driver/:realm_token/:car_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNCarAction.modifyDriverCar(
+                req.params, req.body, rq.query
+            )
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+router.patch('/driver/:realm_token/:driver_car_token', async (req, res, next) => {
+    try {
+
+        const resBody = func.configSuccess(
+            await VNCarAction.modifyDriverCar(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 
 module.exports = router;
