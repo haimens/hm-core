@@ -18,12 +18,12 @@ class VNCoin extends ODInstance {
 
         try {
             this.instance_id = await this.insertInstance(
-                {amount, cdate: 'npw()', udate: 'now()', status: 0}
+                {amount, cdate: 'now()', udate: 'now()', status: 0}
             );
 
             this.instance_token = `COIN-${func.encodeUnify(this.instance_id, 'coin')}`;
 
-            await this.updateInstance({coin_token: this.instance_token});
+            await this.updateInstance({coin_token: this.instance_token, status: 1});
 
             return {coin_token: this.instance_token, coin_id: this.instance_id};
         } catch (e) {

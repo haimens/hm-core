@@ -143,6 +143,7 @@ class VNInvoice extends ODInstance {
 
             const [{sum}] = await this.performQuery(query);
 
+
             return parseInt(sum) || 0;
 
         } catch (e) {
