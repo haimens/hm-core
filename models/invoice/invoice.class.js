@@ -130,7 +130,7 @@ class VNInvoice extends ODInstance {
         }
     }
 
-    static async findInvoiceSumInSystem(search_query = {}, realm_id) {
+    static async findInvoiceSumInSystem(search_query = {}) {
         try {
 
             const {status} = search_query;
@@ -140,7 +140,7 @@ class VNInvoice extends ODInstance {
                 LEFT JOIN vn_coin ON vn_invoice.coin_id = vn_coin.id 
                 WHERE vn_invoice.status = ${status || '2'}
             `;
-            
+
             const [{sum}] = await this.performQuery(query);
 
             return parseInt(sum) || 0;
