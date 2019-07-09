@@ -42,7 +42,7 @@ router.use('/coin', coinRoute);
 
 router.use('/invoice', invoiceRoute);
 
-router.car('/car', carRoute);
+router.use('/car', carRoute);
 
 router.use("/", async (req, res, next) => {
     try {
