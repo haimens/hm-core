@@ -62,9 +62,7 @@ class VNInvoiceAction extends VNAction {
 
     static async findInvoiceSumInSystem(params, body, query) {
         try {
-
-
-            const sum = await VNInvoice.findInvoiceSumInSystem(query, realm_id);
+            const sum = await VNInvoice.findInvoiceSumInSystem(query);
 
             return {sum};
         } catch (e) {
