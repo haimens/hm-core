@@ -226,31 +226,35 @@ class VNTrip extends ODInstance {
                     ['customer_token', 'name AS customer_name', 'cell AS customer_cell', 'email AS customer_email']
                 )
                 .configComplexConditionKeys(
-                    'vn_trip',
+                    'trip_info',
                     [
                         'trip_token', 'cdate', 'udate', 'pickup_time',
                         'start_time', 'eta_time', 'cob_time', 'cad_time', 'arrive_time',
                         'flight_str'
                     ]
                 )
+                .configComplexConditionKeys('from_addr', ['lat AS from_lat', 'lng AS from_lng', 'addr_str AS from_addr_str'])
+                .configComplexConditionKeys('to_addr', ['lat AS to_lat', 'lng AS to_lng', 'addr_str AS to_addr_str'])
                 .configComplexConditionKey('vn_trip_status', 'name', 'status_str')
-                .configComplexConditionJoin('vn_trip', 'order_id', 'vn_order')
-                .configComplexConditionJoin('vn_trip', 'customer_id', 'vn_customer')
-                .configStatusJoin('vn_trip', 'vn_trip_status')
+                .configComplexConditionJoin('trip_info', 'order_id', 'vn_order')
+                .configComplexConditionJoin('trip_info', 'customer_id', 'vn_customer')
+                .configSimpleJoin('LEFT JOIN vn_address AS from_addr ON trip_info.from_address_id = from_addr.id ')
+                .configSimpleJoin('LEFT JOIN vn_address AS to_addr ON trip_info.to_address_id = to_addr.id ')
+                .configStatusJoin('trip_info', 'vn_trip_status')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_trip')
                 .configKeywordCondition(['contact_name', 'contact_cell'], keywords, 'vn_order')
-                .configStatusCondition(status, 'vn_trip')
-                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_trip')
-                .configComplexConditionQueryItem('vn_trip', 'realm_id', realm_id)
-                .configComplexConditionQueryItem('vn_trip', 'driver_id', driver_id)
+                .configStatusCondition(status, 'trip_info')
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'trip_info')
+                .configComplexConditionQueryItem('trip_info', 'realm_id', realm_id)
+                .configComplexConditionQueryItem('trip_info', 'driver_id', driver_id)
                 .configQueryLimit(start, 30);
 
 
-            const count = await this.findCountOfInstance('vn_trip', conditions);
+            const count = await this.findCountOfInstance('vn_trip AS trip_info', conditions, 'trip_info');
 
             if (count === 0) return {record_list: [], count, end: 0};
 
-            const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
+            const record_list = await this.findInstanceListWithComplexCondition('vn_trip AS trip_info', conditions);
 
             return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
 
@@ -270,6 +274,7 @@ class VNTrip extends ODInstance {
 
             const conditions = new ODCondition();
 
+
             conditions
                 .configComplexConditionKeys(
                     'vn_order',
@@ -280,33 +285,37 @@ class VNTrip extends ODInstance {
                     ['customer_token', 'name AS customer_name', 'cell AS customer_cell', 'email AS customer_email']
                 )
                 .configComplexConditionKeys(
-                    'vn_trip',
+                    'trip_info',
                     [
                         'trip_token', 'cdate', 'udate', 'pickup_time',
                         'start_time', 'eta_time', 'cob_time', 'cad_time', 'arrive_time',
                         'flight_str'
                     ]
                 )
+                .configComplexConditionKeys('from_addr', ['lat AS from_lat', 'lng AS from_lng', 'addr_str AS from_addr_str'])
+                .configComplexConditionKeys('to_addr', ['lat AS to_lat', 'lng AS to_lng', 'addr_str AS to_addr_str'])
                 .configComplexConditionKey('vn_trip_status', 'name', 'status_str')
-                .configComplexConditionJoin('vn_trip', 'order_id', 'vn_order')
-                .configComplexConditionJoin('vn_trip', 'customer_id', 'vn_customer')
-                .configStatusJoin('vn_trip', 'vn_trip_status')
+                .configComplexConditionJoin('trip_info', 'order_id', 'vn_order')
+                .configComplexConditionJoin('trip_info', 'customer_id', 'vn_customer')
+                .configSimpleJoin('LEFT JOIN vn_address AS from_addr ON trip_info.from_address_id = from_addr.id ')
+                .configSimpleJoin('LEFT JOIN vn_address AS to_addr ON trip_info.to_address_id = to_addr.id ')
+                .configStatusJoin('trip_info', 'vn_trip_status')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_trip')
                 .configKeywordCondition(['contact_name', 'contact_cell'], keywords, 'vn_order')
                 .configSimpleCondition(
-                    '(vn_trip.status = 3 OR vn_trip.status = 4 OR vn_trip.status = 5 OR vn_trip.status = 6)'
+                    '(trip_info.status = 3 OR trip_info.status = 4 OR trip_info.status = 5 OR trip_info.status = 6)'
                 )
-                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_trip')
-                .configComplexConditionQueryItem('vn_trip', 'realm_id', realm_id)
-                .configComplexConditionQueryItem('vn_trip', 'driver_id', driver_id)
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'trip_info')
+                .configComplexConditionQueryItem('trip_info', 'realm_id', realm_id)
+                .configComplexConditionQueryItem('trip_info', 'driver_id', driver_id)
                 .configQueryLimit(start, 30);
 
 
-            const count = await this.findCountOfInstance('vn_trip', conditions);
+            const count = await this.findCountOfInstance('vn_trip AS trip_info', conditions, 'trip_info');
 
             if (count === 0) return {record_list: [], count, end: 0};
 
-            const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
+            const record_list = await this.findInstanceListWithComplexCondition('vn_trip AS trip_info', conditions);
 
             return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
 

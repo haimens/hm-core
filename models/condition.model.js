@@ -71,6 +71,15 @@ class ODCondition {
         }
     }
 
+    configSimpleJoin(join_query) {
+        try {
+            if (join_query) this.joins.push(join_query);
+            return this;
+        } catch (e) {
+            throw e;
+        }
+    }
+
     configComplexConditionJoins(org_table, joins, join_method = 'LEFT JOIN') {
         try {
             joins.forEach(join => this.joins.push(`${join_method} ${join.tar} ON ${join.tar}.id = ${org_table}.${join.key}`));

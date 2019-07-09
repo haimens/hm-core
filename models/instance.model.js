@@ -160,11 +160,11 @@ class ODInstance {
         }
     }
 
-    static async findCountOfInstance(table_name, condition = new ODCondition()) {
+    static async findCountOfInstance(table_name, condition = new ODCondition(), identifier) {
         if (!table_name) func.throwErrorWithMissingParam('table_name');
 
         try {
-            const query = `SELECT COUNT(${table_name}.id) AS count 
+            const query = `SELECT COUNT(${identifier ? identifier : table_name}.id) AS count 
                 FROM ${table_name} 
                 ${condition.configConditionQuery()} 
                 LIMIT 0, 1
