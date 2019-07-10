@@ -28,7 +28,16 @@ class VNFlight extends ODInstance {
         try {
             this.flight_key = flight_key;
             const pre_saved = await this.findFlightInfoWithKey();
-            if (pre_saved) return pre_saved;
+            if (pre_saved) {
+                const {vn_flight_id} = pre_saved;
+                this.instance_id = vn_flight_id;
+                await this.updateInstance({
+                    flight_key, dep_date, arr_date, carrier_code,
+                    flight_num, dep_airport, arr_airport, dep_terminal, arr_terminal
+                });
+                return pre_saved
+            }
+            ;
 
             this.instance_id = await this.insertInstance(
                 {
@@ -58,6 +67,7 @@ class VNFlight extends ODInstance {
                 .configComplexConditionKeys(
                     'vn_flight',
                     [
+                        'id AS vn_flight_id',
                         'flight_key', 'dep_date', 'arr_date', 'carrier_code',
                         'flight_num', 'dep_airport', 'arr_airport',
                         'dep_terminal', 'arr_terminal', 'flight_token', 'cdate', 'udate'

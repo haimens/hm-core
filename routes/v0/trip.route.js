@@ -48,6 +48,20 @@ router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
     }
 });
 
+router.get('/all/active/realm/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNTripAction.findActiveTripListInRealm(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 
 router.patch('/addon/:realm_token/:order_token/:trip_token/:addon_token', async (req, res, next) => {
     try {

@@ -95,6 +95,19 @@ class VNTripAction extends VNAction {
         }
     }
 
+
+    static async findActiveTripListInRealm(params, body, query) {
+        try {
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            return await VNTrip.findActiveTripListInRealm(query, realm_id);
+        } catch (e) {
+            throw e;
+        }
+    }
+
     static async findTripListWithDriver(params, body, query) {
         try {
             const {realm_token, driver_token} = params;
@@ -186,7 +199,7 @@ class VNTripAction extends VNAction {
                 VNAddon.findAddonListInTrip(trip_id, realm_id),
 
                 //ALERT LIST 7
-                VNAlert.findAlertListInRealm(trip_id, realm_id)
+                VNAlert.findAlertListInTrip(trip_id, realm_id)
             ];
 
             const result_list = await Promise.all(promise_list);

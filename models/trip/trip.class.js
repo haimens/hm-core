@@ -154,6 +154,58 @@ class VNTrip extends ODInstance {
         }
     }
 
+    static async findActiveTripListInRealm(search_query = {}, realm_id) {
+        if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+
+        try {
+            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction} = search_query;
+
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys(
+                    'vn_order',
+                    ['order_token', 'contact_name', 'contact_cell', 'type']
+                )
+                .configComplexConditionKeys(
+                    'vn_customer',
+                    ['customer_token', 'name AS customer_name', 'cell AS customer_cell', 'email AS customer_email']
+                )
+                .configComplexConditionKeys(
+                    'vn_trip',
+                    [
+                        'trip_token', 'cdate', 'udate', 'pickup_time', 'pickup_time_local',
+                        'start_time', 'eta_time', 'cob_time', 'cad_time', 'arrive_time',
+                        'flight_str', 'is_paid'
+                    ]
+                )
+                .configComplexConditionKey('vn_trip_status', 'name', 'status_str')
+                .configComplexConditionJoin('vn_trip', 'order_id', 'vn_order')
+                .configComplexConditionJoin('vn_trip', 'customer_id', 'vn_customer')
+                .configStatusJoin('vn_trip', 'vn_trip_status')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_trip')
+                .configKeywordCondition(['contact_name', 'contact_cell'], keywords, 'vn_order')
+                .configSimpleCondition(
+                    '(trip_info.status = 3 OR trip_info.status = 4 OR trip_info.status = 5 OR trip_info.status = 6)'
+                )
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_trip')
+                .configComplexConditionQueryItem('vn_trip', 'realm_id', realm_id)
+                .configQueryLimit(start, 30);
+
+
+            const count = await this.findCountOfInstance('vn_trip', conditions);
+
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
 
     static async findTripListInOrder(realm_id, order_id) {
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');

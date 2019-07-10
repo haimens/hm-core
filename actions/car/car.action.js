@@ -135,7 +135,7 @@ class VNCarAction extends VNAction {
         }
     }
 
-    static async findDriverCarListWithDriver(params, body, query) {
+    static async findDriverCarListWithCar(params, body, query) {
         try {
             const {realm_token, car_token} = params;
 

@@ -84,8 +84,8 @@ router.post('/driver/:realm_token/:car_token', async (req, res, next) => {
 router.get('/all/driver/:realm_token/:car_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
-            await VNCarAction.modifyDriverCar(
-                req.params, req.body, rq.query
+            await VNCarAction.findDriverCarListWithCar(
+                req.params, req.body, req.query
             )
         );
 
