@@ -17,7 +17,7 @@ router.post('/detail', async (req, res, next) => {
         );
         res.json(resBody);
     } catch (e) {
-        throw e;
+        next(e);
     }
 });
 

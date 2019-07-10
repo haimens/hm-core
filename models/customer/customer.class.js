@@ -196,9 +196,9 @@ class VNCustomer extends ODInstance {
                 .configComplexConditionKeys('vn_customer', ['id AS customer_id', 'realm_id'])
                 .configComplexConditionQueryItem('vn_customer', 'cell', cell)
                 .configComplexOrder('udate', 'DESC', ['udate'], 'vn_customer')
-                .configQueryLimit(0, 1)
                 .configStatusCondition(2, 'vn_customer')
-                .configStatusCondition(2, 'vn_realm');
+                .configStatusCondition(2, 'vn_realm')
+                .configQueryLimit(0, 1);
 
 
             const [record] = await this.findInstanceListWithComplexCondition('vn_customer', conditions);

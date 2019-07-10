@@ -44,7 +44,7 @@ class VNDriverLocation extends ODInstance {
             conditions
                 .configComplexConditionKeys(
                     'vn_driver_location',
-                    ['lat', 'lng', 'cdate', 'udate', 'driver_location_token']
+                    ['lat', 'lng', 'cdate', 'udate']
                 )
                 .configComplexConditionQueryItem(
                     'vn_driver_location',
@@ -54,7 +54,7 @@ class VNDriverLocation extends ODInstance {
                     'vn_driver_location',
                     'realm_id', realm_id
                 )
-                .configStatusCondition(status, 'vn_driver_location')
+                .configStatusCondition(1, 'vn_driver_location')
                 .configComplexOrder('cdate', 'DESC', ['cdate'], 'vn_driver_location')
                 .configQueryLimit(0, 1);
 

@@ -32,6 +32,15 @@ class ODCondition {
         }
     }
 
+    configComplexSimpleKey(key_query) {
+        try {
+            if (key_query) this.keys.push(key_query);
+            return this;
+        } catch (e) {
+            throw e;
+        }
+    }
+
     configComplexConditionConcatKeys(keys, identifier, spacer) {
         if (!keys) func.throwErrorWithMissingParam('keys');
 

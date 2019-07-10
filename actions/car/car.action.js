@@ -50,6 +50,28 @@ class VNCarAction extends VNAction {
         }
     }
 
+    static async findCarDetail(params, body, query) {
+        try {
+            const {realm_token, car_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+
+            const carObj = new VNCar(car_token);
+            const {realm_id: car_realm_id} = await carObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== car_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            const basic_info = await carObj.findInstanceDetailWithId(
+                ['plate_num', 'description', 'identifier', 'img_path', 'status', 'car_token']
+            );
+
+            return {basic_info};
+        } catch (e) {
+            throw e;
+        }
+    }
+
     static async findCarListInRealm(params, body, query) {
         try {
             const {realm_token} = params;

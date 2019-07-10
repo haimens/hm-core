@@ -194,30 +194,30 @@ class VNOrderAction extends VNAction {
         }
     }
 
-    static async registerAddonInOrder(params, body, query) {
-
-        try {
-            const {realm_token, order_token} = params;
-
-            const {realm_id} = await this.findRealmIdWithToken(realm_token);
-
-
-            const {vn_order_id: order_id, realm_id: order_realm_id, customer_id} =
-                await new VNOrder(order_token).findInstanceDetailWithToken(['realm_id', 'customer_id']);
-
-
-            if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
-
-            const {addon_token} = await new VNAddon().registerAddon(
-                body,
-            )
-
-        } catch (e) {
-            throw e;
-        }
-
-
-    }
+    // static async registerAddonInOrder(params, body, query) {
+    //
+    //     try {
+    //         const {realm_token, order_token} = params;
+    //
+    //         const {realm_id} = await this.findRealmIdWithToken(realm_token);
+    //
+    //
+    //         const {vn_order_id: order_id, realm_id: order_realm_id, customer_id} =
+    //             await new VNOrder(order_token).findInstanceDetailWithToken(['realm_id', 'customer_id']);
+    //
+    //
+    //         if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
+    //
+    //         const {addon_token} = await new VNAddon().registerAddon(
+    //             body,
+    //         )
+    //
+    //     } catch (e) {
+    //         throw e;
+    //     }
+    //
+    //
+    // }
 
     static async modifyAddonInOrder(params, body, query) {
 

@@ -40,7 +40,7 @@ class VNDriverCar extends ODInstance {
                 .configComplexConditionKeys('vn_driver_car', ['driver_car_token', 'cdate', 'udate'])
                 .configComplexConditionKeys('vn_car', ['plate_num', 'description', 'identifier', 'img_path', 'car_token'])
                 .configComplexConditionJoin('vn_driver_car', 'car_id', 'vn_car')
-                .configStatusCondition(status, conditions)
+                .configStatusCondition(status, 'vn_driver_car')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_driver_car')
                 .configComplexConditionQueryItem('vn_driver_car', 'realm_id', realm_id)
                 .configComplexConditionQueryItem('vn_driver_car', 'driver_id', driver_id)

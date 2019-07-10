@@ -114,7 +114,8 @@ class VNDriver extends ODInstance {
             const conditions = new ODCondition();
 
             conditions
-                .configComplexConditionKeys('vn_driver', ['name', 'cell', 'email', 'img_path', 'license_num', 'username'])
+                .configComplexConditionKeys('vn_driver',
+                    ['name', 'cell', 'email', 'identifier', 'img_path', 'license_num', 'username', 'status', 'driver_token'])
                 .configComplexConditionQueryItem('vn_driver', 'realm_id', realm_id)
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_driver')
                 .configStatusCondition(status, 'vn_driver')

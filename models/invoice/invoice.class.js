@@ -112,7 +112,17 @@ class VNInvoice extends ODInstance {
     static async findInvoiceSumWithRealm(search_query = {}, realm_id) {
         try {
 
-            const {status} = search_query;
+            const {status, date_from, date_to, from_key, to_key} = search_query;
+
+
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexSimpleKey('SUM(vn_coin.amount) AS sum ')
+                .configComplexConditionJoin('vn_invoice', 'coin_id', )
+                .configStatusCondition(status, 'vn_invoice')
+                .configComplexConditionQueryItem('vn_invoice', 'realm_id', realm_id)
+
             const query = `
                 SELECT SUM(vn_coin.amount) AS sum 
                 FROM vn_invoice 

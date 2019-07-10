@@ -49,7 +49,7 @@ router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
 });
 
 
-router.get('/detail/:customer_token', async (req, res, next) => {
+router.get('/detail/:realm_token/:customer_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
             await VNCustomerAction.findCustomerDetail(

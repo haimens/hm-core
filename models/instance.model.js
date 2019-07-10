@@ -177,6 +177,7 @@ class ODInstance {
         }
     }
 
+
     static async findInstanceListWithComplexCondition(table_name, condition) {
         try {
             if (!table_name) func.throwErrorWithMissingParam('table_name');

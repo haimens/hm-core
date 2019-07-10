@@ -15,7 +15,7 @@ class VNAddressAction extends VNAction {
 
             const {address_str} = body;
             if (!address_str) func.throwErrorWithMissingParam('address_str');
-            
+
             const address_info = await VNGoogleMap.findFormattedAddress(address_str);
             const {address_token} = await new VNAddress().registerAddress(address_info);
 

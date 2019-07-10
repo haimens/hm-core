@@ -101,7 +101,30 @@ class VNDriverAction extends VNAction {
 
             const driverLocationObj = new VNDriverLocation();
 
-            return await driverLocationObj.registerDriverLocation(body, realm_id, driver_id);
+            const {driver_location_token} = await driverLocationObj.registerDriverLocation(body, realm_id, driver_id);
+            return {driver_location_token};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async findDriverDetail(params, body, query) {
+        try {
+            const {realm_token, driver_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {vn_driver_id: driver_id, realm_id: driver_realm_id, ...basic_info} =
+                await new VNDriver(driver_token).findInstanceDetailWithToken(['realm_id',
+                    'name', 'cell', 'email', 'identifier', 'img_path', 'license_num', 'username', 'status']);
+
+            if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            const location_info = await VNDriverLocation.findDriverLocationWithDriver(driver_id, realm_id);
+
+
+            return {basic_info, location_info};
 
         } catch (e) {
             throw e;

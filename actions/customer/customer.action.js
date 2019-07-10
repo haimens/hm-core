@@ -21,8 +21,9 @@ class VNCustomerAction extends VNAction {
 
             let address_id = 0;
             if (address_info) {
-                const addressObj = new VNAddress();
-                const {address_id: customer_addr_id} = await addressObj.registerAddress(address_info);
+                const {address_token} = address_info;
+                const addressObj = new VNAddress(address_token);
+                const {vn_address_id: customer_addr_id} = await addressObj.findInstanceDetailWithToken();
                 address_id = customer_addr_id;
             }
 
@@ -95,7 +96,13 @@ class VNCustomerAction extends VNAction {
 
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
-            return await new VNCustomer(customer_token).findCustomerDetail(realm_id);
+            const customerObj = new VNCustomer(customer_token);
+
+            const {realm_id: customer_realm_id} = await customerObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== customer_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            return await customerObj.findCustomerDetail(realm_id);
 
 
         } catch (e) {
