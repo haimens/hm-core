@@ -4,7 +4,7 @@ const router = express.Router();
 const func = require('od-utility');
 
 
-
+const VNWageAction = require('../../actions/wage/wage.action');
 router.post('/detail/:realm_token/:driver_token', async (req, res, next) => {
 
     try {
