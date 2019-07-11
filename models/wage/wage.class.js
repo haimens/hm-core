@@ -12,7 +12,7 @@ class VNWage extends ODInstance {
     async registerWage(info = {}, realm_id, driver_id, coin_id, order_id) {
         const {note, type} = info;
 
-        if (!note) func.throwErrorWithMissingParam('note');
+
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
         if (!type) func.throwErrorWithMissingParam('type');
         if (!driver_id) func.throwErrorWithMissingParam('driver_id');
@@ -20,7 +20,10 @@ class VNWage extends ODInstance {
         try {
 
             this.instance_id = await this.insertInstance(
-                {note, type, realm_id, driver_id, coin_id, cdate: 'now()', udate: 'now()', status: 0}
+                {
+                    note: note || '', type, realm_id, driver_id, coin_id,
+                    cdate: 'now()', udate: 'now()', status: 0
+                }
             );
 
             this.instance_token = `WAG-${func.encodeUnify(this.instance_id, 'wag')}`;
@@ -48,7 +51,7 @@ class VNWage extends ODInstance {
                 .configComplexConditionKey('vn_order', 'order_token')
                 .configComplexConditionKeys('vn_driver', ['driver_token', 'name', 'img_path', 'cell', 'email'])
                 .configComplexConditionJoins(
-                    'vn_driver',
+                    'vn_wage',
                     [
                         {key: 'coin_id', tar: 'vn_coin'},
                         {key: 'order_id', tar: 'vn_order'},
@@ -89,7 +92,7 @@ class VNWage extends ODInstance {
                 .configComplexConditionKey('vn_coin', 'amount')
                 .configComplexConditionKey('vn_order', 'order_token')
                 .configComplexConditionJoins(
-                    'vn_driver',
+                    'vn_wage',
                     [
                         {key: 'coin_id', tar: 'vn_coin'},
                         {key: 'order_id', tar: 'vn_order'},

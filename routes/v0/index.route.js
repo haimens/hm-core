@@ -23,6 +23,9 @@ const coinRoute = require('./coin.route');
 const invoiceRoute = require('./invoice.route');
 const carRoute = require('./car.route');
 
+const wageRoute = require('./wage.route');
+const salaryRoute = require('./salary.route');
+
 router.use("/king", kingRoute);
 router.use("/driver", driverRoute);
 router.use("/customer", customerRoute);
@@ -43,6 +46,10 @@ router.use('/coin', coinRoute);
 router.use('/invoice', invoiceRoute);
 
 router.use('/car', carRoute);
+
+router.use('/wage', wageRoute);
+router.use('/salary', salaryRoute);
+
 
 router.use("/", async (req, res, next) => {
     try {

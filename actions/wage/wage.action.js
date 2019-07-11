@@ -5,12 +5,14 @@ const func = require('od-utility');
 const VNWage = require('../../models/wage/wage.class');
 const VNCoin = require('../../models/coin/coin.class');
 
+const VNDriver = require('../../models/driver/driver.class');
+
 class VNWageAction extends VNAction {
 
     static async registerWage(params, body, query) {
         try {
 
-            const {realm_token,driver_token} = params;
+            const {realm_token, driver_token} = params;
 
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 

@@ -1,3 +1,5 @@
+const func = require('od-utility');
+
 class ODCondition {
     constructor(keys, joins, conditions, orders, limit, group) {
         this.keys = keys || [];

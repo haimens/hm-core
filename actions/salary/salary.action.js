@@ -4,6 +4,10 @@ const func = require('od-utility');
 
 const VNSalary = require('../../models/salary/salary.class');
 
+const VNDriver = require('../../models/driver/driver.class');
+
+const VNCoin = require('../../models/coin/coin.class');
+
 
 class VNSalaryAction extends VNAction {
 

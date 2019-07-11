@@ -43,12 +43,12 @@ class VNSalary extends ODInstance {
                 .configComplexConditionKey('vn_coin', 'amount')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_salary')
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_driver')
-                .configComplexOrder(order_key, order_direction, 'vn_salary')
-                .configStatusCondition(status)
+                .configComplexOrder(order_key, order_direction, ['cdate','udate'],'vn_salary')
+                .configStatusCondition(status, 'vn_salary')
                 .configComplexConditionJoins('vn_salary',
                     [
                         {key: 'coin_id', tar: 'vn_coin'},
-                        {key: 'driver_id', tar: 'driver_id'}
+                        {key: 'driver_id', tar: 'vn_driver'}
                     ]
                 )
                 .configComplexConditionQueryItem('vn_salary', 'realm_id', realm_id)
@@ -78,12 +78,12 @@ class VNSalary extends ODInstance {
                 .configComplexConditionKey('vn_coin', 'amount')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_salary')
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_driver')
-                .configComplexOrder(order_key, order_direction, 'vn_salary')
-                .configStatusCondition(status)
+                .configComplexOrder(order_key, order_direction, ['cdate','udate'],'vn_salary')
+                .configStatusCondition(status, 'vn_salary')
                 .configComplexConditionJoins('vn_salary',
                     [
                         {key: 'coin_id', tar: 'vn_coin'},
-                        {key: 'driver_id', tar: 'driver_id'}
+                        {key: 'driver_id', tar: 'vn_driver'}
                     ]
                 )
                 .configComplexConditionQueryItem('vn_salary', 'driver_id', driver_id)
