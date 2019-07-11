@@ -44,7 +44,7 @@ class VNDriverAction extends VNAction {
             const driverObj = new VNDriver(driver_token);
             const {driver_status, realm_id, vn_driver_id, ...driver_info} = await driverObj.findInstanceDetailWithToken([
                 'name', 'cell', 'email', 'username', 'cdate', 'udate',
-                'driver_key', 'status AS driver_status', 'driver_token', 'realm_id', 'img_path'
+                'driver_key', 'status AS driver_status', 'driver_token', 'realm_id', 'img_path', 'rate'
             ]);
 
             if (driver_status !== 2) return {isValid: false, message: 'DRIVER SUSPENDED'};
@@ -117,7 +117,7 @@ class VNDriverAction extends VNAction {
 
             const {vn_driver_id: driver_id, realm_id: driver_realm_id, ...basic_info} =
                 await new VNDriver(driver_token).findInstanceDetailWithToken(['realm_id',
-                    'name', 'cell', 'email', 'identifier', 'img_path', 'license_num', 'username', 'status']);
+                    'name', 'cell', 'email', 'identifier', 'img_path', 'license_num', 'username', 'status', 'rate']);
 
             if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
 
@@ -149,8 +149,8 @@ class VNDriverAction extends VNAction {
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
             const driverObj = new VNDriver(driver_token);
-            const {realm_id: driver_realm_id} =
-                await driverObj.findInstanceDetailWithToken(['realm_id']);
+            const {realm_id: driver_realm_id, driver_key} =
+                await driverObj.findInstanceDetailWithToken(['realm_id', 'driver_key']);
 
             if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
 
@@ -159,6 +159,7 @@ class VNDriverAction extends VNAction {
                 ['name', 'cell', 'email', 'identifier', 'license_num', 'img_path', 'status']
             );
 
+            await redis.setAsync('DRIVER-CHECK', driver_key, null); //FUCK UP REDIS RECORD
             return {driver_token};
         } catch (e) {
             throw e;

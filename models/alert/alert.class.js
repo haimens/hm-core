@@ -159,6 +159,7 @@ class VNAlert extends ODInstance {
                 .configComplexConditionJoin('vn_alert', 'status', 'vn_alert_status')
                 .configStatusCondition('all', 'vn_alert')
                 .configComplexConditionQueryItem('vn_alert', 'realm_id', realm_id)
+                .configComplexConditionQueryItem('vn_alert', 'trip_id', trip_id)
                 .configQueryLimit(0, 10);
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_alert', conditions);

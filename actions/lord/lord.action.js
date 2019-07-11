@@ -93,13 +93,19 @@ class VNLordAction extends VNAction {
 
     static async modifyLordDetail(params, body, query) {
         try {
+
             const {lord_token} = params;
 
             const lordObj = new VNLord(lord_token);
 
+            const {lord_key} = await lordObj.findInstanceDetailWithToken(['lord_key']);
+
             await lordObj.modifyInstanceDetailWithToken(body, ['name', 'cell', 'email', 'img_path', 'status']);
 
+            await redis.setAsync('LORD-CHECK', lord_key, null);
+
             return {lord_token};
+
         } catch (e) {
             throw e;
         }

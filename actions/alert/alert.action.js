@@ -54,7 +54,9 @@ class VNAlertAction extends VNAction {
 
             if (realm_id !== alert_realm_id) func.throwError('REALM_ID NOT MATCH');
 
-            await alertObj.modifyInstanceDetailWithId(body, ['status']);
+            await alertObj.modifyInstanceDetailWithId(body, ['record_time', 'status']);
+
+            return {alert_token};
         } catch (e) {
             throw e;
         }

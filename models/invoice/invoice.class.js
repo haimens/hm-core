@@ -119,19 +119,13 @@ class VNInvoice extends ODInstance {
 
             conditions
                 .configComplexSimpleKey('SUM(vn_coin.amount) AS sum ')
-                .configComplexConditionJoin('vn_invoice', 'coin_id', )
+                .configComplexConditionJoin('vn_invoice', 'coin_id', 'vn_coin')
                 .configStatusCondition(status, 'vn_invoice')
-                .configComplexConditionQueryItem('vn_invoice', 'realm_id', realm_id)
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_invoice')
+                .configComplexConditionQueryItem('vn_invoice', 'realm_id', realm_id);
 
-            const query = `
-                SELECT SUM(vn_coin.amount) AS sum 
-                FROM vn_invoice 
-                LEFT JOIN vn_coin ON vn_invoice.coin_id = vn_coin.id 
-                WHERE vn_invoice.realm_id = ${realm_id} 
-                AND vn_invoice.status = ${status || '2'}
-            `;
 
-            const [{sum}] = await this.performQuery(query);
+            const [{sum}] = await this.findInstanceListWithComplexCondition('vn_invoice', conditions);
 
             return parseInt(sum) || 0;
 
@@ -143,15 +137,17 @@ class VNInvoice extends ODInstance {
     static async findInvoiceSumInSystem(search_query = {}) {
         try {
 
-            const {status} = search_query;
-            const query = `
-                SELECT SUM(vn_coin.amount) AS sum 
-                FROM vn_invoice 
-                LEFT JOIN vn_coin ON vn_invoice.coin_id = vn_coin.id 
-                WHERE vn_invoice.status = ${status || '2'}
-            `;
+            const {status, date_from, date_to, from_key, to_key} = search_query;
 
-            const [{sum}] = await this.performQuery(query);
+            const conditions = new ODCondition();
+            conditions
+                .configComplexSimpleKey('SUM(vn_coin.amount) AS sum ')
+                .configComplexConditionJoin('vn_invoice', 'coin_id', 'vn_coin')
+                .configStatusCondition(status, 'vn_invoice')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_invoice');
+
+
+            const [{sum}] = await this.findInstanceListWithComplexCondition('vn_invoice', conditions);
 
 
             return parseInt(sum) || 0;
