@@ -138,6 +138,7 @@ class VNWage extends ODInstance {
             const [{sum}] = await this.findInstanceListWithComplexCondition('vn_wage', conditions);
 
 
+
             return {sum: (parseInt(sum) || 0), type: (type || 1)};
 
         } catch (e) {

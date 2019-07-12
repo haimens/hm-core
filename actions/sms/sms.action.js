@@ -129,6 +129,30 @@ class VNSMSAction extends VNAction {
         }
     }
 
+    static async modifySMSDetail(params, body, query) {
+
+
+        try {
+            const {sms_token, realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const smsObj = new VNCustomerSMS(sms_token);
+
+            const {realm_id: sms_realm_id} = await smsObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== sms_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+
+            await smsObj.modifyInstanceDetailWithId(body, ['is_read']);
+
+            return {sms_token};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
 }
 
 module.exports = VNSMSAction;

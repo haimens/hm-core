@@ -74,8 +74,9 @@ class VNSalaryAction extends VNAction {
             const {realm_token} = params;
 
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
+            const sum = await VNSalary.findSalarySumInRealm(query, realm_id);
 
-            return await VNSalary.findSalarySumInRealm(query, realm_id);
+            return {sum};
         } catch (e) {
             throw e;
         }
@@ -92,7 +93,9 @@ class VNSalaryAction extends VNAction {
 
             if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
 
-            return await VNSalary.findSalarySumWithDriver(query, realm_id, driver_id);
+            const sum = await VNSalary.findSalarySumWithDriver(query, realm_id, driver_id);
+
+            return {sum};
         } catch (e) {
             throw e;
         }

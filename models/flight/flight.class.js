@@ -50,7 +50,19 @@ class VNFlight extends ODInstance {
 
             await this.updateInstance({flight_token: this.instance_token, status: 1});
 
-            return {flight_id: this.instance_id, flight_token: this.instance_token, flight_key: this.flight_key};
+            return {
+                flight_id: this.instance_id,
+                flight_token: this.instance_token,
+                flight_key: this.flight_key,
+                dep_date,
+                arr_date,
+                carrier_code,
+                flight_num,
+                dep_airport,
+                arr_airport,
+                dep_terminal,
+                arr_terminal
+            };
 
         } catch (e) {
             throw e;

@@ -43,7 +43,7 @@ class VNSalary extends ODInstance {
                 .configComplexConditionKey('vn_coin', 'amount')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_salary')
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_driver')
-                .configComplexOrder(order_key, order_direction, ['cdate','udate'],'vn_salary')
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_salary')
                 .configStatusCondition(status, 'vn_salary')
                 .configComplexConditionJoins('vn_salary',
                     [
@@ -78,7 +78,7 @@ class VNSalary extends ODInstance {
                 .configComplexConditionKey('vn_coin', 'amount')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_salary')
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_driver')
-                .configComplexOrder(order_key, order_direction, ['cdate','udate'],'vn_salary')
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_salary')
                 .configStatusCondition(status, 'vn_salary')
                 .configComplexConditionJoins('vn_salary',
                     [
@@ -111,7 +111,7 @@ class VNSalary extends ODInstance {
             const conditions = new ODCondition();
 
             conditions
-                .configComplexSimpleKey('SUM(vn_coin.amount) AS count')
+                .configComplexSimpleKey('SUM(vn_coin.amount) AS sum')
                 .configComplexConditionJoin('vn_salary', 'coin_id', 'vn_coin')
                 .configComplexConditionQueryItem('vn_salary', 'realm_id', realm_id)
                 .configComplexConditionQueryItem('vn_salary', 'driver_id', driver_id)
@@ -120,6 +120,7 @@ class VNSalary extends ODInstance {
 
 
             const [{sum}] = await this.findInstanceListWithComplexCondition('vn_salary', conditions);
+
 
             return parseInt(sum) || 0;
         } catch (e) {
@@ -134,7 +135,7 @@ class VNSalary extends ODInstance {
             const conditions = new ODCondition();
 
             conditions
-                .configComplexSimpleKey('SUM(vn_coin.amount) AS count')
+                .configComplexSimpleKey('SUM(vn_coin.amount) AS sum')
                 .configComplexConditionJoin('vn_salary', 'coin_id', 'vn_coin')
                 .configComplexConditionQueryItem('vn_salary', 'realm_id', realm_id)
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_salary')

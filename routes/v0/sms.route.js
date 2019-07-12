@@ -94,9 +94,32 @@ router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
 });
 
 
-router.get('/all/detail/customer/:customer_token', async(req,res,next)=>{
+router.get('/all/detail/customer/:customer_token', async (req, res, next) => {
 
+    try {
+        const resBody = func.configSuccess(
+            await VNSMSAction.findSMSHistoryListWithCustomer(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
 });
 
+router.patch('/detail/:realm_token/:sms_token', async (req, res, next) => {
+
+    try {
+        const resBody = func.configSuccess(
+            await VNSMSAction.modifySMSDetail(req.params, req.body, req.query)
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+
+});
 
 module.exports = router;

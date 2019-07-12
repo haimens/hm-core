@@ -74,7 +74,7 @@ class VNCustomerSMS extends ODInstance {
 
             conditions
                 .configComplexConditionKeys('vn_customer_sms',
-                    ['tar_cell', 'sys_cell', 'cdate', 'udate', 'message', 'type', 'is_read']
+                    ['tar_cell', 'sys_cell', 'cdate', 'udate', 'message', 'type', 'is_read', 'sms_token']
                 )
                 .configComplexConditionKeys('vn_customer', ['name', 'username', 'email', 'img_path', 'customer_token'])
                 .configComplexConditionJoin('vn_customer_sms', 'customer_id', 'vn_customer')
@@ -105,7 +105,7 @@ class VNCustomerSMS extends ODInstance {
 
             conditions
                 .configComplexConditionKeys('vn_customer_sms',
-                    ['tar_cell', 'sys_cell', 'cdate', 'udate', 'message', 'type', 'is_read']
+                    ['tar_cell', 'sys_cell', 'cdate', 'udate', 'message', 'type', 'is_read', 'sms_token']
                 )
                 .configComplexConditionKeys('vn_customer', ['name', 'username', 'email', 'img_path', 'customer_token'])
                 .configComplexConditionJoin('vn_customer_sms', 'customer_id', 'vn_customer')
