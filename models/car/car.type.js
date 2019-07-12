@@ -74,7 +74,7 @@ class VNCarType extends ODInstance {
                     'vn_car_type',
                     [
                         'name', 'price_prefix',
-                        'id AS car_type_id', 'img_path', 'max_capacity'
+                        'id AS car_type_id', 'img_path', 'max_capacity', 'car_type_token'
                     ]
                 )
                 .configComplexConditionQueryItem('vn_car_type', 'realm_id', realm_id)

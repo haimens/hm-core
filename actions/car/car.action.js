@@ -102,6 +102,43 @@ class VNCarAction extends VNAction {
         }
     }
 
+    static async findCarTypeListInRealm(params, body, query) {
+        try {
+
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {record_list: raw_list} = await VNCarType.findAllCarTypeInRealm(realm_id);
+
+            const record_list = raw_list.map(info => {
+                const {car_type_id, ...other_info} = info;
+                return other_info;
+            });
+
+            return {record_list};
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async modifyCarTypeDetail(params, body, query) {
+        try {
+            const {realm_token, car_type_token} = params;
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const carTypeObj = new VNCarType(car_type_token);
+
+            const {realm_id: type_realm_id} = await carTypeObj.findInstanceDetailWithToken(['realm_id']);
+
+            if (realm_id !== type_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            await carTypeObj.modifyInstanceDetailWithId(body, ['img_path', 'max_capacity', 'name', 'price_prefix', 'status']);
+        } catch (e) {
+            throw e;
+        }
+
+    }
 
     static async registerDriverCar(params, body, query) {
         try {

@@ -61,7 +61,7 @@ class VNSalary extends ODInstance {
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_salary', conditions);
 
-            return {record_list, count, end: (parseInt(start) || 0) + record_list};
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
 
         } catch (e) {
             throw e;
@@ -97,7 +97,7 @@ class VNSalary extends ODInstance {
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_salary', conditions);
 
-            return {record_list, count, end: (parseInt(start) || 0) + record_list};
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
 
         } catch (e) {
             throw e;
