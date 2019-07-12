@@ -7,7 +7,7 @@ const func = require('od-utility');
 const VNFlightAction = require('../../actions/flight/flight.action');
 
 
-router.post('/search', async (req, res, next) => {
+router.post('/search/:realm_token', async (req, res, next) => {
     try {
 
         const resBody = func.configSuccess(
