@@ -26,7 +26,8 @@ const carRoute = require('./car.route');
 const wageRoute = require('./wage.route');
 const salaryRoute = require('./salary.route');
 
-const flightRoute= require('./flight.route');
+const flightRoute = require('./flight.route');
+const discountRoute = require('./discount.route');
 
 router.use("/king", kingRoute);
 router.use("/driver", driverRoute);
@@ -52,6 +53,7 @@ router.use('/car', carRoute);
 router.use('/wage', wageRoute);
 router.use('/salary', salaryRoute);
 router.use('/flight', flightRoute);
+router.use('/discount', discountRoute);
 
 router.use("/", async (req, res, next) => {
     try {

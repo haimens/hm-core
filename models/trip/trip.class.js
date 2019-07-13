@@ -14,7 +14,7 @@ class VNTrip extends ODInstance {
 
     async registerTrip(info = {}, customer_id, order_id, realm_id) {
 
-        const {pickup_time, pickup_time_local, from_address_id, to_address_id, vehicle_type, amount} = info;
+        const {pickup_time, pickup_time_local, from_address_id, to_address_id, vehicle_type, amount, flight_str} = info;
 
         if (!pickup_time) func.throwErrorWithMissingParam('pickup_time');
         if (!pickup_time_local) func.throwErrorWithMissingParam('pickup_time_local');
@@ -32,7 +32,7 @@ class VNTrip extends ODInstance {
             this.instance_id = await this.insertInstance(
                 {
                     pickup_time, pickup_time_local, from_address_id, to_address_id,
-                    vehicle_type,
+                    vehicle_type, flight_str,
                     customer_id, order_id, realm_id,
                     amount,
                     cdate: 'now()', udate: 'now()',

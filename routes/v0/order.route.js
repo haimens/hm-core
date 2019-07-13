@@ -35,6 +35,19 @@ router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
 });
 
 
+router.get('/all/detail/customer/:realm_token/:customer_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNOrderAction.findOrderListWithCustomer(
+                req.params, req.body, req.query,
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 router.patch('/detail/:realm_token/:order_token', async (req, res, next) => {
     try {
 
@@ -50,7 +63,7 @@ router.patch('/detail/:realm_token/:order_token', async (req, res, next) => {
     }
 });
 
-router.get('/all/detail/customer/:realmt_token/:customer_token', async (req, res, next) => {
+router.get('/detail/:realmt_token/:order_token', async (req, res, next) => {
     try {
 
         const resBody = func.configSuccess(
@@ -93,4 +106,41 @@ router.post('/discount/:realm_token/:order_token', async (req, res, next) => {
     }
 });
 
+
+router.patch('/finalize/:realm_token/:order_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNOrderAction.finalizeOrder(req.params, req.body, req.query)
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+router.patch('/confirm/:realm_token/:order_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNOrderAction.makeOrderConfirmed(req.params, req.body, req.query)
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+router.patch('/pay/:realm_token/:order_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNOrderAction.makeOrderPayment(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
 module.exports = router;

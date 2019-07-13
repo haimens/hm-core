@@ -61,8 +61,10 @@ class VNOrder extends ODInstance {
                 .configComplexConditionKey(
                     'vn_order_type', 'name', 'order_type'
                 )
+                .configComplexConditionKey('vn_coin', 'amount')
                 .configComplexConditionKey('vn_order_status', 'name', 'status_str')
                 .configComplexConditionJoin('vn_order', 'type', 'vn_order_type')
+                .configComplexConditionJoin('vn_order', 'coin_id', 'vn_coin')
                 .configStatusJoin('vn_order', 'vn_order_status')
                 .configComplexConditionQueryItem('vn_order', 'id', this.instance_id);
 
@@ -130,6 +132,58 @@ class VNOrder extends ODInstance {
         }
     }
 
+    static async findOrderListWithCustomer(search_query = {}, realm_id, customer_id) {
+
+        if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+        try {
+            const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
+            const conditions = new ODCondition();
+
+
+            conditions
+                .configComplexConditionKeys(
+                    'vn_order',
+                    [
+                        'cdate', 'udate',
+                        'contact_name', 'contact_cell', 'receipt',
+                        'order_token'
+                    ])
+                .configComplexConditionKey(
+                    'vn_order_type', 'name', 'order_type'
+                )
+                .configComplexConditionKeys(
+                    'vn_customer',
+                    [
+                        'name AS customer_name', 'cell AS customer_cell',
+                        'email AS customer_email', 'customer_token',
+                        'img_path', 'username'
+                    ]
+                )
+                .configComplexConditionKey('vn_order_status', 'name', 'status_str')
+                .configComplexConditionJoin('vn_order', 'type', 'vn_order_type')
+                .configStatusJoin('vn_order', 'vn_order_status')
+                .configComplexConditionJoin('vn_order', 'customer_id', 'vn_customer')
+                .configComplexConditionQueryItem('vn_order', 'realm_id', realm_id)
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_order')
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_order')
+                .configKeywordCondition(['contact_cell', 'contact_name'], keywords, 'vn_order')
+                .configComplexConditionQueryItem('vn_order', 'customer_id', customer_id)
+                .configStatusCondition(status, 'vn_order')
+                .configQueryLimit(start, 30);
+
+
+            const count = await this.findCountOfInstance('vn_order', conditions);
+
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_order', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+        } catch (e) {
+            throw e;
+        }
+    }
+
     async confirmOrderStatus() {
         try {
             if (!this.instance_id) {
@@ -139,8 +193,12 @@ class VNOrder extends ODInstance {
                 this.instance_id = order_id;
             }
 
-            const order_query = `UPDATE vn_order SET vn_order.status = 2 WHERE vn_order = $${this.instance_id}`;
-            const trip_query = `UPDATE vn_trip SET vn_trip.status = 2 WHERE vn_trip.order_id = ${this.instance_id}`;
+            const order_query = `UPDATE vn_order SET vn_order.status = 3 WHERE vn_order = $${this.instance_id}`;
+            const trip_query = `
+            UPDATE vn_trip SET vn_trip.status = 2 
+            WHERE vn_trip.order_id = ${this.instance_id} 
+            AND vn_trip.status != 0
+            `;
 
             const results = await Promise.all([VNOrder.performQuery(order_query), VNOrder.performQuery(trip_query)]);
 

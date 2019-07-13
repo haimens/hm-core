@@ -10,7 +10,7 @@ router.post('/type/:realm_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
             await VNCarAction.registerCarType(
-                req.params, req.body, req.query, req.lord.verify_info
+                req.params, req.body, req.query
             )
         );
 
@@ -24,7 +24,7 @@ router.get('/all/type/:realm_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
             await VNCarAction.findCarTypeListInRealm(
-                req.params, req.body.req.query
+                req.params, req.body, req.query
             )
         );
 

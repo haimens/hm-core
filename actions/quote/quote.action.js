@@ -28,6 +28,8 @@ class VNQuoteAction extends VNAction {
                 [VNGoogleMap.findFormattedAddress(from_address_str), VNGoogleMap.findFormattedAddress(to_address_str)]
             );
 
+            console.log(body);
+
             const from_address_info = address_results[0];
             const to_address_info = address_results[1];
 

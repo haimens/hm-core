@@ -9,6 +9,7 @@ class VNAddress extends ODInstance {
     }
 
     async registerAddress(address_info = {}) {
+
         const {street_line_1, street_line_2, city, state, zip, addr_str, lat, lng} = address_info;
 
         try {

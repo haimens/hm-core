@@ -49,7 +49,7 @@ class VNOrderDiscount extends ODInstance {
                     'vn_discount',
                     [
                         'type', 'rate', 'amount',
-                        'min_price', 'vdate', 'available_usage'
+                        'min_price', 'vdate', 'available_usage', 'discount_token'
                     ]
                 )
                 .configComplexConditionJoin(

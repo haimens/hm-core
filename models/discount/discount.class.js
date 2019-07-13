@@ -10,6 +10,53 @@ class VNDiscount extends ODInstance {
         super('vn_discount', 'discount_token', discount_token, discount_id);
     }
 
+    async registerDiscountDetail(info = {}, realm_id) {
+        const {vdate, amount, rate, type, min_price, available_usage, code} = info;
+        if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+
+        if (!vdate) func.throwErrorWithMissingParam('vdate');
+        if (!type) func.throwErrorWithMissingParam('type');
+        if (!min_price) func.throwErrorWithMissingParam('min_price');
+
+        if (!available_usage) func.throwErrorWithMissingParam('available_usage');
+        if (!code) func.throwErrorWithMissingParam('code');
+        try {
+
+
+            const count = await VNDiscount._findCodeCount(code);
+
+            if (count !== 0) func.throwError('CODE EXISTED');
+            this.instance_id = await this.insertInstance(
+                {vdate, amount, rate, type, min_price, available_usage, cdate: 'now()', udate: 'now()', code, realm_id}
+            );
+
+            this.instance_token = `DNT-${func.encodeUnify(this.instance_id, 'disc')}`;
+
+            await this.updateInstance({discount_token: this.instance_token, discount_id: this.instance_id});
+
+            return {discount_token: this.instance_token, discount_id: this.instance_id};
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async _findCodeCount(code) {
+        try {
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexSimpleKey('COUNT(vn_discount.id) AS count')
+                .configComplexConditionQueryItem('vn_discount', 'code', code)
+                .configStatusCondition(1, conditions);
+
+            const [{count}] = await this.findInstanceListWithComplexCondition('vn_discount', conditions);
+
+            return parseInt(count) || 0;
+
+        } catch (e) {
+            throw e;
+        }
+    }
 
     async findDiscountInfoWithKey(code, realm_id) {
         if (!code) func.throwErrorWithMissingParam('code');
