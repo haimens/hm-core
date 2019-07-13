@@ -9,7 +9,9 @@ const VNSettingAction = require('../../actions/setting/setting.action');
 router.post('/detail/:realm_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
-            await VNSettingAction(req.params, req.body, req.query)
+            await VNSettingAction(
+                req.params, req.body, req.query
+            )
         );
         res.json(resBody);
     } catch (e) {
@@ -19,7 +21,9 @@ router.post('/detail/:realm_token', async (req, res, next) => {
 router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
-            await VNSettingAction(req.params, req.body, req.query)
+            await VNSettingAction(
+                req.params, req.body, req.query
+            )
         );
         res.json(resBody);
     } catch (e) {

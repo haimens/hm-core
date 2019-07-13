@@ -63,7 +63,7 @@ router.patch('/detail/:realm_token/:order_token', async (req, res, next) => {
     }
 });
 
-router.get('/detail/:realmt_token/:order_token', async (req, res, next) => {
+router.get('/detail/:realm_token/:order_token', async (req, res, next) => {
     try {
 
         const resBody = func.configSuccess(

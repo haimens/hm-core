@@ -48,7 +48,7 @@ class VNOrderDiscount extends ODInstance {
                 .configComplexConditionKeys(
                     'vn_discount',
                     [
-                        'type', 'rate', 'amount',
+                        'type', 'rate', 'amount', 'code',
                         'min_price', 'vdate', 'available_usage', 'discount_token'
                     ]
                 )
