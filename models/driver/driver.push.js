@@ -13,7 +13,7 @@ class VNDriverPush {
             } else if (type === 2) {
                 push_message = "You've received a new message";
             } else {
-                func.throwError('Unsupported push notification type');
+                func.throwError('UNSUPPORTED PUSH NOTIFICATION TYPE');
             }
 
             // Push notification content
@@ -39,6 +39,7 @@ class VNDriverPush {
             var req = https.request(options, function (res) {
                 res.on('data', function (response) {
                     // Handle push response here 
+                    const parsedResponse = JSON.parse(response);
                 });
             });
 
@@ -46,6 +47,7 @@ class VNDriverPush {
                 // Handle push error here
                 console.log("ERROR CAPTURED WHEN SENDING REQUEST TO ONE SIGNAL:");
                 console.log(e);
+                throw e;
             });
 
             req.write(JSON.stringify(data));
