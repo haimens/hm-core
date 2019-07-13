@@ -6,7 +6,7 @@ const func = require('od-utility');
 const VNDiscountAction = require('../../actions/discount/discount.action');
 
 
-router.post('/detail/:realm_token/:discount_token', async (req, res, next) => {
+router.post('/detail/:realm_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
             await VNDiscountAction.registerDiscount(

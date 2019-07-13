@@ -46,6 +46,12 @@ class VNSettingAction extends VNAction {
     static async findSettingWithKey(params, body, query) {
         try {
 
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+            const {setting_key} = query;
+
+            return await VNSetting.findSettingInfoWithKey(realm_id, key);
 
         } catch (e) {
             throw e;
@@ -56,6 +62,22 @@ class VNSettingAction extends VNAction {
 
     static async modifySetting(params, body, query) {
         try {
+
+            const {realm_token, setting_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const settingObj = new VNSetting(setting_token);
+
+            const {realm_id: setting_realm_id} = await settingObj.findInstanceDetailWithToken(['realm_id']);
+            if (realm_id !== setting_realm_id) func.throwError('REALM NOT MATCH');
+
+            await settingObj.modifyInstanceDetailWithId(
+                body, ['value']
+            );
+            
+            return {setting_token};
+
         } catch (e) {
             throw e;
         }

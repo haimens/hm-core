@@ -12,6 +12,8 @@ class VNDiscount extends ODInstance {
 
     async registerDiscountDetail(info = {}, realm_id) {
         const {vdate, amount, rate, type, min_price, available_usage, code} = info;
+
+        console.log(info);
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
 
         if (!vdate) func.throwErrorWithMissingParam('vdate');
@@ -32,7 +34,7 @@ class VNDiscount extends ODInstance {
 
             this.instance_token = `DNT-${func.encodeUnify(this.instance_id, 'disc')}`;
 
-            await this.updateInstance({discount_token: this.instance_token, discount_id: this.instance_id});
+            await this.updateInstance({discount_token: this.instance_token, status:1});
 
             return {discount_token: this.instance_token, discount_id: this.instance_id};
         } catch (e) {
@@ -47,7 +49,7 @@ class VNDiscount extends ODInstance {
             conditions
                 .configComplexSimpleKey('COUNT(vn_discount.id) AS count')
                 .configComplexConditionQueryItem('vn_discount', 'code', code)
-                .configStatusCondition(1, conditions);
+                .configStatusCondition(1, 'vn_discount');
 
             const [{count}] = await this.findInstanceListWithComplexCondition('vn_discount', conditions);
 
@@ -112,7 +114,7 @@ class VNDiscount extends ODInstance {
                 .configKeywordCondition(
                     ['code'], keywords, 'vn_discount'
                 )
-                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'])
+                .configComplexOrder(order_key, order_direction, ['cdate', 'udate'],'vn_discount')
                 .configStatusCondition(status, 'vn_discount')
                 .configQueryLimit(start, 30);
 
