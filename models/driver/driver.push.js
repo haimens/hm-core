@@ -1,6 +1,5 @@
 const func = require('od-utility');
 
-
 class VNDriverPush {
 
     static async sendDriverPush(player_key, type) {
