@@ -67,7 +67,7 @@ router.patch('/addon/:realm_token/:order_token/:trip_token/:addon_token', async 
     try {
         const resBody = func.configSuccess(
             await VNTripAction.modifyAddonInTrip(
-                req.params, req.body.req.query
+                req.params, req.body, req.query
             )
         );
 
@@ -119,19 +119,19 @@ router.post('/addon/:realm_token/:order_token/:trip_token', async (req, res, nex
 });
 
 
-router.patch('/addon/:realm_token/:addon_token', async (req, res, next) => {
-    try {
-        const resBody = func.configSuccess(
-            await VNTripAction.modifyAddonInTrip(
-                req.params, req.body, req.query
-            )
-        );
-
-        res.json(resBody);
-    } catch (e) {
-        next(e);
-    }
-});
+// router.patch('/addon/:realm_token/:addon_token', async (req, res, next) => {
+//     try {
+//         const resBody = func.configSuccess(
+//             await VNTripAction.modifyAddonInTrip(
+//                 req.params, req.body, req.query
+//             )
+//         );
+//
+//         res.json(resBody);
+//     } catch (e) {
+//         next(e);
+//     }
+// });
 
 router.post('/alerts/:realm_token/:trip_token', async (req, res, next) => {
     try {
