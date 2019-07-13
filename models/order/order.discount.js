@@ -57,6 +57,7 @@ class VNOrderDiscount extends ODInstance {
                     'discount_id',
                     'vn_discount'
                 )
+                .configStatusCondition(1, 'vn_order_discount')
                 .configComplexConditionQueryItem(
                     'vn_order_discount', 'order_id', order_id
                 )
