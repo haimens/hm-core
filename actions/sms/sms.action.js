@@ -28,6 +28,7 @@ class VNSMSAction extends VNAction {
             const customerObj = new VNCustomer(customer_token);
 
             const {message, title, type} = body;
+            console.log(body);
             if (!message) func.throwError('CANNOT SEND EMPTY MESSAGE', 400);
             const {name, cell, vn_customer_id: customer_id} = await customerObj.findInstanceDetailWithToken(['name', 'cell']);
             if (!cell) func.throwErrorWithMissingParam('customer_cell');
