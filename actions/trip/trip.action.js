@@ -73,7 +73,9 @@ class VNTripAction extends VNAction {
             const {realm_id: addon_realm_id}
                 = await addonObj.findInstanceDetailWithToken(['realm_id']);
 
-            if (!realm_id !== addon_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+
+            if (realm_id !== addon_realm_id) func.throwError('REALM_ID NOT MATCH');
 
 
             await addonObj.modifyInstanceDetailWithId(body, ['amount', 'note', 'status']);
