@@ -256,6 +256,10 @@ class VNOrderAction extends VNAction {
                 }, (trip_sum + addon_sum));
             }
 
+            console.log('trip_sum', trip_sum);
+            console.log('addon_sum', addon_sum);
+            console.log('final_total', final_total);
+
             const {coin_token, coin_id} = await new VNCoin().registerCoin(final_total);
 
             await orderObj.modifyInstanceDetailWithId({coin_id, status: 2}, ['coin_id', 'status']);
@@ -399,5 +403,4 @@ class VNOrderAction extends VNAction {
 
 }
 
-module
-    .exports = VNOrderAction;
+module.exports = VNOrderAction;
