@@ -18,6 +18,9 @@ const VNCustomer = require('../../models/customer/customer.class');
 
 const VNAddress = require('../../models/address/address.class');
 
+const VNCoin = require('../../models/coin/coin.class');
+
+const VNWage = require('../../models/wage/wage.class');
 
 const func = require('od-utility');
 
@@ -70,9 +73,6 @@ class VNTripAction extends VNAction {
             const {realm_id: addon_realm_id}
                 = await addonObj.findInstanceDetailWithToken(['realm_id']);
 
-
-            console.log('realm_id', realm_id);
-            console.log('addon_realm_id', addon_realm_id);
             if (!realm_id !== addon_realm_id) func.throwError('REALM_ID NOT MATCH');
 
 
@@ -284,15 +284,80 @@ class VNTripAction extends VNAction {
 
             const tripObj = new VNTrip(trip_token);
 
-            const {realm_id: trip_realm_id} = await tripObj.findInstanceDetailWithToken(['realm_id']);
+            const {realm_id: trip_realm_id, status, vn_trip_id: trip_id, order_id, driver_id, amount} = await tripObj.findInstanceDetailWithToken(
+                ['realm_id', 'status', 'amount', 'order_id', 'driver_id', 'amount']);
 
             if (trip_realm_id !== realm_id) func.throwError('REALM_ID NOT MATCH');
 
-            return tripObj.modifyInstanceDetailWithId(
+            if (body.status === 7 && status !== 7) {
+
+                const {record_list: addon_list} = await VNAddon.findAddonListInTrip(trip_id, realm_id);
+                const {type} = new VNOrder(null, order_id).findInstanceDetailWithId(['type']);
+                const driverObj = new VNDriver(null, driver_id);
+                const {rate} = await driverObj.findInstanceDetailWithId(['rate']);
+
+                if (type === 1 || type === 2 || type === 4) {
+                    const wage_amount = Math.ceil(amount * rate / 1000);
+                    const {coin_id} = await new VNCoin(null, coin_id).registerCoin(wage_amount);
+                    await new VNWage().registerWage({
+                        type: 1,
+                        note: `TRIP INCOME PREPAY - ${trip_token}`
+                    }, realm_id, driver_id, coin_id, order_id);
+                }
+
+                if (type === 3) {
+                    const wage_amount = Math.ceil(amount * rate / 1000);
+                    const {coin_id} = await new VNCoin().registerCoin(wage_amount);
+                    await new VNWage().registerWage({
+                        type: 1,
+                        note: `TRIP INCOME CASH - ${trip_token}`
+                    }, realm_id, driver_id, coin_id, order_id);
+
+                    const {coin_id: out_coin_id} = await new VNCoin().registerCoin(amount);
+
+                    await new VNWage().registerWage({
+                        type: 2,
+                        note: `TRIP TAKE Customer CASH - ${trip_token}`
+                    }, realm_id, driver_id, out_coin_id, order_id);
+                }
+
+                // ADD TIP FOR DRIVER HERE
+                for (let i = 0; i < addon_list.length; i++) {
+                    const {type: addon_type, amount: tip_amount} = addon_list[i];
+                    if (addon_type === 1) {
+                        const {tip_coin_id} = await new VNCoin().registerCoin(tip_amount);
+                        await new VNWage().registerWage({
+                            type: 1,
+                            note: `TRIP TIP INCOME- ${trip_token}`
+                        }, realm_id, driver_id, tip_coin_id, order_id);
+
+                    }
+                }
+
+                //END OF TIP
+
+            }
+            await tripObj.modifyInstanceDetailWithId(
                 body,
-                ['amount', 'is_paid', 'eta_time', 'cob_time', 'arrive_time', 'flight_str', 'start_time', 'cad_time', 'status']
-            );
-        } catch (e) {
+                ['amount', 'is_paid', 'eta_time', 'cob_time', 'arrive_time', 'flight_str', 'start_time', 'cad_time', 'status']);
+
+            const {trip_list} = await VNTrip.findTripListInOrder(realm_id, order_id);
+
+            //CHECK STATUS
+            let flag = true;
+            trip_list.forEach(trip => {
+                const {status} = trip;
+                if (status !== 7) flag = false;
+            });
+            if (flag) {
+                await new VNOrder(null, order_id).modifyInstanceDetailWithId({status: 4})
+            }
+
+
+            return {trip_token};
+
+        } catch
+            (e) {
             throw e;
         }
     }

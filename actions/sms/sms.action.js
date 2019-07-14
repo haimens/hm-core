@@ -8,6 +8,10 @@ const VNSender = require('../../models/realm/sender.class');
 const VNCustomer = require('../../models/customer/customer.class');
 const VNCustomerSMS = require('../../models/customer/customer.sms');
 
+const VNTrip = require('../../models/trip/trip.class');
+
+const VNDriverPush = require('../../models/driver/driver.push');
+
 
 class VNSMSAction extends VNAction {
 
@@ -94,6 +98,17 @@ class VNSMSAction extends VNAction {
             }
 
             const {sms_token} = new VNCustomerSMS().registerCustomerSMS(sms_info, customer_id, realm_id);
+
+
+            if (customer_id) {
+                const {record_list: trip_list} = await VNTrip.findActiveTripWithCustomer(realm_id, customer_id);
+                const promise_list = trip_list.map(info => {
+                    const {player_key, trip_token} = info;
+                    return VNDriverPush.sendDriverPush(1, player_key, trip_token)
+                });
+                Promise.all(promise_list).then(result => console.log(result)).catch(err => console.log(err));
+            }
+
 
             return {sms_token, smsid: SmsSid};
 

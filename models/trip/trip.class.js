@@ -389,6 +389,31 @@ class VNTrip extends ODInstance {
         }
     }
 
+
+    static async findActiveTripWithCustomer(realm_id, customer_id) {
+        try {
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKey('vn_trip', 'trip_token')
+                .configComplexConditionKey('vn_driver', 'player_key')
+                .configSimpleCondition(
+                    '(trip_info.status = 3 OR trip_info.status = 4 OR trip_info.status = 5 OR trip_info.status = 6)'
+                )
+                .configComplexConditionQueryItem('trip_info', 'realm_id', realm_id)
+                .configComplexConditionQueryItem('trip_info', 'customer_id', customer_id)
+                .configComplexOrder('udate', 'DESC', ['udate'], 'vn_trip')
+                .configQueryLimit(0, 5);
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
+
+
+            return {record_list};
+        } catch (e) {
+            throw e;
+        }
+    }
+
     static async findTripCountForMonth(search_query = {}, realm_id) {
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
         try {
