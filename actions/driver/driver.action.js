@@ -54,7 +54,7 @@ class VNDriverAction extends VNAction {
 
             const {realm_token, icon_path, logo_path, realm_status} =
                 await realmObj.findInstanceDetailWithId(
-                    ['realm_token', 'icon_path', 'logo_path', 'status AS realm_status']
+                    ['realm_token', 'icon_path', 'logo_path', 'company_name', 'status AS realm_status']
                 );
 
             if (realm_status !== 2) return {isValid: false, message: 'REALM SUSPENDED'};
