@@ -74,7 +74,6 @@ class VNTripAction extends VNAction {
                 = await addonObj.findInstanceDetailWithToken(['realm_id']);
 
 
-
             if (realm_id !== addon_realm_id) func.throwError('REALM_ID NOT MATCH');
 
 
@@ -343,7 +342,7 @@ class VNTripAction extends VNAction {
                 body,
                 ['amount', 'is_paid', 'eta_time', 'cob_time', 'arrive_time', 'flight_str', 'start_time', 'cad_time', 'status']);
 
-            const {trip_list} = await VNTrip.findTripListInOrder(realm_id, order_id);
+            const {record_list: trip_list} = await VNTrip.findTripListInOrder(realm_id, order_id);
 
             //CHECK STATUS
             let flag = true;
