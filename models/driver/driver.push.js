@@ -1,7 +1,6 @@
 const func = require('od-utility');
 
 class VNDriverPush {
-
     //type 1 ask driver share location
     //type 2 ask driver fetch customer message.
     static async sendDriverPush(player_key, type) {
