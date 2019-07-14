@@ -235,22 +235,27 @@ class VNOrderAction extends VNAction {
 
             const {record_list: order_discount_list} = await VNOrderDiscount.findOrderDiscountListWithOrder(order_id, realm_id);
 
-            const trip_sum = trip_list.reduce((acc, curr) => acc + curr.amount, 0);
-            const addon_sum = addon_list.reduce((acc, curr) => acc + curr.amount, 0);
+            let trip_sum = 0;
+            if (trip_list) {
+                trip_sum = trip_list.reduce((acc, curr) => acc + curr.amount, 0);
+            }
 
-            const final_total = order_discount_list.reduce((acc, curr) => {
-                const {rate, amount, type} = curr;
+            let addon_sum = 0;
+            if (addon_list) {
+                addon_sum = addon_list.reduce((acc, curr) => acc + curr.amount, 0);
+            }
 
-                if (type === 1) return acc - amount;
-                if (type === 2) return acc * (1 - (rate / 1000));
+            let final_total = trip_sum + addon_sum;
+            if (order_discount_list) {
+                final_total = order_discount_list.reduce((acc, curr) => {
+                    const {rate, amount, type} = curr;
 
-            }, (trip_sum + addon_sum));
+                    if (type === 1) return acc - amount;
+                    if (type === 2) return acc * (1 - (rate / 1000));
 
-            console.log('trip_sum', trip_sum);
-            console.log('addon_sum', addon_sum);
-            console.log('final_total', final_total);
+                }, (trip_sum + addon_sum));
+            }
 
-            
             const {coin_token, coin_id} = await new VNCoin().registerCoin(final_total);
 
             await orderObj.modifyInstanceDetailWithId({coin_id, status: 2}, ['coin_id', 'status']);
