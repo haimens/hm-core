@@ -99,7 +99,6 @@ class VNOrderAction extends VNAction {
             const {record_list: order_discount_list} = await VNOrderDiscount.findOrderDiscountListWithOrder(order_id, realm_id);
 
 
-
             return {order_info, trip_list, customer_info, addon_list, order_discount_list};
         } catch (e) {
             throw e;
@@ -247,6 +246,11 @@ class VNOrderAction extends VNAction {
 
             }, (trip_sum + addon_sum));
 
+            console.log('trip_sum', trip_sum);
+            console.log('addon_sum', addon_sum);
+            console.log('final_total', final_total);
+
+            
             const {coin_token, coin_id} = await new VNCoin().registerCoin(final_total);
 
             await orderObj.modifyInstanceDetailWithId({coin_id, status: 2}, ['coin_id', 'status']);
