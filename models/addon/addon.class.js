@@ -59,6 +59,7 @@ class VNAddon extends ODInstance {
                     'vn_addon',
                     'order_id', order_id
                 )
+                .configStatusCondition(1, 'vn_addon')
                 .configQueryLimit(0, 10);
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_addon', conditions);
