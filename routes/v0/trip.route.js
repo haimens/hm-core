@@ -163,6 +163,7 @@ router.patch('/detail/:realm_token/:trip_token', async (req, res, next) => {
     }
 });
 
+//SOME CHANGE
 
 router.patch('/operation/:realm_token/:trip_token', async (req, res, next) => {
     try {
