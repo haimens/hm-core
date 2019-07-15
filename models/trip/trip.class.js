@@ -232,6 +232,7 @@ class VNTrip extends ODInstance {
             vn_order.contact_cell, 
             vn_order.type, 
             trip_info.trip_token, 
+            trip_info.amount, 
             trip_info.cdate, 
             trip_info.udate, 
             trip_info.pickup_time, 

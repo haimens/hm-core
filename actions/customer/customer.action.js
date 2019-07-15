@@ -122,7 +122,7 @@ class VNCustomerAction extends VNAction {
 
             if (realm_id !== customer_realm_id) func.throwError('REALM_ID NOT MATCH');
 
-            await customerObj.modifyInstanceDetailWithToken(body, ['name', 'cell', 'email', 'img_path']);
+            await customerObj.modifyInstanceDetailWithToken(body, ['name', 'cell', 'email', 'img_path', 'note']);
 
             return {customer_token};
         } catch (e) {

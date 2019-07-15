@@ -61,6 +61,9 @@ class VNOrder extends ODInstance {
                 .configComplexConditionKey(
                     'vn_order_type', 'name', 'order_type'
                 )
+                .configComplexConditionKeys('vn_lord',
+                    ['lord_token', 'name AS lord_name', 'cell AS lord_cell', 'img_path AS lord_img_path']
+                )
                 .configComplexConditionKey('vn_coin', 'amount')
                 .configComplexConditionKey('vn_order_status', 'name', 'status_str')
                 .configComplexConditionJoin('vn_order', 'type', 'vn_order_type')
@@ -103,7 +106,7 @@ class VNOrder extends ODInstance {
                     'vn_customer',
                     [
                         'name AS customer_name', 'cell AS customer_cell',
-                        'email AS customer_email', 'customer_token',
+                        'email AS customer_email', 'customer_token', 'note AS customer_note',
                         'img_path', 'username'
                     ]
                 )
@@ -155,7 +158,7 @@ class VNOrder extends ODInstance {
                     'vn_customer',
                     [
                         'name AS customer_name', 'cell AS customer_cell',
-                        'email AS customer_email', 'customer_token',
+                        'email AS customer_email', 'customer_token', 'note AS customer_note',
                         'img_path', 'username'
                     ]
                 )

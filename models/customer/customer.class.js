@@ -131,7 +131,7 @@ class VNCustomer extends ODInstance {
             conditions
                 .configComplexConditionKeys(
                     'vn_customer',
-                    ['name', 'cell', 'email', 'username', 'customer_token', 'status', 'img_path', 'cdate', 'udate'])
+                    ['name', 'cell', 'email', 'note', 'username', 'customer_token', 'status', 'img_path', 'cdate', 'udate'])
                 .configComplexConditionKeys(
                     'vn_address',
                     ['addr_str', 'street_line_1', 'street_line_2', 'city', 'state', 'zip', 'address_token', 'lat', 'lng']
@@ -164,7 +164,7 @@ class VNCustomer extends ODInstance {
 
 
             conditions
-                .configComplexConditionKeys('vn_customer', ['name', 'cell', 'email', 'img_path', 'username', 'customer_token'])
+                .configComplexConditionKeys('vn_customer', ['name', 'cell', 'email', 'img_path', 'username', 'customer_token', 'note'])
                 .configComplexConditionKeys('vn_address', ['addr_str', 'lat', 'lng'])
                 .configComplexConditionJoin('vn_customer', 'address_id', 'vn_address')
                 .configComplexConditionQueryItem('vn_customer', 'realm_id', realm_id)
