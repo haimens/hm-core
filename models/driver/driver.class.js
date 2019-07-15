@@ -141,53 +141,150 @@ class VNDriver extends ODInstance {
         try {
 
             const {keywords, start, status} = search_query;
-            const query = `
-                SELECT vn_driver.name, vn_driver.cell, vn_driver.email, 
-                vn_driver.img_path, vn_driver.license_num, vn_driver.username, 
-                vn_driver.cdate, vn_driver.udate, 
-                location_info.lat, location_info.lng, location.info.udate AS location_udate,
-                FROM vn_driver 
-                LEFT JOIN (
-                    SELECT vn_location.lat, vn_location.lng, vn_location.cdate, vn_location.udate, vn_location.driver_id
-                    FROM vn_location 
-                    WHERE vn_location.realm_id = ${realm_id}  
-                    AND vn_location.status = 1 
-                    ORDER BY vn_location.udate DESC 
-                    GROUP BY vn_location.driver_id
-                ) AS location_info 
-                WHERE vn_driver.realm_id = ${realm_id} 
-                AND vn_driver.status = ${status || '2'}
-                AND (
-                    vn_driver.name LIKE '%${keywords}%' OR
-                    vn_driver.cell LIKE '%${keywords}%' OR
-                    vn_driver.email LIKE '%${keywords}%' OR
-                    vn_driver.license_num LIKE '%${keywords}%'
-                    ) 
-                 LIMIT ${start || 0}, 30
-            `;
 
-            const [{count}] = await this.performQuery(
-                `
-                SELECT COUNT(vn_driver.id) AS count 
-                FROM vn_driver 
-                WHERE vn_driver.realm_id = ${realm_id} 
-                AND vn_driver.status = ${status || '2'}
-                AND (
-                    vn_driver.name LIKE '%${keywords}%' OR
-                    vn_driver.cell LIKE '%${keywords}%' OR
-                    vn_driver.email LIKE '%${keywords}%' OR
-                    vn_driver.license_num LIKE '%${keywords}%'
-                    ) 
-                    `
-            );
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys('vn_driver',
+                    ['name', 'cell', 'email', 'img_path', 'license_num', 'username', 'driver_token']
+                )
+                .configComplexConditionKeys('location_info', ['lat', 'lng', 'udate AS location_udate', 'driver_location_token'])
+                .configSimpleJoin(`LEFT JOIN (
+                    SELECT * FROM ( 
+                        SELECT vn_driver_location.lat, vn_driver_location.lng, vn_driver_location.cdate, 
+                        vn_driver_location.driver_location_token,
+                        vn_driver_location.udate, vn_driver_location.driver_id
+                        FROM vn_driver_location 
+                        WHERE vn_driver_location.realm_id = ${realm_id}  
+                        AND vn_driver_location.status = 1 
+                        ORDER BY vn_driver_location.udate DESC 
+                    ) AS sub
+                    
+                    
+                    GROUP BY sub.driver_id 
+                    
+                ) AS location_info ON vn_driver.id = location_info.driver_id `)
+                .configComplexConditionQueryItem('vn_driver', 'realm_id', realm_id)
+                .configStatusCondition(status, 'vn_driver')
+                .configComplexConditionQueryItem('location_info', 'lat', 'NULL', 'IS NOT')
+                .configKeywordCondition(['name', 'cell', 'email', 'license_num'], keywords, 'vn_driver')
+                .configQueryLimit(start, 30);
+
+
+            const count = await this.findCountOfInstance('vn_driver', conditions);
 
             if (count === 0) return {record_list: [], count, end: 0};
 
-            const record_list = await this.performQuery(query);
+            const record_list = await this.findInstanceListWithComplexCondition('vn_driver', conditions);
+            console.log(record_list);
 
             return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
         } catch
             (e) {
+            throw e;
+        }
+    }
+
+
+    static async findDriverPayableListInRealm(search_query = {}, realm_id) {
+        if (!realm_id) func.throwErrorWithMissingParam('realm_id');
+        try {
+            const {start} = search_query;
+
+            // const query = `
+            //
+            //     SELECT IFNULL((wage_in_info.total - wage_out_info.total - salary_info.total),0) AS payable,
+            //     vn_driver.driver_token, vn_driver.name, vn_driver.username, vn_driver.cell,
+            //     vn_driver.email, vn_driver.img_path
+            //     FROM vn_driver
+            //
+            //     LEFT JOIN (
+            //         SELECT SUM(vn_coin.amount) AS total , vn_wage.driver_id
+            //         FROM vn_wage
+            //         LEFT JOIN vn_coin ON vn_wage.coin_id = vn_coin.id
+            //         WHERE vn_wage.realm_id = ${realm_id}
+            //         AND vn_wage.status = 1
+            //         AND vn_wage.type = 1
+            //         GROUP BY vn_wage.driver_id
+            //     ) AS wage_in_info ON wage_in_info.driver_id = vn_driver.id
+            //
+            //     LEFT JOIN (
+            //         SELECT SUM(vn_coin.amount) AS total , vn_wage.driver_id
+            //         FROM vn_wage
+            //         LEFT JOIN vn_coin ON vn_wage.coin_id = vn_coin.id
+            //         WHERE vn_wage.realm_id = ${realm_id}
+            //         AND vn_wage.status = 1
+            //         AND vn_wage.type = 2
+            //         GROUP BY vn_wage.driver_id
+            //     ) AS wage_out_info ON wage_out_info.driver_id = vn_driver.id
+            //
+            //     LEFT JOIN (
+            //         SELECT SUM(vn_coin.amount) AS total , vn_salary.driver_id
+            //         FROM vn_salary
+            //         LEFT JOIN vn_coin ON vn_salary.coin_id = vn_coin.id
+            //         WHERE vn_salary.realm_id = ${realm_id}
+            //         AND vn_salary.status = 1
+            //         GROUP BY vn_salary.driver_id
+            //     ) AS salary_info ON salary_info.driver_id = vn_driver.id
+            //
+            //     WHERE vn_driver.realm_id = ${realm_id}
+            //     AND vn_driver.status = 2
+            //     AND IFNULL((wage_in_info.total - wage_out_info.total - salary_info.total),0) > 0
+            //
+            //     ORDER BY payable DESC
+            //
+            //     LIMIT ${parseInt(start) || 0}, 30
+            //
+            // `;
+
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexSimpleKey(`IFNULL((wage_in_info.total - wage_out_info.total - salary_info.total),0) AS payable`)
+                .configComplexConditionKeys('vn_driver', ['driver_token', 'name', 'cell', 'email', 'username', 'img_path'])
+                .configSimpleJoin(`LEFT JOIN (
+                    SELECT SUM(vn_coin.amount) AS total , vn_salary.driver_id
+                    FROM vn_salary 
+                    LEFT JOIN vn_coin ON vn_salary.coin_id = vn_coin.id 
+                    WHERE vn_salary.realm_id = ${realm_id} 
+                    AND vn_salary.status = 1 
+                    GROUP BY vn_salary.driver_id 
+                ) AS salary_info ON salary_info.driver_id = vn_driver.id `)
+                .configSimpleJoin(`LEFT JOIN (
+                    SELECT SUM(vn_coin.amount) AS total , vn_wage.driver_id 
+                    FROM vn_wage 
+                    LEFT JOIN vn_coin ON vn_wage.coin_id = vn_coin.id 
+                    WHERE vn_wage.realm_id = ${realm_id} 
+                    AND vn_wage.status = 1 
+                    AND vn_wage.type = 2 
+                    GROUP BY vn_wage.driver_id 
+                ) AS wage_out_info ON wage_out_info.driver_id = vn_driver.id `)
+                .configSimpleJoin(`LEFT JOIN (
+                    SELECT SUM(vn_coin.amount) AS total , vn_wage.driver_id 
+                    FROM vn_wage 
+                    LEFT JOIN vn_coin ON vn_wage.coin_id = vn_coin.id 
+                    WHERE vn_wage.realm_id = ${realm_id} 
+                    AND vn_wage.status = 1 
+                    AND vn_wage.type = 1 
+                    GROUP BY vn_wage.driver_id 
+                ) AS wage_in_info ON wage_in_info.driver_id = vn_driver.id `)
+                .configComplexConditionQueryItem('vn_driver', 'realm_id', realm_id)
+                .configStatusCondition(2, 'vn_driver')
+                .configSimpleOrder('payable DESC')
+                .configSimpleCondition(`IFNULL((wage_in_info.total - wage_out_info.total - salary_info.total),0) > 0 `)
+                .configQueryLimit(start, 30);
+
+
+            const count = await this.findCountOfInstance('vn_driver', conditions);
+
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_driver', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+
+
+        } catch (e) {
             throw e;
         }
     }

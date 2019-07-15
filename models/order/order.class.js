@@ -212,6 +212,51 @@ class VNOrder extends ODInstance {
         }
 
     }
+
+    async cancelOrderStatus() {
+        try {
+            if (!this.instance_id) {
+                if (!this.instance_token) func.throwErrorWithMissingParam('instance_token');
+
+                const {vn_order_id: order_id} = await this.findInstanceDetailWithToken();
+                this.instance_id = order_id;
+            }
+
+            const order_query = `UPDATE vn_order SET vn_order.status = 0 WHERE vn_order = $${this.instance_id}`;
+            const trip_query = `
+            UPDATE vn_trip SET vn_trip.status = 0 
+            WHERE vn_trip.order_id = ${this.instance_id} 
+            AND vn_trip.status != 0
+            `;
+
+            const results = await Promise.all([VNOrder.performQuery(order_query), VNOrder.performQuery(trip_query)]);
+
+            return {result_list: results};
+        } catch (e) {
+            throw e;
+        }
+
+    }
+
+    static async findOrderFinalPrice(order_id, realm_id) {
+        try {
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKey('vn_coin', 'amount')
+                .configComplexConditionJoin('vn_order', 'coin_id', 'vn_coin')
+                .configComplexConditionQueryItem('vn_order', 'order_id', order_id)
+                .configComplexConditionQueryItem('vn_order', 'realm_id', realm_id);
+
+
+            const [{amount}] = await this.findInstanceListWithComplexCondition('vn_order', conditions);
+
+            return parseInt(amount) || 0;
+
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
 module.exports = VNOrder;

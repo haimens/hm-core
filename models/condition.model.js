@@ -61,7 +61,7 @@ class ODCondition {
 
     configComplexConditionQueryItem(table_name, key, value, operator = '=') {
         try {
-            const suffix = typeof value === "number" ? value : `'${value}'`;
+            const suffix = (typeof value === "number" || value === 'NULL') ? value : `'${value}'`;
             this.conditions.push(`${table_name}.${key} ${operator} ${suffix}`);
 
             return this;
@@ -155,12 +155,24 @@ class ODCondition {
         return this;
     }
 
+
     configComplexOrder(order_key, order_direction, legal_keys, table_name) {
         if (!order_key) return this;
 
         try {
             if (legal_keys.indexOf(order_key) < 0) func.throwError('ORDER KEY ILLEGAL', 400);
             this.orders = `${table_name}.${order_key} ${order_direction}`;
+
+            return this;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    configSimpleOrder(order_query) {
+        if (!order_query) return this;
+        try {
+            this.orders = order_query;
 
             return this;
         } catch (e) {

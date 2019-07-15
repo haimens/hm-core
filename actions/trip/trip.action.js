@@ -329,7 +329,7 @@ class VNTripAction extends VNAction {
                         const {tip_coin_id} = await new VNCoin().registerCoin(tip_amount);
                         await new VNWage().registerWage({
                             type: 1,
-                            note: `TRIP TIP INCOME- ${trip_token}`
+                            note: `TRIP TIP INCOME - ${trip_token}`
                         }, realm_id, driver_id, tip_coin_id, order_id);
 
                     }
@@ -340,7 +340,8 @@ class VNTripAction extends VNAction {
             }
             await tripObj.modifyInstanceDetailWithId(
                 body,
-                ['amount', 'is_paid', 'eta_time', 'cob_time', 'arrive_time', 'flight_str', 'start_time', 'cad_time', 'status']);
+                ['amount', 'is_paid', 'eta_time', 'cob_time', 'arrive_time', 'flight_str', 'start_time', 'cad_time', 'status']
+            );
 
             const {record_list: trip_list} = await VNTrip.findTripListInOrder(realm_id, order_id);
 

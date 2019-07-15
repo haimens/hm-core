@@ -131,6 +131,20 @@ router.patch('/confirm/:realm_token/:order_token', async (req, res, next) => {
     }
 });
 
+router.patch('/cancel/:realm_token/:order_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNOrderAction.makeOrderCanceled(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 router.patch('/pay/:realm_token/:order_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(

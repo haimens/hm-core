@@ -57,7 +57,7 @@ class VNRealm extends ODInstance {
             conditions
                 .configComplexConditionKeys(
                     'vn_realm',
-                    ['company_name', 'company_title', 'cdate', 'udate', 'logo_path', 'icon_path','realm_token']
+                    ['company_name', 'company_title', 'cdate', 'udate', 'logo_path', 'icon_path', 'realm_token']
                 )
                 .configComplexConditionKeys('vn_tribute_rate', ['rate', 'tribute_rate_token'])
                 .configComplexConditionKeys('vn_address', ['addr_str', 'lat', 'lng', 'address_token'])
@@ -107,25 +107,46 @@ class VNRealm extends ODInstance {
             throw e;
         }
     }
-    static async findPaymentResourceList(params, body, query) {
+
+    // static async findPaymentResourceList(params, body, query) {
+    //     try {
+    //         const {realm_token} = params;
+    //
+    //         const {realm_id} = await this.findRealmIdWithToken(realm_token);
+    //
+    //         return await VNPaymentResource.findPaymentResourceListWithRealm(query, realm_id);
+    //     } catch (e) {
+    //         throw e;
+    //     }
+    // }
+
+    // static async findEmailResourceList(params, body, query) {
+    //     try {
+    //         const {realm_token} = params;
+    //
+    //         const {realm_id} = await this.findRealmIdWithToken(realm_token);
+    //
+    //         return await VNPaymentResource.findPaymentResourceListWithRealm(query, realm_id);
+    //     } catch (e) {
+    //         throw e;
+    //     }
+    // }
+
+    static async findTributeRateWithRealm(realm_id) {
         try {
-            const {realm_token} = params;
 
-            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+            const conditions = new ODCondition();
 
-            return await VNPaymentResource.findPaymentResourceListWithRealm(query, realm_id);
-        } catch (e) {
-            throw e;
-        }
-    }
+            conditions
+                .configComplexConditionKey('vn_tribute_rate', 'rate')
+                .configComplexConditionJoin('vn_realm', 'tribute_rate_id', 'vn_tribute_rate')
+                .configComplexConditionQueryItem('vn_realm', 'id', realm_id)
+                .configStatusCondition('all', 'vn_realm')
+                .configQueryLimit(0, 1);
 
-    static async findEmailResourceList(params, body, query) {
-        try {
-            const {realm_token} = params;
+            const [{rate}] = await this.findInstanceListWithComplexCondition('vn_realm', conditions);
 
-            const {realm_id} = await this.findRealmIdWithToken(realm_token);
-
-            return await VNPaymentResource.findPaymentResourceListWithRealm(query, realm_id);
+            return rate;
         } catch (e) {
             throw e;
         }

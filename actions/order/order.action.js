@@ -14,6 +14,12 @@ const VNOrderDiscount = require('../../models/order/order.discount');
 const VNCoin = require('../../models/coin/coin.class');
 const VNDiscount = require('../../models/discount/discount.class');
 
+const VNTribute = require('../../models/tribute/tribute.class');
+
+const VNWage = require('../../models/wage/wage.class');
+
+const VNRealm = require('../../models/realm/realm.class');
+
 class VNOrderAction extends VNAction {
 
 
@@ -119,7 +125,7 @@ class VNOrderAction extends VNAction {
 
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
 
-            await orderObj.modifyInstanceDetailWithId(body, ['status', 'contace_name', 'contace_cell']);
+            await orderObj.modifyInstanceDetailWithId(body, ['status', 'contact_name', 'contact_cell']);
 
             return {order_token};
         } catch (e) {
@@ -310,6 +316,7 @@ class VNOrderAction extends VNAction {
             const orderObj = new VNOrder(order_token);
             const {vn_order_id: order_id, realm_id: order_realm_id} =
                 await orderObj.findInstanceDetailWithToken(['realm_id', 'customer_id']);
+
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
 
             await orderObj.confirmOrderStatus();
@@ -317,6 +324,7 @@ class VNOrderAction extends VNAction {
             const {record_list: order_discount_list} = await VNOrderDiscount.findOrderDiscountListWithOrder(order_id, realm_id);
 
             const promise_list = order_discount_list.map(order_discount => {
+
                 return new Promise((resolve, reject) => {
                     const {available_usage, discount_token} = order_discount;
                     const discountObj = new VNDiscount(discount_token);
@@ -327,9 +335,50 @@ class VNOrderAction extends VNAction {
                         .then(resolve)
                         .catch(reject);
                 });
+
             });
 
             await Promise.all(promise_list);
+
+            const tributeObj = new VNTribute();
+
+            const rate = await VNRealm.findTributeRateWithRealm(realm_id);
+
+            const order_amount = await VNOrder.findOrderFinalPrice(order_id, realm_id);
+
+            const tribute_amount = Math.ceil(order_amount * rate / 1000);
+
+            const {coin_id} = await new VNCoin().registerCoin(tribute_amount);
+
+            const {tribute_token} = await tributeObj.registerTributeDetail({
+                note: 'ORDER INCOME'
+            }, realm_id, coin_id, order_id);
+
+            return {order_token, tribute_token};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async makeOrderCanceled(params, body, query) {
+        try {
+
+            const {realm_token, order_token} = params;
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const orderObj = new VNOrder(order_token);
+
+            const {vn_order_id: order_id, realm_id: order_realm_id} =
+                await orderObj.findInstanceDetailWithToken(['realm_id', 'customer_id']);
+
+            if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
+
+            await orderObj.cancelOrderStatus();
+
+            await VNWage.cancelWageInOrder(order_id, realm_id);
+
+            await VNTribute.cancelTributeWithOrder(order_id, realm_id);
 
             return {order_token};
 

@@ -138,7 +138,6 @@ class VNWage extends ODInstance {
             const [{sum}] = await this.findInstanceListWithComplexCondition('vn_wage', conditions);
 
 
-
             return {sum: (parseInt(sum) || 0), type: (type || 1)};
 
         } catch (e) {
@@ -167,6 +166,23 @@ class VNWage extends ODInstance {
 
             return {sum: (parseInt(sum) || 0), type: (type || 1)};
 
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async cancelWageInOrder(order_id, realm_id) {
+        try {
+
+            const query = `
+                UPDATE vn_wage SET vn_wage.status = 0, vn_wage.udate = 'now()'  
+                WHERE vn_wage.order_id = ${order_id} 
+                AND vn_wage.realm_id = ${realm_id}
+            `;
+
+            const response = await this.performQuery(query);
+
+            return {response};
         } catch (e) {
             throw e;
         }

@@ -96,6 +96,22 @@ class VNTribute extends ODInstance {
             throw e;
         }
     }
+
+    static async cancelTributeWithOrder(order_id, realm_id) {
+        try {
+            const query = `
+                UPDATE vn_tribute SET vn_tribute.status = 0 
+                WHERE vn_tribute.order_id = ${order_id} 
+                AND vn_tribute.realm_id = ${realm_id} 
+            `;
+
+            const response = await this.performQuery(query);
+
+            return {response};
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
 module.exports = VNTribute;
