@@ -68,6 +68,7 @@ class VNOrder extends ODInstance {
                 .configComplexConditionKey('vn_order_status', 'name', 'status_str')
                 .configComplexConditionJoin('vn_order', 'type', 'vn_order_type')
                 .configComplexConditionJoin('vn_order', 'coin_id', 'vn_coin')
+                .configComplexConditionJoin('vn_order', 'lord_id', 'vn_lord')
                 .configStatusJoin('vn_order', 'vn_order_status')
                 .configComplexConditionQueryItem('vn_order', 'id', this.instance_id);
 

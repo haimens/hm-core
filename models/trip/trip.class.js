@@ -265,6 +265,8 @@ class VNTrip extends ODInstance {
             LIMIT 0, 10
 `;
             const record_list = await this.performQuery(query);
+
+            console.log(record_list);
             return {record_list};
 
         } catch (e) {
