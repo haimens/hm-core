@@ -147,7 +147,7 @@ class VNTrip extends ODInstance {
                 .configQueryLimit(start, 30);
 
 
-            const count = await this.findCountOfInstance('vn_trip AS trip_info', conditions, 'trip_info');
+            const count = await this.findCountOfInstance('vn_trip', conditions, 'trip_info');
 
             if (count === 0) return {record_list: [], count, end: 0};
 
@@ -205,7 +205,7 @@ class VNTrip extends ODInstance {
                 .configQueryLimit(start, 30);
 
 
-            const count = await this.findCountOfInstance('vn_trip AS trip_info', conditions, 'trip_info');
+            const count = await this.findCountOfInstance('vn_trip', conditions, 'trip_info');
 
             if (count === 0) return {record_list: [], count, end: 0};
 
@@ -266,7 +266,6 @@ class VNTrip extends ODInstance {
 `;
             const record_list = await this.performQuery(query);
 
-            console.log(record_list);
             return {record_list};
 
         } catch (e) {
@@ -317,7 +316,7 @@ class VNTrip extends ODInstance {
                 .configQueryLimit(start, 30);
 
 
-            const count = await this.findCountOfInstance('vn_trip AS trip_info', conditions, 'trip_info');
+            const count = await this.findCountOfInstance('vn_trip', conditions, 'trip_info');
 
             if (count === 0) return {record_list: [], count, end: 0};
 
@@ -382,7 +381,7 @@ class VNTrip extends ODInstance {
 
             if (count === 0) return {record_list: [], count, end: 0};
 
-            const record_list = await this.findInstanceListWithComplexCondition('vn_trip AS trip_info', conditions);
+            const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
 
             return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
 
