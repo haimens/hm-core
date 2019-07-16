@@ -47,7 +47,7 @@ class VNDiscountAction extends VNAction {
 
             await discountObj.modifyInstanceDetailWithId(
                 body,
-                ['status']
+                ['status', 'available_usage']
             );
 
             return {discount_token}
