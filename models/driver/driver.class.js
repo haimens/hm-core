@@ -150,18 +150,13 @@ class VNDriver extends ODInstance {
                 )
                 .configComplexConditionKeys('location_info', ['lat', 'lng', 'udate AS location_udate', 'driver_location_token'])
                 .configSimpleJoin(`LEFT JOIN (
-                    SELECT * FROM ( 
-                        SELECT vn_driver_location.lat, vn_driver_location.lng, vn_driver_location.cdate, 
-                        vn_driver_location.driver_location_token,
-                        vn_driver_location.udate, vn_driver_location.driver_id
-                        FROM vn_driver_location 
-                        WHERE vn_driver_location.realm_id = ${realm_id}  
-                        AND vn_driver_location.status = 1 
-                        ORDER BY vn_driver_location.udate DESC 
-                    ) AS sub
-                    
-                    
-                    GROUP BY sub.driver_id 
+                    SELECT l1.lat, l1.lng, l1.udate, l1.driver_location_token, l1.driver_id 
+                    FROM vn_driver_location AS l1 
+                    LEFT JOIN vn_driver_location AS l2 ON (
+                        l1.driver_id = l2.driver_id AND l1.id < l2.id
+                    )
+                    WHERE l2.id IS NULL 
+                    ORDER BY l1.udate DESC
                     
                 ) AS location_info ON vn_driver.id = location_info.driver_id `)
                 .configComplexConditionQueryItem('vn_driver', 'realm_id', realm_id)
