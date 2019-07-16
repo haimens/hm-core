@@ -195,7 +195,7 @@ class VNTrip extends ODInstance {
                 .configSimpleJoin('LEFT JOIN vn_address AS from_addr ON trip_info.from_address_id = from_addr.id ')
                 .configSimpleJoin('LEFT JOIN vn_address AS to_addr ON trip_info.to_address_id = to_addr.id ')
                 .configStatusJoin('trip_info', 'vn_trip_status')
-                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_trip')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'trip_info')
                 .configKeywordCondition(['contact_name', 'contact_cell'], keywords, 'vn_order')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'trip_info')
                 .configComplexConditionQueryItem('trip_info', 'realm_id', realm_id)
@@ -307,7 +307,7 @@ class VNTrip extends ODInstance {
                 .configSimpleJoin('LEFT JOIN vn_address AS from_addr ON trip_info.from_address_id = from_addr.id ')
                 .configSimpleJoin('LEFT JOIN vn_address AS to_addr ON trip_info.to_address_id = to_addr.id ')
                 .configStatusJoin('trip_info', 'vn_trip_status')
-                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_trip')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'trip_info')
                 .configKeywordCondition(['contact_name', 'contact_cell'], keywords, 'vn_order')
                 .configStatusCondition(status, 'trip_info')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'trip_info')
@@ -366,7 +366,7 @@ class VNTrip extends ODInstance {
                 .configSimpleJoin('LEFT JOIN vn_address AS from_addr ON trip_info.from_address_id = from_addr.id ')
                 .configSimpleJoin('LEFT JOIN vn_address AS to_addr ON trip_info.to_address_id = to_addr.id ')
                 .configStatusJoin('trip_info', 'vn_trip_status')
-                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_trip')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'trip_info')
                 .configKeywordCondition(['contact_name', 'contact_cell'], keywords, 'vn_order')
                 .configSimpleCondition(
                     '(trip_info.status = 3 OR trip_info.status = 4 OR trip_info.status = 5 OR trip_info.status = 6)'
