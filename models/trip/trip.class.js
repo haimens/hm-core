@@ -378,7 +378,7 @@ class VNTrip extends ODInstance {
                 .configQueryLimit(start, 30);
 
 
-            const count = await this.findCountOfInstance('vn_trip AS trip_info', conditions, 'trip_info');
+            const count = await this.findCountOfInstance('vn_trip', conditions, 'trip_info');
 
             if (count === 0) return {record_list: [], count, end: 0};
 
