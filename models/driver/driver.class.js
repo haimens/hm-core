@@ -156,6 +156,7 @@ class VNDriver extends ODInstance {
                         l1.driver_id = l2.driver_id AND l1.id < l2.id
                     )
                     WHERE l2.id IS NULL 
+                    AND l1.realm_id = ${realm_id} 
                     ORDER BY l1.udate DESC
                     
                 ) AS location_info ON vn_driver.id = location_info.driver_id `)
