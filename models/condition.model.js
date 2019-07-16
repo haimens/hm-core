@@ -70,6 +70,16 @@ class ODCondition {
         }
     }
 
+    configSimpleGroup(group_query) {
+        if (!group_query) return this;
+        try {
+            this.group = `GROUP BY ${group_query}`;
+            return this;
+        } catch (e) {
+            throw e;
+        }
+    }
+
     configComplexConditionJoin(org_table, self_key, tar_table, join_method = 'LEFT JOIN', identifier) {
         try {
             this.joins.push(

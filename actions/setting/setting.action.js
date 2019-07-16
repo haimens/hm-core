@@ -51,7 +51,9 @@ class VNSettingAction extends VNAction {
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
             const {setting_key} = query;
 
-            return await VNSetting.findSettingInfoWithKey(realm_id, key);
+            const result = await VNSetting.findSettingInfoWithKey(realm_id, setting_key);
+            console.log(result);
+            return result;
 
         } catch (e) {
             throw e;
@@ -75,7 +77,7 @@ class VNSettingAction extends VNAction {
             await settingObj.modifyInstanceDetailWithId(
                 body, ['value']
             );
-            
+
             return {setting_token};
 
         } catch (e) {

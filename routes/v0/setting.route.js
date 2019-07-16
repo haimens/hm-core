@@ -34,7 +34,7 @@ router.get('/all/detail/realm/:realm_token', async (req, res, next) => {
 router.get('/detail/key/:realm_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
-            await VNSettingAction(req.params, req.body, req.query)
+            await VNSettingAction.findSettingWithKey(req.params, req.body, req.query)
         );
         res.json(resBody);
     } catch (e) {

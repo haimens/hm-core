@@ -172,7 +172,6 @@ class VNDriver extends ODInstance {
             if (count === 0) return {record_list: [], count, end: 0};
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_driver', conditions);
-            console.log(record_list);
 
             return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
         } catch

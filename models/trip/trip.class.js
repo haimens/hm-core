@@ -425,25 +425,27 @@ class VNTrip extends ODInstance {
             const conditions = new ODCondition([], [], [], '', '', 'GROUP BY DATE(vn_trip.pickup_time_local)');
 
             conditions
-                .configComplexConditionKey('', 'COUNT(vn_trip.id)', 'count')
-                .configComplexConditionKey('', 'DATE(vn_trip.pickup_time_local)', 'date')
+                .configComplexSimpleKey('COUNT(vn_trip.id) AS count')
+                .configComplexSimpleKey('DATE(vn_trip.pickup_time_local) AS date')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_trip')
                 .configComplexConditionQueryItem('vn_trip', 'realm_id', realm_id)
+                .configSimpleGroup('DATE(vn_trip.pickup_time_local)')
                 .configQueryLimit(0, 100);
 
             if (status === 'active') {
-                conditions.configSimpleCondition('(trip_info.status = 3 OR trip_info.status = 4 OR trip_info.status = 5 OR trip_info.status = 6)')
+                conditions.configSimpleCondition('(vn_trip.status = 3 OR vn_trip.status = 4 OR vn_trip.status = 5 OR vn_trip.status = 6)')
             }
 
             if (status === 'finished') {
                 conditions.configStatusCondition(7, 'vn_trip');
             }
-            
+
             if (status === 'fail') {
                 conditions.configStatusCondition(8, 'vn_trip');
             }
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
+
 
             return record_list || [];
         } catch (e) {
