@@ -381,7 +381,7 @@ class VNTrip extends ODInstance {
 
             if (count === 0) return {record_list: [], count, end: 0};
 
-            const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
+            const record_list = await this.findInstanceListWithComplexCondition('vn_trip AS trip_info', conditions);
 
             return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
 
