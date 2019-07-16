@@ -68,11 +68,19 @@ class VNAlert extends ODInstance {
                 .configComplexConditionKey('vn_alert_type', 'name', 'type_str')
                 .configComplexConditionKey('vn_alert_status', 'name', 'status_str')
                 .configComplexConditionKey('vn_trip', 'trip_token')
-                .configComplexConditionJoin('vn_alert', 'order_id', 'vn_order')
-                .configComplexConditionJoin('vn_alert', 'trip_id', 'vn_trip')
-                .configComplexConditionJoin('vn_alert', 'type', 'vn_alert_type')
-                .configComplexConditionJoin('vn_alert', 'status', 'vn_alert_status')
-                .configComplexConditionJoin('vn_trip', 'driver_id', 'vn_driver')
+                .configComplexConditionJoins('vn_alert',
+                    [
+                        {key: 'order_id', tar: 'vn_order'},
+                        {key: 'trip_id', tar: 'vn_trip'},
+                        {key: 'type', tar: 'vn_alert_type'},
+                        {key: 'status', tar: 'vn_alert_status'}
+                    ]
+                )
+                .configComplexConditionJoins('vn_trip', [
+                        {key: 'customer_id', tar: 'vn_customer'},
+                        {key: 'driver_id', tar: 'vn_driver'}
+                    ]
+                )
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_alert')
                 .configStatusCondition(status, 'vn_alert')
                 .configComplexConditionQueryItem('vn_alert', 'realm_id', realm_id)

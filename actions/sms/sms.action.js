@@ -124,7 +124,7 @@ class VNSMSAction extends VNAction {
             if (!realm_token) func.throwErrorWithMissingParam('realm_token');
 
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
-            return await VNCustomerSMS.findSMSListWithRealm(query, realm_id);
+            return await VNCustomerSMS.findCustomerSMSGroupedMessageInRealm(query, realm_id);
         } catch (e) {
             throw e;
         }

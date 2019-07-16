@@ -165,7 +165,7 @@ class ODInstance {
 
         try {
             const query = `SELECT COUNT(${identifier ? identifier : table_name}.id) AS count 
-                FROM ${table_name} 
+                FROM ${identifier ? (table_name + ' AS ' + identifier) : table_name} 
                 ${condition.configConditionQuery()} 
                 LIMIT 0, 1
             `;

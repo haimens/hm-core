@@ -32,6 +32,7 @@ const discountRoute = require('./discount.route');
 const settingRoute = require('./setting.route');
 
 
+
 router.use("/king", kingRoute);
 router.use("/driver", driverRoute);
 router.use("/customer", customerRoute);
@@ -50,7 +51,6 @@ router.use('/address', addressRoute);
 router.use('/coin', coinRoute);
 
 router.use('/invoice', invoiceRoute);
-
 router.use('/car', carRoute);
 
 router.use('/wage', wageRoute);
@@ -58,6 +58,7 @@ router.use('/salary', salaryRoute);
 router.use('/flight', flightRoute);
 router.use('/discount', discountRoute);
 router.use('/setting', settingRoute);
+
 
 router.use("/", async (req, res, next) => {
     try {

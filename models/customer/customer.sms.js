@@ -98,6 +98,45 @@ class VNCustomerSMS extends ODInstance {
         }
     }
 
+    static async findCustomerSMSGroupedMessageInRealm(search_query = {}, realm_id) {
+        try {
+            const {date_from, date_to, from_key, to_key, keywords, start} = search_query;
+            const conditions = new ODCondition();
+
+            conditions
+
+                .configComplexConditionKeys('sms1',
+                    ['tar_cell', 'sys_cell', 'cdate', 'udate', 'message', 'type', 'is_read', 'sms_token']
+                )
+                .configComplexConditionKeys('vn_customer', ['name', 'username', 'email', 'img_path', 'cell', 'customer_token'])
+                .configSimpleJoin(`
+                    LEFT JOIN vn_customer_sms AS sms2 ON (
+                        sms1.customer_id = sms2.customer_id AND sms1.id < sms2.id 
+                    )`)
+                .configComplexConditionJoin('sms1', 'customer_id', 'vn_customer')
+                .configSimpleCondition('sms2.id IS NULL')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'sms1')
+                .configKeywordCondition(['message'], keywords, 'sms1')
+                .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_customer')
+                .configComplexConditionQueryItem('sms1', 'realm_id', realm_id)
+                .configStatusCondition(1, 'sms1')
+                .configComplexOrder('udate', 'DESC', ['udate'], 'sms1')
+                .configQueryLimit(start, 30);
+
+            const count = await this.findCountOfInstance('vn_customer_sms', conditions, 'sms1');
+
+            if (count === 0) return {record_list: [], count, end: 0};
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_customer_sms AS sms1', conditions);
+
+            return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
+
+        } catch (e) {
+            throw e;
+        }
+
+    }
+
     static async findSMSListWithCustomer(search_query = {}, customer_id) {
         try {
             const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
@@ -113,6 +152,7 @@ class VNCustomerSMS extends ODInstance {
                 .configKeywordCondition(['message'], keywords, 'vn_customer_sms')
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_customer')
                 .configComplexConditionQueryItem('vn_customer_sms', 'customer_id', customer_id)
+
                 .configStatusCondition(1, 'vn_customer_sms')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_customer_sms')
                 .configQueryLimit(start, 30);
