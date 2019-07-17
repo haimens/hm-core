@@ -238,6 +238,34 @@ class VNOrder extends ODInstance {
 
     }
 
+    async paidOrderTrips(receipt) {
+        try {
+            if (!this.instance_id) {
+                if (!this.instance_token) func.throwErrorWithMissingParam('instance_token');
+
+                const {vn_order_id: order_id} = await this.findInstanceDetailWithToken();
+                this.instance_id = order_id;
+            }
+
+            const order_query = `
+            UPDATE vn_order 
+            SET vn_order.is_paid = 1, 
+            vn_order.receipt = '${receipt}' 
+            vn_receipt.type = 1 WHERE vn_order = $${this.instance_id}`;
+            const trip_query = `
+            UPDATE vn_trip SET vn_trip.is_paid = 1  
+            WHERE vn_trip.order_id = ${this.instance_id} 
+            AND vn_trip.status != 0
+            `;
+
+            const results = await Promise.all([VNOrder.performQuery(order_query), VNOrder.performQuery(trip_query)]);
+
+            return {result_list: results};
+        } catch (e) {
+            throw e;
+        }
+    }
+
     static async findOrderFinalPrice(order_id, realm_id) {
         try {
             const conditions = new ODCondition();

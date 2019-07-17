@@ -336,8 +336,9 @@ class VNTripAction extends VNAction {
                 }
 
                 //END OF TIP
-
             }
+
+
             await tripObj.modifyInstanceDetailWithId(
                 body,
                 [
@@ -350,15 +351,20 @@ class VNTripAction extends VNAction {
             const {record_list: trip_list} = await VNTrip.findTripListInOrder(realm_id, order_id);
 
             //CHECK STATUS
-            let flag = true;
+            let complete_flag = true;
+            let paid_flag = true;
             trip_list.forEach(trip => {
-                const {status} = trip;
-                if (status !== 7) flag = false;
+                const {status, is_paid} = trip;
+                if (status !== 7) complete_flag = false;
+                if (!is_paid) flag = false;
             });
-            if (flag) {
-                await new VNOrder(null, order_id).modifyInstanceDetailWithId({status: 4})
-            }
 
+            const update_pack = {};
+
+            if (complete_flag) update_pack['status'] = 4;
+            if (paid_flag) update_pack['is_paid'] = 1;
+
+            await new VNOrder(null, order_id).modifyInstanceDetailWithId(update_pack);
 
             return {trip_token};
 

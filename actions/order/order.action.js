@@ -40,7 +40,6 @@ class VNOrderAction extends VNAction {
             }
 
             const {customer_token, quote_list} = body;
-            console.log(body);
 
             if (quote_list.length < 1) func.throwErrorWithMissingParam('NO QUOTE FOUND');
 
@@ -289,11 +288,7 @@ class VNOrderAction extends VNAction {
             const {receipt, type} = body;
 
             if (type === 1 && receipt) {
-                await orderObj.modifyInstanceDetailWithId({
-                    is_paid: 1,
-                    receipt,
-                    type: 1
-                }, ['is_paid', 'receipt', 'type']);
+                await orderObj.paidOrderTrips(receipt);
             }
 
             if (type === 2 || type === 3 || type === 4) {
