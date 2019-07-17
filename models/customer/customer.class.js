@@ -172,12 +172,13 @@ class VNCustomer extends ODInstance {
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_customer')
                 .configStatusCondition(status, 'vn_customer')
                 .configKeywordCondition(['cell', 'name', 'email', 'username'], keywords, 'vn_customer')
-                .configKeywordCondition(['addr_str'], keywords, 'vn_address')
                 .configQueryLimit(start, 30);
 
             const count = await VNCustomer.findCountOfInstance('vn_customer', conditions);
 
+            // console.log(conditions.printRecordQuery('vn_customer'));
             if (count === 0) return {record_list: [], count, end: 0};
+
 
             const record_list = await VNCustomer.findInstanceListWithComplexCondition('vn_customer', conditions);
 

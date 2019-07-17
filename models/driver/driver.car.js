@@ -50,7 +50,7 @@ class VNDriverCar extends ODInstance {
                 .configComplexConditionQueryItem('vn_driver_car', 'realm_id', realm_id)
                 .configComplexConditionQueryItem('vn_driver_car', 'driver_id', driver_id)
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_driver_car')
-                .configKeywordCondition(['plate_num', 'description', 'identifier'], keywords, 'vn_driver_car')
+                .configKeywordCondition(['plate_num', 'description', 'identifier'], keywords, 'vn_car')
                 .configQueryLimit(start, 30);
 
             const count = await this.findCountOfInstance('vn_driver_car', conditions);
@@ -88,7 +88,7 @@ class VNDriverCar extends ODInstance {
                 .configComplexConditionQueryItem('vn_driver_car', 'realm_id', realm_id)
                 .configComplexConditionQueryItem('vn_driver_car', 'car_id', car_id)
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_driver_car')
-                .configKeywordCondition(['plate_num', 'description', 'identifier'], keywords, 'vn_driver_car')
+                .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_driver')
                 .configQueryLimit(start, 30);
 
             const count = await this.findCountOfInstance('vn_driver_car', conditions);

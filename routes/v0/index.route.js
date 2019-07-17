@@ -30,7 +30,7 @@ const flightRoute = require('./flight.route');
 const discountRoute = require('./discount.route');
 
 const settingRoute = require('./setting.route');
-
+const noteRoute = require('./note.route');
 
 
 router.use("/king", kingRoute);
@@ -58,6 +58,7 @@ router.use('/salary', salaryRoute);
 router.use('/flight', flightRoute);
 router.use('/discount', discountRoute);
 router.use('/setting', settingRoute);
+router.use('/note', noteRoute);
 
 
 router.use("/", async (req, res, next) => {

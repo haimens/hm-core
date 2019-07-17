@@ -212,6 +212,45 @@ class ODCondition {
             throw err;
         }
     }
+
+    printCountQuery() {
+        try {
+            const query = `SELECT COUNT(${identifier ? identifier : table_name}.id) AS count 
+                FROM ${identifier ? (table_name + ' AS ' + identifier) : table_name} 
+                ${condition.configConditionQuery()} 
+                LIMIT 0, 1
+            `;
+            console.log(query);
+        } catch (e) {
+            throw e;
+        }
+
+    }
+
+    printRecordQuery(table_name) {
+        try {
+
+
+            const key_str = this.keys.join(', \n');
+            const join_str = this.joins.join(' \n');
+            const condition_str = this.conditions.join(' \nAND ');
+            const order_str = this.orders;
+            const group_str = this.group;
+
+            const query = `SELECT ${key_str} 
+            FROM ${table_name} 
+            ${join_str} 
+            WHERE ${condition_str} 
+            ${order_str ? `ORDER BY ${order_str}` : ''} 
+            ${group_str} 
+            ${this.limit || 'LIMIT 0, 30'}
+            `;
+
+            console.log(query);
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
 module.exports = ODCondition;

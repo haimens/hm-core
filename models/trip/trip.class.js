@@ -131,15 +131,24 @@ class VNTrip extends ODInstance {
                         'flight_str', 'status'
                     ]
                 )
+                .configComplexConditionKeys(
+                    'vn_driver',
+                    [
+                        'name AS driver_name', 'cell AS driver_cell',
+                        'img_path AS driver_img_path', 'email AS driver_email',
+                        'driver_token'
+                    ]
+                )
                 .configComplexConditionKeys('from_addr', ['lat AS from_lat', 'lng AS from_lng', 'addr_str AS from_addr_str'])
                 .configComplexConditionKeys('to_addr', ['lat AS to_lat', 'lng AS to_lng', 'addr_str AS to_addr_str'])
                 .configComplexConditionKey('vn_trip_status', 'name', 'status_str')
                 .configComplexConditionJoin('trip_info', 'order_id', 'vn_order')
                 .configComplexConditionJoin('trip_info', 'customer_id', 'vn_customer')
+                .configComplexConditionJoin('trip_info', 'driver_id', 'vn_driver')
                 .configSimpleJoin('LEFT JOIN vn_address AS from_addr ON trip_info.from_address_id = from_addr.id ')
                 .configSimpleJoin('LEFT JOIN vn_address AS to_addr ON trip_info.to_address_id = to_addr.id ')
                 .configStatusJoin('trip_info', 'vn_trip_status')
-                .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_trip')
+                .configDateCondition({date_from, date_to, from_key, to_key}, 'trip_info')
                 .configKeywordCondition(['contact_name', 'contact_cell'], keywords, 'vn_order')
                 .configStatusCondition(status, 'trip_info')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'trip_info')
@@ -187,11 +196,20 @@ class VNTrip extends ODInstance {
                         'flight_str', 'status'
                     ]
                 )
+                .configComplexConditionKeys(
+                    'vn_driver',
+                    [
+                        'name AS driver_name', 'cell AS driver_cell',
+                        'img_path AS driver_img_path', 'email AS driver_email',
+                        'driver_token'
+                    ]
+                )
                 .configComplexConditionKeys('from_addr', ['lat AS from_lat', 'lng AS from_lng', 'addr_str AS from_addr_str'])
                 .configComplexConditionKeys('to_addr', ['lat AS to_lat', 'lng AS to_lng', 'addr_str AS to_addr_str'])
                 .configComplexConditionKey('vn_trip_status', 'name', 'status_str')
                 .configComplexConditionJoin('trip_info', 'order_id', 'vn_order')
                 .configComplexConditionJoin('trip_info', 'customer_id', 'vn_customer')
+                .configComplexConditionJoin('trip_info', 'driver_id', 'vn_driver')
                 .configSimpleJoin('LEFT JOIN vn_address AS from_addr ON trip_info.from_address_id = from_addr.id ')
                 .configSimpleJoin('LEFT JOIN vn_address AS to_addr ON trip_info.to_address_id = to_addr.id ')
                 .configStatusJoin('trip_info', 'vn_trip_status')
@@ -439,7 +457,7 @@ class VNTrip extends ODInstance {
                 conditions.configStatusCondition(7, 'vn_trip');
             }
 
-            if (status === 'fail') {
+            if (status === 'failed') {
                 conditions.configStatusCondition(8, 'vn_trip');
             }
 

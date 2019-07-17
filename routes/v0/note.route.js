@@ -14,7 +14,7 @@ router.post('/detail/customer/:realm_token/:customer_token', async (req, res, ne
 
         res.json(resBody);
     } catch (e) {
-        throw e;
+        next(e);
     }
 
 });
@@ -27,7 +27,7 @@ router.post('/detail/trip/:realm_token/:trip_token', async (req, res, next) => {
 
         res.json(resBody);
     } catch (e) {
-        throw e;
+        next(e);
     }
 
 });
@@ -40,7 +40,7 @@ router.post('/detail/order/:realm_token/:order_token', async (req, res, next) =>
 
         res.json(resBody);
     } catch (e) {
-        throw e;
+        next(e);
     }
 
 });
@@ -53,7 +53,7 @@ router.get('/all/detail/order/:realm_token/:order_token', async (req, res, next)
 
         res.json(resBody);
     } catch (e) {
-        throw e;
+        next(e);
     }
 
 });
@@ -66,7 +66,7 @@ router.get('/all/detail/customer/:realm_token/:customer_token', async (req, res,
 
         res.json(resBody);
     } catch (e) {
-        throw e;
+        next(e);
     }
 
 });
@@ -79,7 +79,7 @@ router.get('/all/detail/trip/:realm_token/:trip_token', async (req, res, next) =
 
         res.json(resBody);
     } catch (e) {
-        throw e;
+        next(e);
     }
 
 });
@@ -88,12 +88,12 @@ router.get('/all/detail/trip/:realm_token/:trip_token', async (req, res, next) =
 router.patch('/detail/:realm_token/:order_note_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
-            await VNNoteAction(req.params, req.body, req.query)
+            await VNNoteAction.modifyOrderNoteDetail(req.params, req.body, req.query)
         );
 
         res.json(resBody);
     } catch (e) {
-        throw e;
+        next(e);
     }
 });
 

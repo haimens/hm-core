@@ -6,6 +6,11 @@ const func = require('od-utility');
 
 class VNOrderNote extends ODInstance {
 
+
+    constructor(order_note_token, order_note_id) {
+        super('vn_order_note', 'order_note', order_note_token, order_note_id);
+    }
+
     async registerOrderNote(info = {}, realm_id, customer_id, order_id, trip_id) {
 
         const {note, type} = info;
@@ -15,7 +20,6 @@ class VNOrderNote extends ODInstance {
             this.instance_id = await this.insertInstance(
                 {
                     note, type, cdate: 'now()', udate: 'now()', order_id: order_id || 0,
-                    trip_id: trip_id || 0,
                     customer_id, realm_id, status: 0
                 }
             );
@@ -41,13 +45,13 @@ class VNOrderNote extends ODInstance {
 
             conditions
                 .configComplexConditionKeys('vn_order_note', ['note', 'order_note_token', 'cdate', 'udate', 'type', 'status'])
-                .configComplexConditionKey('vn_trip', 'trip_token')
                 .configComplexConditionKey('vn_order', 'order_token')
                 .configComplexConditionKey('vn_customer', 'customer_token')
                 .configComplexConditionJoins(
                     'vn_order_note',
                     [
-                        {key: 'customer_id', tar: 'vn_customer'}
+                        {key: 'customer_id', tar: 'vn_customer'},
+                        {key: 'order_id', tar: 'vn_order'}
                     ])
                 .configComplexConditionQueryItem('vn_order_note', 'realm_id', realm_id)
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_order_note')
@@ -55,6 +59,7 @@ class VNOrderNote extends ODInstance {
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_order_note')
                 .configKeywordCondition(['note'], keywords, 'vn_order_note')
                 .configQueryLimit(start, 30);
+
 
             const count = await this.findCountOfInstance('vn_order_note', conditions);
             if (count === 0) return {record_list: [], count, end: 0};
@@ -114,7 +119,6 @@ class VNOrderNote extends ODInstance {
 
             conditions
                 .configComplexConditionKeys('vn_order_note', ['note', 'order_note_token', 'cdate', 'udate', 'type', 'status'])
-                .configComplexConditionKey('vn_trip', 'trip_token')
                 .configComplexConditionKey('vn_order', 'order_token')
                 .configComplexConditionKey('vn_customer', 'customer_token')
                 .configComplexConditionJoins(
