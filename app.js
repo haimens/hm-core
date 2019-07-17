@@ -31,7 +31,9 @@ app.get('*', (req, res, next) => {
 // catch 404 and forward to error handler
 app.use((req, res, next) => next(createError(404)));
 
-alertCron.stop();
+
+if (process.env.PROGRAMENV === 'PROD') alertCron.start(); else alertCron.stop();
+
 
 // error handler
 app.use((err, req, res, next) => {

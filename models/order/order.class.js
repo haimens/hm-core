@@ -250,8 +250,8 @@ class VNOrder extends ODInstance {
             const order_query = `
             UPDATE vn_order 
             SET vn_order.is_paid = 1, 
-            vn_order.receipt = '${receipt}' 
-            vn_receipt.type = 1 WHERE vn_order = $${this.instance_id}`;
+            vn_order.receipt = '${receipt}', 
+            vn_order.type = 1 WHERE vn_order.id = ${this.instance_id}`;
             const trip_query = `
             UPDATE vn_trip SET vn_trip.is_paid = 1  
             WHERE vn_trip.order_id = ${this.instance_id} 

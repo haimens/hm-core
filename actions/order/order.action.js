@@ -95,7 +95,7 @@ class VNOrderAction extends VNAction {
 
             const customerObj = new VNCustomer(null, customer_id);
 
-            const customer_info = await customerObj.findInstanceDetailWithId(['name', 'cell', 'email', 'img_path', 'username']);
+            const customer_info = await customerObj.findCustomerDetail(realm_id);
 
             const {record_list: trip_list} = await VNTrip.findTripListInOrder(realm_id, order_id);
 

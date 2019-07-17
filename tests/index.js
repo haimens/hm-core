@@ -27,7 +27,7 @@
 
             console.log('fifth_num', fifth_num);
 
-            return fifth_num - ;
+            return fifth_num - 1;
         })
         .then(six_num => {
             console.log(six_num);

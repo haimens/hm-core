@@ -27,8 +27,6 @@ class VNFlightAction extends VNAction {
 
             const record_list = await Promise.all(promise_list);
 
-
-
             return {record_list}
         } catch (e) {
             throw e;
