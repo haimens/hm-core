@@ -3,7 +3,7 @@ const func = require('od-utility');
 class VNDriverPush {
     //type 1 ask driver share location
     //type 2 ask driver fetch customer message.
-    static async sendDriverPush(player_key, type) {
+    static async sendDriverPush(player_key, type, trip_token) {
         return new Promise((resolve, reject) => {
             try {
                 // Push message
@@ -16,11 +16,16 @@ class VNDriverPush {
                     func.throwError('UNSUPPORTED PUSH NOTIFICATION TYPE');
                 }
 
+                // Additional data
+                let additional_data = { type }
+                if (trip_token) { additional_data.trip_token = trip_token }
+
                 // Push notification content
                 var data = {
                     app_id: process.env.ONE_SIGNAL_APP_ID,
                     contents: { 'en': push_message },
-                    include_player_ids: [player_key]
+                    include_player_ids: [player_key],
+                    data: additional_data
                 };
 
                 // Request content
