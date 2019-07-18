@@ -384,7 +384,6 @@ class VNTrip extends ODInstance {
                 .configSimpleJoin('LEFT JOIN vn_address AS from_addr ON trip_info.from_address_id = from_addr.id ')
                 .configSimpleJoin('LEFT JOIN vn_address AS to_addr ON trip_info.to_address_id = to_addr.id ')
                 .configStatusJoin('trip_info', 'vn_trip_status')
-                .configComplexConditionJoin('trip_info', 'driver_id', 'vn_driver')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'trip_info')
                 .configKeywordCondition(['contact_name', 'contact_cell'], keywords, 'vn_order')
                 .configSimpleCondition(
@@ -419,10 +418,12 @@ class VNTrip extends ODInstance {
                 .configComplexConditionKey('vn_trip', 'trip_token')
                 .configComplexConditionKey('vn_driver', 'player_key')
                 .configSimpleCondition(
-                    '(trip_info.status = 3 OR trip_info.status = 4 OR trip_info.status = 5 OR trip_info.status = 6)'
+                    '(vn_trip.status = 3 OR vn_trip.status = 4 OR vn_trip.status = 5 OR vn_trip.status = 6)'
                 )
-                .configComplexConditionQueryItem('trip_info', 'realm_id', realm_id)
-                .configComplexConditionQueryItem('trip_info', 'customer_id', customer_id)
+                .configComplexConditionJoin('vn_trip', 'driver_id', 'vn_driver')
+                .configComplexConditionQueryItem('vn_trip', 'realm_id', realm_id)
+                .configComplexConditionQueryItem('vn_trip', 'customer_id', customer_id)
+
                 .configComplexOrder('udate', 'DESC', ['udate'], 'vn_trip')
                 .configQueryLimit(0, 5);
 
