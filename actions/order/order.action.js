@@ -20,6 +20,8 @@ const VNWage = require('../../models/wage/wage.class');
 
 const VNRealm = require('../../models/realm/realm.class');
 
+const VNOrderNote = require('../../models/order/order.note');
+
 class VNOrderAction extends VNAction {
 
 
@@ -228,7 +230,7 @@ class VNOrderAction extends VNAction {
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
             const orderObj = new VNOrder(order_token);
-            const {vn_order_id: order_id, realm_id: order_realm_id} =
+            const {vn_order_id: order_id, realm_id: order_realm_id, customer_id} =
                 await orderObj.findInstanceDetailWithToken(['realm_id', 'customer_id']);
 
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
@@ -265,6 +267,17 @@ class VNOrderAction extends VNAction {
 
             await orderObj.modifyInstanceDetailWithId({coin_id, status: 2}, ['coin_id', 'status']);
 
+
+            const {lord_token} = query;
+            let lord_name = 'N/A';
+            if (lord_token) {
+                const {name} = await new VNLord(lord_token).findInstanceDetailWithToken(['name']);
+                lord_name = name;
+            }
+
+            const note = `Order Finalize By ${lord_name || 'Customer'} - Amount: $ ${(final_total / 100).toFixed(2)} - ${order_token} `;
+            await new VNOrderNote().registerOrderNote({note, type: 2}, realm_id, customer_id, order_id);
+
             return {coin_token, order_token, final_total};
 
         } catch (e) {
@@ -280,7 +293,7 @@ class VNOrderAction extends VNAction {
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
             const orderObj = new VNOrder(order_token);
-            const {vn_order_id: order_id, realm_id: order_realm_id} =
+            const {vn_order_id: order_id, realm_id: order_realm_id, customer_id} =
                 await orderObj.findInstanceDetailWithToken(['realm_id', 'customer_id']);
 
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
@@ -292,8 +305,19 @@ class VNOrderAction extends VNAction {
             }
 
             if (type === 2 || type === 3 || type === 4) {
-                await orderObj.modifyInstanceDetailWithId({type}, ['type']);
+                await orderObj.modifyInstanceDetailWithId({type, receipt}, ['type', 'receipt']);
             }
+
+            const {lord_token} = query;
+            let lord_name = 'N/A';
+            if (lord_token) {
+                const {name} = await new VNLord(lord_token).findInstanceDetailWithToken(['name']);
+                lord_name = name;
+            }
+
+            const note = `Registered Payment - ${type === 1 ? ('Receipt: ' + receipt) : 'None Prepay'} By ${lord_name || 'Customer'} 
+            -  ${order_token}`;
+            await new VNOrderNote().registerOrderNote({note, type: 2}, realm_id, customer_id, order_id);
 
             return {order_token};
 
@@ -309,7 +333,7 @@ class VNOrderAction extends VNAction {
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
             const orderObj = new VNOrder(order_token);
-            const {vn_order_id: order_id, realm_id: order_realm_id} =
+            const {vn_order_id: order_id, realm_id: order_realm_id, customer_id} =
                 await orderObj.findInstanceDetailWithToken(['realm_id', 'customer_id']);
 
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
@@ -321,6 +345,7 @@ class VNOrderAction extends VNAction {
             const promise_list = order_discount_list.map(order_discount => {
 
                 return new Promise((resolve, reject) => {
+
                     const {available_usage, discount_token} = order_discount;
                     const discountObj = new VNDiscount(discount_token);
 
@@ -329,6 +354,7 @@ class VNOrderAction extends VNAction {
                         ['available_usage'])
                         .then(resolve)
                         .catch(reject);
+
                 });
 
             });
@@ -349,6 +375,16 @@ class VNOrderAction extends VNAction {
                 note: 'ORDER INCOME'
             }, realm_id, coin_id, order_id);
 
+            const {lord_token} = query;
+            let lord_name = 'N/A';
+            if (lord_token) {
+                const {name} = await new VNLord(lord_token).findInstanceDetailWithToken(['name']);
+                lord_name = name;
+            }
+
+            const note = `Order Confirmed By ${lord_name} - ${order_token}`;
+            await new VNOrderNote().registerOrderNote({note, type: 2}, realm_id, customer_id, order_id);
+
             return {order_token, tribute_token};
 
         } catch (e) {
@@ -364,16 +400,29 @@ class VNOrderAction extends VNAction {
 
             const orderObj = new VNOrder(order_token);
 
-            const {vn_order_id: order_id, realm_id: order_realm_id} =
+            const {vn_order_id: order_id, realm_id: order_realm_id, customer_id} =
                 await orderObj.findInstanceDetailWithToken(['realm_id', 'customer_id']);
 
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
 
-            await orderObj.cancelOrderStatus();
 
-            await VNWage.cancelWageInOrder(order_id, realm_id);
+            const {lord_token} = query;
+            let lord_name = 'N/A';
+            if (lord_token) {
+                const {name} = await new VNLord(lord_token).findInstanceDetailWithToken(['name']);
+                lord_name = name;
+            }
 
-            await VNTribute.cancelTributeWithOrder(order_id, realm_id);
+            const note = `Order Canceled By ${lord_name} - ${order_token}`;
+
+            const promise_list = [
+                orderObj.cancelOrderStatus(),
+                VNWage.cancelWageInOrder(order_id, realm_id),
+                VNTribute.cancelTributeWithOrder(order_id, realm_id),
+                new VNOrderNote().registerOrderNote({note, type: 2}, realm_id, customer_id, order_id)
+            ];
+
+            await Promise.all(promise_list);
 
             return {order_token};
 

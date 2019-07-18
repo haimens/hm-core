@@ -56,7 +56,7 @@ class VNOrder extends ODInstance {
                     [
                         'cdate', 'udate', 'customer_id',
                         'contact_name', 'contact_cell', 'receipt',
-                        'order_token'
+                        'order_token', 'is_paid'
                     ])
                 .configComplexConditionKey(
                     'vn_order_type', 'name', 'order_type'
@@ -70,6 +70,7 @@ class VNOrder extends ODInstance {
                 .configComplexConditionJoin('vn_order', 'coin_id', 'vn_coin')
                 .configComplexConditionJoin('vn_order', 'lord_id', 'vn_lord')
                 .configStatusJoin('vn_order', 'vn_order_status')
+                .configStatusCondition('all', 'vn_order')
                 .configComplexConditionQueryItem('vn_order', 'id', this.instance_id);
 
 
@@ -98,7 +99,7 @@ class VNOrder extends ODInstance {
                     [
                         'cdate', 'udate',
                         'contact_name', 'contact_cell', 'receipt',
-                        'order_token'
+                        'order_token', 'is_paid'
                     ])
                 .configComplexConditionKey(
                     'vn_order_type', 'name', 'order_type'
@@ -197,7 +198,7 @@ class VNOrder extends ODInstance {
                 this.instance_id = order_id;
             }
 
-            const order_query = `UPDATE vn_order SET vn_order.status = 3 WHERE vn_order = $${this.instance_id}`;
+            const order_query = `UPDATE vn_order SET vn_order.status = 3 WHERE vn_order.id = ${this.instance_id}`;
             const trip_query = `
             UPDATE vn_trip SET vn_trip.status = 2 
             WHERE vn_trip.order_id = ${this.instance_id} 
@@ -222,7 +223,7 @@ class VNOrder extends ODInstance {
                 this.instance_id = order_id;
             }
 
-            const order_query = `UPDATE vn_order SET vn_order.status = 0 WHERE vn_order = $${this.instance_id}`;
+            const order_query = `UPDATE vn_order SET vn_order.status = 0 WHERE vn_order.id = ${this.instance_id}`;
             const trip_query = `
             UPDATE vn_trip SET vn_trip.status = 0 
             WHERE vn_trip.order_id = ${this.instance_id} 

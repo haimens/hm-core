@@ -54,6 +54,7 @@ class VNOrderNote extends ODInstance {
                         {key: 'order_id', tar: 'vn_order'}
                     ])
                 .configComplexConditionQueryItem('vn_order_note', 'realm_id', realm_id)
+                .configComplexConditionQueryItem('vn_order_note', 'customer_id', customer_id)
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_order_note')
                 .configStatusCondition(status, 'vn_order_note')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_order_note')

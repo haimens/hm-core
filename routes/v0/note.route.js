@@ -74,7 +74,7 @@ router.get('/all/detail/customer/:realm_token/:customer_token', async (req, res,
 router.get('/all/detail/trip/:realm_token/:trip_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
-            await VNNoteAction.modifyOrderNoteDetail(req.params, req.body, req.query)
+            await VNNoteAction.findOrderNoteListWithTrip(req.params, req.body, req.query)
         );
 
         res.json(resBody);

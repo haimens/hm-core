@@ -23,7 +23,6 @@ class VNNoteAction extends VNAction {
             const {vn_customer_id: customer_id, realm_id: customer_realm_id} =
                 await new VNCustomer(customer_token).findInstanceDetailWithToken(['realm_id']);
 
-
             if (realm_id !== customer_realm_id) func.throwError('REALM_ID NOT MATCH');
 
             const orderNoteObj = new VNOrderNote();
@@ -46,9 +45,7 @@ class VNNoteAction extends VNAction {
             const {vn_order_id: order_id, realm_id: order_realm_id, customer_id} =
                 await new VNOrder(order_token).findInstanceDetailWithToken(['realm_id', 'customer_id']);
 
-
             if (realm_id !== order_realm_id) func.throwError('REALM_ID NOT MATCH');
-
 
             const orderNoteObj = new VNOrderNote();
             const {order_note_token} = await orderNoteObj.registerOrderNote({
@@ -70,13 +67,12 @@ class VNNoteAction extends VNAction {
             const {vn_trip_id: trip_id, realm_id: trip_realm_id, customer_id, order_id} =
                 await new VNTrip(trip_token).findInstanceDetailWithToken(['realm_id', 'customer_id', 'order_id']);
 
-
             if (realm_id !== trip_realm_id) func.throwError('REALM_ID NOT MATCH');
 
             const orderNoteObj = new VNOrderNote();
             const {order_note_token} = await orderNoteObj.registerOrderNote({
                 ...body,
-                type: 3
+                type: 2
             }, realm_id, customer_id, order_id, trip_id);
 
             return {order_note_token};
@@ -95,7 +91,6 @@ class VNNoteAction extends VNAction {
             const {vn_customer_id: customer_id, realm_id: customer_realm_id} =
                 await new VNCustomer(customer_token).findInstanceDetailWithToken(['realm_id']);
 
-
             if (realm_id !== customer_realm_id) func.throwError('REALM_ID NOT MATCH');
 
             return await VNOrderNote.findOrderNoteListWithCustomer(query, realm_id, customer_id);
@@ -112,7 +107,6 @@ class VNNoteAction extends VNAction {
             const {vn_order_id: order_id, realm_id: order_realm_id} =
                 await new VNOrder(order_token).findInstanceDetailWithToken(['realm_id']);
 
-
             if (realm_id !== order_realm_id) func.throwError('REALM_ID NOT MATCH');
 
             return await VNOrderNote.findOrderNoteListWithOrder(query, realm_id, order_id);
@@ -128,13 +122,12 @@ class VNNoteAction extends VNAction {
 
             const {realm_id} = await  this.findRealmIdWithToken(realm_token);
 
-            const {vn_trip_id: trip_id, realm_id: trip_realm_id, order_id, customer_id} =
-                await new VNTrip(trip_token).findInstanceDetailWithToken(['realm_id', 'order_id', 'customer_id']);
+            const {realm_id: trip_realm_id, order_id} =
+                await new VNTrip(trip_token).findInstanceDetailWithToken(['realm_id', 'order_id']);
 
             if (realm_id !== trip_realm_id) func.throwError('REALM_ID NOT MATCH');
 
-
-            return await VNOrderNote.findOrderNoteListWithTrip(query, realm_id, order_id, customer_id, trip_id);
+            return await VNOrderNote.findOrderNoteListWithOrder(query, realm_id, order_id);
 
         } catch (e) {
             throw e;
