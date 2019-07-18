@@ -112,7 +112,7 @@ class VNSetting extends ODInstance {
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_setting')
                 .configKeywordCondition(['key', 'value'], keywords, 'vn_setting')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_setting')
-                .configQueryLimit(start, 300);
+                .configQueryLimit(start, 30);
 
             const count = await this.findCountOfInstance('vn_setting', conditions);
 
