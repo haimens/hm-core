@@ -116,7 +116,7 @@ class VNSetting extends ODInstance {
 
             const count = await this.findCountOfInstance('vn_setting', conditions);
 
-            if (count === 0) return {reocrd_list: [], count, end: 0};
+            if (count === 0) return {record_list: [], count, end: 0};
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_setting', conditions);
 
