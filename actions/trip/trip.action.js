@@ -356,7 +356,7 @@ class VNTripAction extends VNAction {
             trip_list.forEach(trip => {
                 const {status, is_paid} = trip;
                 if (status !== 7) complete_flag = false;
-                if (!is_paid) flag = false;
+                if (!is_paid) paid_flag = false;
             });
 
             const update_pack = {};
