@@ -384,6 +384,7 @@ class VNTrip extends ODInstance {
                 .configSimpleJoin('LEFT JOIN vn_address AS from_addr ON trip_info.from_address_id = from_addr.id ')
                 .configSimpleJoin('LEFT JOIN vn_address AS to_addr ON trip_info.to_address_id = to_addr.id ')
                 .configStatusJoin('trip_info', 'vn_trip_status')
+                .configComplexConditionJoin('trip_info', 'driver_id', 'vn_driver')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'trip_info')
                 .configKeywordCondition(['contact_name', 'contact_cell'], keywords, 'vn_order')
                 .configSimpleCondition(
