@@ -274,7 +274,7 @@ class VNOrder extends ODInstance {
             conditions
                 .configComplexConditionKey('vn_coin', 'amount')
                 .configComplexConditionJoin('vn_order', 'coin_id', 'vn_coin')
-                .configComplexConditionQueryItem('vn_order', 'order_id', order_id)
+                .configComplexConditionQueryItem('vn_order', 'id', order_id)
                 .configComplexConditionQueryItem('vn_order', 'realm_id', realm_id);
 
 
