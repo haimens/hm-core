@@ -32,6 +32,8 @@ const discountRoute = require('./discount.route');
 const settingRoute = require('./setting.route');
 const noteRoute = require('./note.route');
 
+const emailRoute = require('./email.route');
+
 
 router.use("/king", kingRoute);
 router.use("/driver", driverRoute);
@@ -59,6 +61,8 @@ router.use('/flight', flightRoute);
 router.use('/discount', discountRoute);
 router.use('/setting', settingRoute);
 router.use('/note', noteRoute);
+
+router.use('/email', emailRoute);
 
 
 router.use("/", async (req, res, next) => {

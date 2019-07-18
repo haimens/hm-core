@@ -18,14 +18,16 @@ class VNEmailAction extends VNAction {
 
             const {title, msg} = body;
 
-            const {email, realm_id: customer_realm_id} = new VNCustomer(customer_token).findInstanceDetailWithToken(['email', 'realm_id']);
+            const {email, realm_id: customer_realm_id} = await new VNCustomer(customer_token).findInstanceDetailWithToken(['email', 'realm_id']);
 
 
+            console.log('realm_id', realm_id);
+            console.log('customer_realm', customer_realm_id);
             if (realm_id !== customer_realm_id) func.throwError('REALM_ID NOT MATCH');
 
 
             const email_resource = await VNEmailResource.findPrimaryEmailResourceWithRealm(realm_id);
-            
+
             const {sendgrid_api_key, sendgrid_from_email} = email_resource;
 
             const response = await VNSender.sendEmail(sendgrid_api_key, sendgrid_from_email, email, title, msg);
@@ -39,6 +41,6 @@ class VNEmailAction extends VNAction {
 
 }
 
-module.exports = VNEmailResource;
+module.exports = VNEmailAction;
 
 
