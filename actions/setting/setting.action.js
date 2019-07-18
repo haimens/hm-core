@@ -77,8 +77,9 @@ class VNSettingAction extends VNAction {
             const {realm_id: setting_realm_id} = await settingObj.findInstanceDetailWithToken(['realm_id']);
             if (realm_id !== setting_realm_id) func.throwError('REALM NOT MATCH');
 
+
             await settingObj.modifyInstanceDetailWithId(
-                body, ['value']
+                body, ['value', 'status']
             );
 
             return {setting_token};
