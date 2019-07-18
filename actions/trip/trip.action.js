@@ -364,7 +364,7 @@ class VNTripAction extends VNAction {
             if (complete_flag) update_pack['status'] = 4;
             if (paid_flag) update_pack['is_paid'] = 1;
 
-            await new VNOrder(null, order_id).modifyInstanceDetailWithId(update_pack);
+            await new VNOrder(null, order_id).modifyInstanceDetailWithId(update_pack, ['status', 'is_paid']);
 
             return {trip_token};
 
