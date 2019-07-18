@@ -106,7 +106,7 @@ class VNSetting extends ODInstance {
             const {date_from, date_to, from_key, to_key, keywords, start, order_key, order_direction, status} = search_query;
             const conditions = new ODCondition();
 
-            conditions.configComplexConditionKeys('vn_setting', ['key', 'value', 'cdate', 'udate', 'setting_token'])
+            conditions.configComplexConditionKeys('vn_setting', ['key', 'value', 'cdate', 'udate', 'setting_token', 'status'])
                 .configComplexConditionQueryItem('vn_setting', 'realm_id', realm_id)
                 .configStatusCondition(status, 'vn_setting')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_setting')

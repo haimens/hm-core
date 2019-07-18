@@ -34,7 +34,10 @@ class VNSettingAction extends VNAction {
             const {realm_token} = params;
             if (!realm_token) func.throwErrorWithMissingParam('realm_token');
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
-            return await VNSetting.findSettingListInRealm(realm_id, query);
+
+            const result = await VNSetting.findSettingListInRealm(realm_id, query);
+            console.log(result);
+            return result;
 
         } catch (e) {
             throw e;
