@@ -17,7 +17,7 @@ class VNDriverPush {
                 }
 
                 // Additional data
-                let additional_data = { type }
+                let additional_data = { type };
                 if (trip_token) { additional_data.trip_token = trip_token }
 
                 // Push notification content
