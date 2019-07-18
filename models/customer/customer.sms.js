@@ -11,7 +11,7 @@ class VNCustomerSMS extends ODInstance {
     }
 
     async registerCustomerSMS(info = {}, customer_id, realm_id) {
-        const {tar_cell, sys_cell, message, type, smsid, is_read} = info;
+        const {tar_cell, sys_cell, message, type, smsid, is_read, driver_id, lord_id} = info;
         if (!tar_cell) func.throwErrorWithMissingParam('tar_cell');
         if (!sys_cell) func.throwErrorWithMissingParam('sys_cell');
         if (!message) func.throwErrorWithMissingParam('message');
@@ -23,7 +23,7 @@ class VNCustomerSMS extends ODInstance {
                     tar_cell, sys_cell, message, type, smsid,
                     cdate: 'now()', udate: 'now()',
                     customer_id: (customer_id || 0), realm_id: (realm_id || 0),
-                    is_read,
+                    is_read, driver_id, lord_id,
                     status: 0
                 }
             );
@@ -86,6 +86,7 @@ class VNCustomerSMS extends ODInstance {
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_customer_sms')
                 .configQueryLimit(start, 30);
 
+
             const count = await this.findCountOfInstance('vn_customer_sms', conditions);
 
             if (count === 0) return {record_list: [], count, end: 0};
@@ -108,11 +109,15 @@ class VNCustomerSMS extends ODInstance {
                 .configComplexConditionKeys('sms1',
                     ['tar_cell', 'sys_cell', 'cdate', 'udate', 'message', 'type', 'is_read', 'sms_token']
                 )
-                .configComplexConditionKeys('vn_customer', ['name', 'username', 'email', 'img_path', 'cell', 'customer_token'])
+                .configComplexConditionKeys(
+                    'vn_customer',
+                    ['name', 'username', 'email', 'img_path', 'cell', 'customer_token']
+                )
                 .configSimpleJoin(`
                     LEFT JOIN vn_customer_sms AS sms2 ON (
                         sms1.customer_id = sms2.customer_id AND sms1.id < sms2.id 
-                    )`)
+                    )`
+                )
                 .configComplexConditionJoin('sms1', 'customer_id', 'vn_customer')
                 .configSimpleCondition('sms2.id IS NULL')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'sms1')
@@ -146,13 +151,26 @@ class VNCustomerSMS extends ODInstance {
                 .configComplexConditionKeys('vn_customer_sms',
                     ['tar_cell', 'sys_cell', 'cdate', 'udate', 'message', 'type', 'is_read', 'sms_token']
                 )
+                .configComplexConditionKeys(
+                    'vn_driver',
+                    ['name AS driver_name', 'cell AS driver_cell', 'driver_token', 'img_path AS driver_img_path']
+                )
+                .configComplexConditionKeys(
+                    'vn_lord',
+                    ['name AS lord_name', 'cell AS lord_cell', 'lord_token', 'img_path AS lord_img_path']
+                )
                 .configComplexConditionKeys('vn_customer', ['name', 'username', 'email', 'img_path', 'customer_token'])
                 .configComplexConditionJoin('vn_customer_sms', 'customer_id', 'vn_customer')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_customer_sms')
                 .configKeywordCondition(['message'], keywords, 'vn_customer_sms')
                 .configKeywordCondition(['name', 'cell', 'email', 'username'], keywords, 'vn_customer')
                 .configComplexConditionQueryItem('vn_customer_sms', 'customer_id', customer_id)
-
+                .configComplexConditionJoins('vn_customer_sms',
+                    [
+                        {key: 'driver_id', tar: 'vn_driver'},
+                        {key: 'lord_id', tar: 'vn_lord'}
+                    ]
+                )
                 .configStatusCondition(1, 'vn_customer_sms')
                 .configComplexOrder(order_key, order_direction, ['cdate', 'udate'], 'vn_customer_sms')
                 .configQueryLimit(start, 30);

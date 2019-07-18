@@ -12,6 +12,10 @@ const VNTrip = require('../../models/trip/trip.class');
 
 const VNDriverPush = require('../../models/driver/driver.push');
 
+const VNLord = require('../../models/lord/lord.class');
+
+const VNDriver = require('../../models/driver/driver.class');
+
 
 class VNSMSAction extends VNAction {
 
@@ -28,7 +32,7 @@ class VNSMSAction extends VNAction {
             const customerObj = new VNCustomer(customer_token);
 
             const {message, title, type} = body;
-            console.log(body);
+
             if (!message) func.throwError('CANNOT SEND EMPTY MESSAGE', 400);
             const {name, cell, vn_customer_id: customer_id} = await customerObj.findInstanceDetailWithToken(['name', 'cell']);
             if (!cell) func.throwErrorWithMissingParam('customer_cell');
@@ -37,6 +41,22 @@ class VNSMSAction extends VNAction {
 
             const twilio_response = await VNSender.sendSMS(smsResource, msg, cell);
 
+            let lord_id = 0;
+            let driver_id = 0;
+
+
+            if (type === 1) {
+                const {lord_token} = query;
+                const {vn_lord_id} = await new VNLord(lord_token).findInstanceDetailWithToken();
+                lord_id = vn_lord_id;
+            }
+
+            if (type === 2) {
+                const {driver_token} = query;
+                const {vn_driver_id} = await new VNDriver(driver_token).findInstanceDetailWithToken();
+                driver_id = vn_driver_id;
+            }
+
 
             const sms_info = {
                 sys_cell: twilio_from_num,
@@ -44,8 +64,12 @@ class VNSMSAction extends VNAction {
                 message: msg,
                 smsid: twilio_response,
                 type: type || 3,
-                is_read: 1
+                is_read: 1,
+                lord_id,
+                driver_id
             };
+
+
 
 
             const customerSMSObj = new VNCustomerSMS();
