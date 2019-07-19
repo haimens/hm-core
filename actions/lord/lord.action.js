@@ -48,14 +48,14 @@ class VNLordAction extends VNAction {
 
             const realmObj = new VNRealm(null, realm_id);
 
-            const {realm_token, icon_path, logo_path, realm_status} =
+            const {realm_token, icon_path, logo_path, realm_status,company_name} =
                 await realmObj.findInstanceDetailWithId(
-                    ['realm_token', 'icon_path', 'logo_path', 'status AS realm_status']
+                    ['realm_token', 'icon_path', 'logo_path', 'status AS realm_status', 'company_name']
                 );
 
             if (realm_status !== 2) return {isValid: false, message: 'REALM SUSPENDED'};
 
-            const response = {isValid: true, ...lord_info, realm_token, icon_path, logo_path};
+            const response = {isValid: true, ...lord_info, realm_token, icon_path, logo_path, company_name};
 
             await redis.setAsync('LORD-CHECK', lord_key, response);
 
