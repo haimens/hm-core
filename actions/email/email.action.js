@@ -26,11 +26,17 @@ class VNEmailAction extends VNAction {
 
             const {sendgrid_api_key, sendgrid_from_email} = email_resource;
 
+
+
+
             const response = await VNSender.sendEmail(sendgrid_api_key, sendgrid_from_email, email, title, msg);
+
 
             return {response, customer_token};
 
         } catch (e) {
+
+            console.log(e.response.body);
             throw e;
         }
     }
