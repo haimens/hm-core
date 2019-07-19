@@ -20,11 +20,7 @@ class VNEmailAction extends VNAction {
 
             const {email, realm_id: customer_realm_id} = await new VNCustomer(customer_token).findInstanceDetailWithToken(['email', 'realm_id']);
 
-
-            console.log('realm_id', realm_id);
-            console.log('customer_realm', customer_realm_id);
             if (realm_id !== customer_realm_id) func.throwError('REALM_ID NOT MATCH');
-
 
             const email_resource = await VNEmailResource.findPrimaryEmailResourceWithRealm(realm_id);
 
