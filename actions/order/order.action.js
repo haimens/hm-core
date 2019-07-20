@@ -347,6 +347,7 @@ class VNOrderAction extends VNAction {
                 return new Promise((resolve, reject) => {
 
                     const {available_usage, discount_token} = order_discount;
+
                     const discountObj = new VNDiscount(discount_token);
 
                     discountObj.modifyInstanceDetailWithToken(
@@ -371,9 +372,10 @@ class VNOrderAction extends VNAction {
 
             const {coin_id} = await new VNCoin().registerCoin(tribute_amount);
 
-            const {tribute_token} = await tributeObj.registerTributeDetail({
-                note: 'ORDER INCOME'
-            }, realm_id, coin_id, order_id);
+            const {tribute_token} = await tributeObj.registerTributeDetail(
+                {
+                    note: 'ORDER INCOME'
+                }, realm_id, coin_id, order_id);
 
             const {lord_token} = query;
             let lord_name = 'N/A';

@@ -164,7 +164,6 @@ class VNTripAction extends VNAction {
             if (realm_id !== trip_realm_id) func.throwError('REALM NOT MATCH');
 
             const promise_list = [
-
                 //DRIVER 0
                 driver_id ? (new VNDriver(null, driver_id).findInstanceDetailWithId(
                     ['name', 'cell', 'license_num', 'email', 'img_path', 'cdate', 'udate', 'driver_token']))
@@ -213,9 +212,7 @@ class VNTripAction extends VNAction {
             const from_address_info = result_list[3];
             const to_address_info = result_list[4];
             const flight_info = result_list[5];
-
             const {record_list: addon_list} = result_list[6];
-
             const {record_list: alert_list} = result_list[7];
 
 
@@ -259,8 +256,8 @@ class VNTripAction extends VNAction {
                 if (!record_time) func.throwErrorWithMissingParam('record_time');
 
                 return new VNAlert().registerAlert({type, record_time}, order_id, customer_id, trip_id, realm_id);
-            });
 
+            });
 
             const result_list = (await Promise.all(alert_promise_list)).map(result => result.alert_token);
 
@@ -334,7 +331,6 @@ class VNTripAction extends VNAction {
 
                     }
                 }
-
                 //END OF TIP
             }
 
@@ -427,9 +423,7 @@ class VNTripAction extends VNAction {
         try {
 
             const {realm_token} = params;
-
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
-
             return await VNTrip.findTripCountForMonth(query, realm_id);
         } catch (e) {
             throw e;

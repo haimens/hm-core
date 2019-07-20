@@ -15,15 +15,15 @@ class VNAddress extends ODInstance {
         try {
             if (!street_line_1) func.throwErrorWithMissingParam('street_line_1');
 
-            if (!city) func.throwErrorWithMissingParam('city');
-            if (!state) func.throwErrorWithMissingParam('state');
+            // if (!city) func.throwErrorWithMissingParam('city');
+            // if (!state) func.throwErrorWithMissingParam('state');
             if (!zip) func.throwErrorWithMissingParam('zip');
-            if (!addr_str) func.throwErrorWithMissingParam('addr_str');
+            // if (!addr_str) func.throwErrorWithMissingParam('addr_str');
             if (!lat) func.throwErrorWithMissingParam('lat');
             if (!lng) func.throwErrorWithMissingParam('lng');
 
             let address_str = addr_str;
-            if (!address_str) address_str = `${street_line_1} ${street_line_2 || ''}, ${city}, ${state}, ${zip}`;
+            if (!address_str) address_str = `${street_line_1} ${street_line_2 || ''}, ${city ? (city + ' ,') : ''} ${state ? (state + ' ,') : ''}, ${zip}`;
 
             const addr_record = await VNAddress._findAddressWithAddressStr(address_str);
 
@@ -33,7 +33,7 @@ class VNAddress extends ODInstance {
                 {
                     addr_str: address_str, street_line_1,
                     street_line_2: street_line_2 || '',
-                    city, state: state, zip, cdate: 'now()', udate: 'now()', status: 0,
+                    city: city || '', state: state, zip, cdate: 'now()', udate: 'now()', status: 0,
                     lat, lng
                 });
             this.instance_token = `ADDR-${func.encodeUnify(this.instance_id, 'addr')}`;
