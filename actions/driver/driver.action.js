@@ -156,7 +156,7 @@ class VNDriverAction extends VNAction {
 
 
             await driverObj.modifyInstanceDetailWithId(body,
-                ['name', 'cell', 'email', 'identifier', 'license_num', 'img_path', 'status']
+                ['name', 'cell', 'email', 'identifier', 'license_num', 'img_path', 'status', 'player_key']
             );
 
             await redis.setAsync('DRIVER-CHECK', driver_key, null); //FUCK UP REDIS RECORD

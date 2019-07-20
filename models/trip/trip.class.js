@@ -158,9 +158,6 @@ class VNTrip extends ODInstance {
 
             const count = await this.findCountOfInstance('vn_trip', conditions, 'trip_info');
 
-            console.log('realm',count);
-            console.log('realm_query', conditions.printRecordQuery('vn_trip AS trip_info'));
-
             if (count === 0) return {record_list: [], count, end: 0};
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_trip AS trip_info', conditions);
