@@ -41,7 +41,7 @@ class VNSMSAction extends VNAction {
 
             const twilio_response = await VNSender.sendSMS(smsResource, msg, cell);
 
-            console.log(twilio_response);
+
 
             let lord_id = 0;
             let driver_id = 0;
@@ -129,7 +129,7 @@ class VNSMSAction extends VNAction {
                 const {record_list: trip_list} = await VNTrip.findActiveTripWithCustomer(realm_id, customer_id);
                 const promise_list = trip_list.map(info => {
                     const {player_key, trip_token} = info;
-                    return VNDriverPush.sendDriverPush(player_key, 1, trip_token)
+                    return VNDriverPush.sendDriverPush(player_key, 2, trip_token)
                 });
                 Promise.all(promise_list).then(result => console.log(result)).catch(err => console.log(err));
             }
