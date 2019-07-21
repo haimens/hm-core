@@ -41,6 +41,8 @@ class VNSMSAction extends VNAction {
 
             const twilio_response = await VNSender.sendSMS(smsResource, msg, cell);
 
+            console.log(twilio_response);
+
             let lord_id = 0;
             let driver_id = 0;
 
@@ -68,8 +70,6 @@ class VNSMSAction extends VNAction {
                 lord_id,
                 driver_id
             };
-
-
 
 
             const customerSMSObj = new VNCustomerSMS();
