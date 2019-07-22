@@ -6,6 +6,8 @@ const VNRealm = require('../../models/realm/realm.class');
 const VNDriverLocation = require('../../models/driver/driver.location');
 const VNDriverCar = require('../../models/driver/driver.car');
 
+const VNDriverPush = require('../../models/driver/driver.push');
+
 const VNCar = require('../../models/car/car.class');
 const redis = require('od-utility-redis');
 
@@ -259,6 +261,24 @@ class VNDriverAction extends VNAction {
 
             return await VNDriver.findDriverPayableListInRealm(query, realm_id);
 
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async requestDriverLocationShare(params, body, query) {
+        try {
+            const {realm_token, driver_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {player_key, driver_realm_id} = await new VNDriver(driver_token).findInstanceDetailWithToken(['realm_token']);
+
+            if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
+
+            const response = await VNDriverPush.sendDriverPush(player_key, 1);
+
+            return {response, driver_token};
         } catch (e) {
             throw e;
         }

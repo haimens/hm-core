@@ -176,4 +176,18 @@ router.get('/all/payable/realm/:realm_token', async (req, res, next) => {
     }
 });
 
+
+router.patch('/share/:realm_token/:driver_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNDriverAction.requestDriverLocationShare(
+                req.params, req.body, req.query
+            )
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 module.exports = router;

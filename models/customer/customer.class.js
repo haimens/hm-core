@@ -194,7 +194,7 @@ class VNCustomer extends ODInstance {
 
             conditions
                 .configComplexConditionJoin('vn_customer', 'realm_id', 'vn_realm')
-                .configComplexConditionKeys('vn_customer', ['id AS customer_id', 'realm_id'])
+                .configComplexConditionKeys('vn_customer', ['id AS customer_id', 'realm_id', 'customer_token'])
                 .configComplexConditionQueryItem('vn_customer', 'cell', cell)
                 .configComplexOrder('udate', 'DESC', ['udate'], 'vn_customer')
                 .configStatusCondition(2, 'vn_customer')

@@ -3,7 +3,7 @@ const func = require('od-utility');
 class VNDriverPush {
     //type 1 ask driver share location
     //type 2 ask driver fetch customer message.
-    static async sendDriverPush(player_key, type, trip_token) {
+    static async sendDriverPush(player_key, type, customer_token) {
         return new Promise((resolve, reject) => {
             try {
                 // Push message
@@ -18,7 +18,7 @@ class VNDriverPush {
 
                 // Additional data
                 let additional_data = { type };
-                if (trip_token) { additional_data.trip_token = trip_token }
+                if (customer_token) { additional_data.customer_token = customer_token }
 
                 // Push notification content
                 var data = {

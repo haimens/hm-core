@@ -42,7 +42,6 @@ class VNSMSAction extends VNAction {
             const twilio_response = await VNSender.sendSMS(smsResource, msg, cell);
 
 
-
             let lord_id = 0;
             let driver_id = 0;
 
@@ -106,30 +105,38 @@ class VNSMSAction extends VNAction {
 
             const sms_info = {sys_cell: To, tar_cell: From, message: Body, smsid: SmsSid, type: 4, is_read: 0};
 
-            let customer_id, realm_id;
+            let customer_id, realm_id, customer_token;
 
-            const {customer_id: log_customer_id, realm_id: log_realm_id} = await VNCustomerSMS.findCustomerSMSRecordWithIncomingReply(
+            const {
+                customer_id: log_customer_id,
+                realm_id: log_realm_id, customer_token: log_customer_token
+            } = await VNCustomerSMS.findCustomerSMSRecordWithIncomingReply(
                 From, To
             );
 
             customer_id = log_customer_id;
             realm_id = log_realm_id;
-
+            customer_token = log_customer_token;
 
             if (!log_customer_id) {
-                const {customer_id: exist_customer_id, realm_id: exist_realm_id} = await VNCustomer.findCustomerInfoWithIncomingSMS(From);
+                const {
+                    customer_id: exist_customer_id,
+                    realm_id: exist_realm_id,
+                    exist_customer_token
+                } = await VNCustomer.findCustomerInfoWithIncomingSMS(From);
                 customer_id = exist_customer_id;
                 realm_id = exist_realm_id;
+                customer_token = exist_customer_token;
             }
 
             const {sms_token} = new VNCustomerSMS().registerCustomerSMS(sms_info, customer_id, realm_id);
 
 
-            if (customer_id) {
+            if (customer_id && customer_token) {
                 const {record_list: trip_list} = await VNTrip.findActiveTripWithCustomer(realm_id, customer_id);
                 const promise_list = trip_list.map(info => {
-                    const {player_key, trip_token} = info;
-                    return VNDriverPush.sendDriverPush(player_key, 2, trip_token)
+                    const {player_key} = info;
+                    return VNDriverPush.sendDriverPush(player_key, 2, customer_token)
                 });
                 Promise.all(promise_list).then(result => console.log(result)).catch(err => console.log(err));
             }
