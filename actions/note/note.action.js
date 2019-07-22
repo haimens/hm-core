@@ -160,6 +160,7 @@ class VNNoteAction extends VNAction {
             throw e;
         }
     }
+
 }
 
 module.exports = VNNoteAction;
