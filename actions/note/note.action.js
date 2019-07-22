@@ -27,7 +27,13 @@ class VNNoteAction extends VNAction {
 
             const orderNoteObj = new VNOrderNote();
 
-            const {order_note_token} = await orderNoteObj.registerOrderNote({...body, type: 1}, realm_id, customer_id);
+            const {note, type} = body;
+
+            const {order_note_token} = await orderNoteObj.registerOrderNote(
+                {
+                    note,
+                    type: type || 1
+                }, realm_id, customer_id);
 
             return {order_note_token};
 
@@ -48,9 +54,10 @@ class VNNoteAction extends VNAction {
             if (realm_id !== order_realm_id) func.throwError('REALM_ID NOT MATCH');
 
             const orderNoteObj = new VNOrderNote();
+            const {note, type} = body;
             const {order_note_token} = await orderNoteObj.registerOrderNote({
-                ...body,
-                type: 2
+                note,
+                type: type || 2
             }, realm_id, customer_id, order_id);
 
             return {order_note_token};

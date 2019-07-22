@@ -38,6 +38,17 @@ router.post('/send/customer/:realm_token/:customer_token', async (req, res, next
 
 });
 
+
+router.post('/send/dispatch/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNSMSAction
+        )
+    } catch (e) {
+        next(e);
+    }
+});
+
 router.post('/send/trip/:realm_token/:trip_token', async (req, res, next) => {
 
     try {

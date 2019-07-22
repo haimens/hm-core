@@ -272,7 +272,7 @@ class VNDriverAction extends VNAction {
 
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
-            const {player_key, driver_realm_id} = await new VNDriver(driver_token).findInstanceDetailWithToken(['realm_token']);
+            const {player_key, realm_id:driver_realm_id} = await new VNDriver(driver_token).findInstanceDetailWithToken(['realm_id']);
 
             if (realm_id !== driver_realm_id) func.throwError('REALM_ID NOT MATCH');
 

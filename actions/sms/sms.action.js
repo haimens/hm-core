@@ -83,6 +83,15 @@ class VNSMSAction extends VNAction {
         }
     }
 
+
+    static async sendSMSWithDispatch(params, body, query) {
+        try {
+        } catch (e) {
+            throw e;
+        }
+    }
+
+
     static async sendSMSWithOrder(params, body, query) {
         try {
         } catch (e) {
