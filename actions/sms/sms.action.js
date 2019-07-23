@@ -101,7 +101,9 @@ class VNSMSAction extends VNAction {
 
             const {value: contact_name} = await VNSetting.findSettingInfoWithKey(realm_id, 'contact_name');
 
-            const msg = `${title ? ('#' + title + '#\n') : ''}${name ? ('Dear ' + contact_name + ': \n') : ''}${message + '\n'}${company_name}`;
+            if (!contact_cell) func.throwErrorWithMissingParam('contact_cell');
+
+            const msg = `${title ? ('#' + title + '#\n') : ''}${contact_name ? ('Dear ' + contact_name + ': \n') : ''}${message + '\n'}${company_name}`;
 
 
             const twilio_response = await VNSender.sendSMS(smsResource, msg, contact_cell);
