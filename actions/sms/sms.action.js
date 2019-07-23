@@ -16,6 +16,8 @@ const VNLord = require('../../models/lord/lord.class');
 
 const VNDriver = require('../../models/driver/driver.class');
 
+const VNSetting = require('../../models/setting/setting.class');
+
 
 class VNSMSAction extends VNAction {
 
@@ -86,6 +88,26 @@ class VNSMSAction extends VNAction {
 
     static async sendSMSWithDispatch(params, body, query) {
         try {
+
+            const {realm_token} = params;
+            const {realm_id, company_name} = await this.findRealmIdWithToken(realm_token);
+
+            const smsResource = await VNMessageResource.findPrimaryMessageResourceWithRealm(realm_id);
+
+
+            const {message, title} = body;
+
+            const {value: contact_cell} = await VNSetting.findSettingInfoWithKey(realm_id, 'contact_cell');
+
+            const {value: contact_name} = await VNSetting.findSettingInfoWithKey(realm_id, 'contact_name');
+
+            const msg = `${title ? ('#' + title + '#\n') : ''}${name ? ('Dear ' + contact_name + ': \n') : ''}${message + '\n'}${company_name}`;
+
+
+            const twilio_response = await VNSender.sendSMS(smsResource, msg, contact_cell);
+
+            return {twilio_response, msg, realm_token};
+
         } catch (e) {
             throw e;
         }

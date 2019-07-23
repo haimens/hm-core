@@ -20,4 +20,28 @@ router.post('/send/customer/:realm_token/:customer_token', async (req, res, next
 });
 
 
+router.post('/send/lord/:realm_token/:lord_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNEmailAction.sendEmailWithLord(req.params, req.body, req.query)
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
+router.post('/send/driver/:realm_token/:driver_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNEmailAction.sendEmailWithDriver(req.params, req.body, req.query)
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
 module.exports = router;

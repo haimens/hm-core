@@ -42,8 +42,12 @@ router.post('/send/customer/:realm_token/:customer_token', async (req, res, next
 router.post('/send/dispatch/:realm_token', async (req, res, next) => {
     try {
         const resBody = func.configSuccess(
-            await VNSMSAction
-        )
+            await VNSMSAction.sendSMSWithDispatch(
+                req.params, req.body, req.query
+            )
+        );
+
+        res.json(resBody);
     } catch (e) {
         next(e);
     }
