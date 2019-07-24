@@ -57,13 +57,16 @@ class VNOrderAction extends VNAction {
             );
 
 
+
             const trip_promise_list = quote_list.map(quote_info => {
                 const {quote_token, flight_str} = quote_info;
+
                 return new Promise((resolve, reject) => {
                     const quoteObj = new VNQuote(quote_token);
                     quoteObj.findFullQuoteWithToken(realm_id)
                         .then(info => {
                             const tripObj = new VNTrip();
+
                             return tripObj.registerTrip({...info, flight_str}, customer_id, order_id, realm_id);
                         })
                         .then(trip_info => resolve(trip_info.trip_token))
