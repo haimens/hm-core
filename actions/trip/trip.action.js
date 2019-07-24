@@ -176,9 +176,7 @@ class VNTripAction extends VNAction {
                 ])) : {},
 
                 //CUSTOMER 2
-                customer_id ? (new VNCustomer(null, customer_id).findInstanceDetailWithId(
-                    ['name', 'cell', 'email', 'img_path', 'customer_token', 'cdate', 'udate']
-                )) : {},
+                customer_id ? (new VNCustomer(null, customer_id).findCustomerDetail(realm_id)) : {},
 
                 //FROM ADDRESS 3
                 from_address_id ? (new VNAddress(null, from_address_id).findInstanceDetailWithId(
