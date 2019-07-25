@@ -49,7 +49,7 @@ class VNCustomerSMS extends ODInstance {
             conditions
                 .configComplexConditionKeys(
                     'vn_customer_sms',
-                    ['customer_id', 'realm_id', 'customer_token']
+                    ['customer_id', 'realm_id']
                 )
                 .configComplexConditionKey('vn_customer', 'customer_token')
                 .configComplexConditionJoin('vn_customer_sms', 'customer_id', 'vn_customer')
