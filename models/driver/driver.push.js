@@ -7,6 +7,8 @@ class VNDriverPush {
         return new Promise((resolve, reject) => {
             try {
                 // Push message
+
+                console.log(player_key, type);
                 let push_message = '';
                 if (type === 1) {
                     push_message = 'Dispatch center wants to know your current status, tap to share';

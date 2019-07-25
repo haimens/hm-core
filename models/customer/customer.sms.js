@@ -61,6 +61,8 @@ class VNCustomerSMS extends ODInstance {
 
             const [record] = await this.findInstanceListWithComplexCondition('vn_customer_sms', conditions);
 
+            console.log('cu', record);
+
             return record || {};
 
 

@@ -57,7 +57,6 @@ class VNOrderAction extends VNAction {
             );
 
 
-
             const trip_promise_list = quote_list.map(quote_info => {
                 const {quote_token, flight_str} = quote_info;
 
@@ -211,9 +210,14 @@ class VNOrderAction extends VNAction {
 
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
 
+
             const {code} = body;
 
-            const {discount_id} = await new VNDiscount().findDiscountInfoWithKey(code, realm_id);
+
+            const {discount_id, available_usage} = await new VNDiscount().findDiscountInfoWithKey(code, realm_id);
+
+            if (available_usage < 1) func.throwError('NOT ENOUGH AVAILABLE USAGE');
+
 
             const {order_discount_token} =
                 await new VNOrderDiscount().registerOrderDiscount(order_id, customer_id, realm_id, discount_id);
@@ -276,6 +280,8 @@ class VNOrderAction extends VNAction {
             if (lord_token) {
                 const {name} = await new VNLord(lord_token).findInstanceDetailWithToken(['name']);
                 lord_name = name;
+            } else {
+                lord_name = null;
             }
 
             const note = `Order Finalize By ${lord_name || 'Customer'} - Amount: $ ${(final_total / 100).toFixed(2)} - ${order_token} `;
