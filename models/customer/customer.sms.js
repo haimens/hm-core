@@ -59,15 +59,17 @@ class VNCustomerSMS extends ODInstance {
                 .configComplexConditionQueryItem('vn_customer_sms', 'status', 1)
                 .configQueryLimit(0, 1);
 
+            console.log(conditions.printRecordQuery('vn_customer_sms'));
+
             const [record] = await this.findInstanceListWithComplexCondition('vn_customer_sms', conditions);
 
-            console.log('cu', record);
-
+            console.log('cusl', record);
             return record || {};
 
 
         } catch (e) {
 
+            throw e;
         }
     }
 
