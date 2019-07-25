@@ -338,7 +338,7 @@ class VNTripAction extends VNAction {
                 [
                     'amount', 'is_paid', 'eta_time', 'cob_time',
                     'arrive_time', 'flight_str', 'start_time',
-                    'cad_time', 'status'
+                    'cad_time', 'status', 'note'
                 ]
             );
 
