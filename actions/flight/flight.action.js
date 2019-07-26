@@ -14,7 +14,6 @@ class VNFlightAction extends VNAction {
 
             const {realm_id, status} = await this.findRealmIdWithToken(realm_token);
 
-
             if (!realm_id) func.throwErrorWithMissingParam('realm_id');
             if (status !== 2) func.throwError('REALM CLOSED');
 
@@ -24,6 +23,7 @@ class VNFlightAction extends VNAction {
             const promise_list = flight_list.map(raw_info => {
                 return new VNFlight().registerFlight(raw_info);
             });
+
 
             const record_list = await Promise.all(promise_list);
 

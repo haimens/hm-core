@@ -107,8 +107,10 @@ class VNOrderAction extends VNAction {
 
             const {record_list: order_discount_list} = await VNOrderDiscount.findOrderDiscountListWithOrder(order_id, realm_id);
 
+            const {record_list: order_note_list} = await VNOrderNote.findOrderNoteListWithOrder({start: 0}, realm_id, order_id);
 
-            return {order_info, trip_list, customer_info, addon_list, order_discount_list};
+
+            return {order_info, trip_list, customer_info, addon_list, order_discount_list, order_note_list};
         } catch (e) {
             throw e;
         }
