@@ -53,8 +53,8 @@ class VNCustomerSMS extends ODInstance {
                 )
                 .configComplexConditionKey('vn_customer', 'customer_token')
                 .configComplexConditionJoin('vn_customer_sms', 'customer_id', 'vn_customer')
-                .configSimpleCondition(`REPLACE(vn_customer_sms.tar_cell, ' ', '') = ${tar_cell}`)
-                .configSimpleCondition(`REPLACE(vn_customer_sms.sys_cell, ' ', '') = ${sys_cell}`)
+                .configSimpleCondition(`REPLACE(vn_customer_sms.tar_cell, ' ', '') = '${tar_cell}'`)
+                .configSimpleCondition(`REPLACE(vn_customer_sms.sys_cell, ' ', '') = '${sys_cell}'`)
                 .configComplexOrder('udate', 'DESC', ['udate'], 'vn_customer_sms')
                 .configComplexConditionQueryItem('vn_customer_sms', 'status', 1)
                 .configQueryLimit(0, 1);
