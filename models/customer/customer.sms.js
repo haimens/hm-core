@@ -18,7 +18,6 @@ class VNCustomerSMS extends ODInstance {
         if (!smsid) func.throwErrorWithMissingParam('smsid');
 
         const trimed_tar = tar_cell.replace(' ', '');
-        console.log(trimed_tar);
         try {
 
             this.instance_id = await this.insertInstance(
