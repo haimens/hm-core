@@ -20,7 +20,7 @@ class VNCustomerSMS extends ODInstance {
 
             this.instance_id = await this.insertInstance(
                 {
-                    tar_cell, sys_cell, message, type, smsid,
+                    tar_cell: tar_cell.replace(' ', ''), sys_cell, message, type, smsid,
                     cdate: 'now()', udate: 'now()',
                     customer_id: (customer_id || 0), realm_id: (realm_id || 0),
                     is_read, driver_id, lord_id,
@@ -53,13 +53,12 @@ class VNCustomerSMS extends ODInstance {
                 )
                 .configComplexConditionKey('vn_customer', 'customer_token')
                 .configComplexConditionJoin('vn_customer_sms', 'customer_id', 'vn_customer')
-                .configSimpleCondition(`REPLACE(vn_customer_sms.tar_cell, ' ', '') = '${tar_cell}'`)
-                .configSimpleCondition(`REPLACE(vn_customer_sms.sys_cell, ' ', '') = '${sys_cell}'`)
+                .configSimpleCondition(`vn_customer_sms.tar_cell = '${tar_cell}'`)
+                .configSimpleCondition(`vn_customer_sms.sys_cell = '${sys_cell}'`)
                 .configComplexOrder('udate', 'DESC', ['udate'], 'vn_customer_sms')
                 .configComplexConditionQueryItem('vn_customer_sms', 'status', 1)
                 .configQueryLimit(0, 1);
 
-            console.log(conditions.printRecordQuery('vn_customer_sms'));
 
             const [record] = await this.findInstanceListWithComplexCondition('vn_customer_sms', conditions);
 
