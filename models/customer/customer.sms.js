@@ -16,11 +16,14 @@ class VNCustomerSMS extends ODInstance {
         if (!sys_cell) func.throwErrorWithMissingParam('sys_cell');
         if (!message) func.throwErrorWithMissingParam('message');
         if (!smsid) func.throwErrorWithMissingParam('smsid');
+
+        const trimed_tar = tar_cell.replace(' ', '');
+        console.log(trimed_tar);
         try {
 
             this.instance_id = await this.insertInstance(
                 {
-                    tar_cell: tar_cell.replace(' ', ''), sys_cell, message, type, smsid,
+                    tar_cell: trimed_tar, sys_cell, message, type, smsid,
                     cdate: 'now()', udate: 'now()',
                     customer_id: (customer_id || 0), realm_id: (realm_id || 0),
                     is_read, driver_id, lord_id,
