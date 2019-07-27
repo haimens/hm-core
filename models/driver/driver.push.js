@@ -3,12 +3,10 @@ const func = require('od-utility');
 class VNDriverPush {
     //type 1 ask driver share location
     //type 2 ask driver fetch customer message.
-    static async sendDriverPush(player_key, type, customer_token) {
+    static async sendDriverPush(driver_token, type, customer_token) {
         return new Promise((resolve, reject) => {
             try {
                 // Push message
-
-                console.log(player_key, type);
                 let push_message = '';
                 if (type === 1) {
                     push_message = 'Dispatch center wants to know your current status, tap to share';
@@ -26,7 +24,7 @@ class VNDriverPush {
                 var data = {
                     app_id: process.env.ONE_SIGNAL_APP_ID,
                     contents: { 'en': push_message },
-                    include_player_ids: [player_key],
+                    include_external_user_ids: [driver_token],
                     data: additional_data
                 };
 
