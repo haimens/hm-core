@@ -57,6 +57,7 @@ class VNFlightStats {
 
             return {flight_list};
         } catch (e) {
+            console.log('FLIGHT STATUS: ', e);
             return {flight_list: []};
         }
     }
