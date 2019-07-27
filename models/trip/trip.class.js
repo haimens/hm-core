@@ -178,6 +178,7 @@ class VNTrip extends ODInstance {
 
             const conditions = new ODCondition();
 
+            console.log('search_query', search_query);
 
             conditions
                 .configComplexConditionKeys(
@@ -221,6 +222,8 @@ class VNTrip extends ODInstance {
                     '(trip_info.status = 3 OR trip_info.status = 4 OR trip_info.status = 5 OR trip_info.status = 6)'
                 )
                 .configQueryLimit(start, 30);
+
+            console.log(conditions.printRecordQuery('vn_trip AS trip_info'));
 
 
             const count = await this.findCountOfInstance('vn_trip', conditions, 'trip_info');
