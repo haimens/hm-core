@@ -168,8 +168,8 @@ class VNSMSAction extends VNAction {
             if (customer_id && customer_token) {
                 const {record_list: trip_list} = await VNTrip.findActiveTripWithCustomer(realm_id, customer_id);
                 const promise_list = trip_list.map(info => {
-                    const {player_key} = info;
-                    return VNDriverPush.sendDriverPush(player_key, 2, customer_token)
+                    const {driver_token} = info;
+                    return VNDriverPush.sendDriverPush(driver_token, 2, customer_token)
                 });
                 Promise.all(promise_list).then(result => console.log(result)).catch(err => console.log(err));
             }

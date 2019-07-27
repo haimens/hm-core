@@ -163,7 +163,6 @@ class VNTrip extends ODInstance {
             const record_list = await this.findInstanceListWithComplexCondition('vn_trip AS trip_info', conditions);
 
 
-
             return {record_list, count, end: (parseInt(start) || 0) + record_list.length};
 
 
@@ -421,7 +420,7 @@ class VNTrip extends ODInstance {
 
             conditions
                 .configComplexConditionKey('vn_trip', 'trip_token')
-                .configComplexConditionKey('vn_driver', 'player_key')
+                .configComplexConditionKey('vn_driver', 'player_key', 'driver_token')
                 .configSimpleCondition(
                     '(vn_trip.status = 3 OR vn_trip.status = 4 OR vn_trip.status = 5 OR vn_trip.status = 6)'
                 )
