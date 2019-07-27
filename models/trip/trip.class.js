@@ -469,7 +469,7 @@ class VNTrip extends ODInstance {
             }
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
-            console.log(record_list);
+
 
             return record_list || [];
         } catch (e) {
