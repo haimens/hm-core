@@ -24,9 +24,9 @@ class VNDriverAction extends VNAction {
 
             const driverObj = new VNDriver();
 
-            const {driver_token} = await driverObj.registerDriver(body, realm_id);
+            const {driver_token, username} = await driverObj.registerDriver(body, realm_id);
 
-            return {driver_token};
+            return {driver_token, username};
         } catch (e) {
             throw e;
         }

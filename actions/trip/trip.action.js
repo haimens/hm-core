@@ -165,9 +165,7 @@ class VNTripAction extends VNAction {
 
             const promise_list = [
                 //DRIVER 0
-                driver_id ? (new VNDriver(null, driver_id).findInstanceDetailWithId(
-                    ['name', 'cell', 'license_num', 'email', 'img_path', 'cdate', 'udate', 'driver_token']))
-                    : {},
+                driver_id ? (new VNDriver(null, driver_id).findDriverFullDetail(realm_id)) : {},
 
                 //CAR 1
                 car_id ? (new VNCar(null, car_id).findInstanceDetailWithId([

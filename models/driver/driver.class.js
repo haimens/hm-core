@@ -88,6 +88,48 @@ class VNDriver extends ODInstance {
         }
     }
 
+    async findDriverFullDetail(realm_id) {
+        try {
+            if (!this.instance_id) {
+                if (!this.instance_token) func.throwErrorWithMissingParam('instance_token && instance_id');
+                const {vn_driver_id} = await this.findInstanceDetailWithToken();
+                this.instance_id = vn_driver_id;
+            }
+
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys(
+                    'vn_driver',
+                    ['name', 'cell', 'license_num', 'email', 'img_path', 'cdate', 'udate', 'driver_token']
+                )
+                .configComplexConditionKeys(
+                    'location_info',
+                    ['lat', 'lng', 'udate AS location_udate', 'driver_location_token']
+                )
+                .configSimpleJoin(`LEFT JOIN (
+                    SELECT l1.lat, l1.lng, l1.udate, l1.driver_location_token, l1.driver_id 
+                    FROM vn_driver_location AS l1 
+                    LEFT JOIN vn_driver_location AS l2 ON (
+                        l1.driver_id = l2.driver_id AND l1.id < l2.id
+                    )
+                    WHERE l2.id IS NULL 
+                    AND l1.realm_id = ${realm_id} 
+                    AND l1.driver_id = ${this.instance_id} 
+                    ORDER BY l1.udate DESC
+                    
+                ) AS location_info ON vn_driver.id = location_info.driver_id`)
+                .configComplexConditionQueryItem('vn_driver', 'realm_id', realm_id)
+                .configComplexConditionQueryItem('vn_driver', 'id', this.instance_id);
+
+            const [record] = await VNDriver.findInstanceListWithComplexCondition('vn_driver', conditions);
+            
+            return record || {};
+        } catch (e) {
+            throw e;
+        }
+    }
+
     static async findDriverTokenWithKey(driver_key) {
         if (!driver_key) func.throwErrorWithMissingParam('driver_key');
 

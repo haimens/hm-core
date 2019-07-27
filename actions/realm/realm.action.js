@@ -56,7 +56,7 @@ class VNRealmAction extends VNAction {
                     new VNSetting().registerSetting('price_minute', 35, realm_id),
                     new VNSetting().registerSetting('price_mile', 175, realm_id),
                     new VNSetting().registerSetting('contact_cell', '+15555555555', realm_id),
-                    new VNSetting().registerSetting('contact_email', `info@${realm_info.company_title}.com`),
+                    new VNSetting().registerSetting('contact_email', `info@${realm_info.company_title}.com`, realm_id),
                     new VNSetting().registerSetting('company_address', '', realm_id),
                     new VNCarType().registerCarType(sedan, realm_id),
                     new VNCarType().registerCarType(minivan, realm_id)

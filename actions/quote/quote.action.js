@@ -9,7 +9,6 @@ const VNCarType = require('../../models/car/car.type');
 const VNQuote = require('../../models/quote/quote.class');
 
 
-
 class VNQuoteAction extends VNAction {
 
     static async findPriceQuoteWithAddress(params, body, query) {
@@ -22,6 +21,7 @@ class VNQuoteAction extends VNAction {
 
             const {vn_realm_id: realm_id} = await realmObj.findInstanceDetailWithToken();
 
+
             const {from_address_str, to_address_str, pickup_time, pickup_time_local} = body;
 
             const address_results = await Promise.all(
@@ -30,6 +30,7 @@ class VNQuoteAction extends VNAction {
 
             const from_address_info = address_results[0];
             const to_address_info = address_results[1];
+
 
             const {addr_str: from_formatted, lat: from_lat, lng: from_lng} = from_address_info;
             const {addr_str: to_formatted, lat: to_lat, lng: to_lng} = to_address_info;
@@ -84,7 +85,7 @@ class VNQuoteAction extends VNAction {
                         .then(quote_result => {
                             const {quote_token} = quote_result;
                             resolve({
-                                quote_token, img_path, car_type_name, amount, max_capacity,price_prefix
+                                quote_token, img_path, car_type_name, amount, max_capacity, price_prefix
                             })
                         })
                         .catch(err => reject(err));
