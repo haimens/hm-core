@@ -101,6 +101,10 @@ class VNQuoteAction extends VNAction {
             };
             const quote_list = await Promise.all(quote_promise_list);
 
+            quote_list.sort((a, b) => {
+                return a.amount - b.amount;
+            });
+
             return {basic_info, quote_list};
             // const fromAddrObj = new VNAddress();
             // const toAddrObj = new VNAddress();
