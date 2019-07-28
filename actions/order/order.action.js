@@ -41,7 +41,7 @@ class VNOrderAction extends VNAction {
                 lord_id = vn_lord_id;
             }
 
-            const {customer_token, quote_list} = body;
+            const {customer_token, quote_list, note} = body;
 
             if (quote_list.length < 1) func.throwErrorWithMissingParam('NO QUOTE FOUND');
 
@@ -53,7 +53,7 @@ class VNOrderAction extends VNAction {
 
             const orderObj = new VNOrder();
             const {order_id, order_token} = await orderObj.registerOrder(
-                {type: 4, lord_id, customer_id, contact_name, contact_cell}, realm_id
+                {type: 4, lord_id, customer_id, contact_name, contact_cell, note}, realm_id
             );
 
 
