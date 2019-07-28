@@ -130,7 +130,7 @@ class VNOrderAction extends VNAction {
 
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
 
-            await orderObj.modifyInstanceDetailWithId(body, ['status', 'contact_name', 'contact_cell']);
+            await orderObj.modifyInstanceDetailWithId(body, ['status', 'contact_name', 'contact_cell', 'note']);
 
             return {order_token};
         } catch (e) {

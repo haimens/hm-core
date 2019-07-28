@@ -56,7 +56,7 @@ class VNOrder extends ODInstance {
                     [
                         'cdate', 'udate', 'customer_id',
                         'contact_name', 'contact_cell', 'receipt',
-                        'order_token', 'is_paid'
+                        'order_token', 'is_paid', 'note'
                     ])
                 .configComplexConditionKey(
                     'vn_order_type', 'name', 'order_type'
