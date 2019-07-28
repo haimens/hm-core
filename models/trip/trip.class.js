@@ -449,7 +449,8 @@ class VNTrip extends ODInstance {
 
             conditions
                 .configComplexSimpleKey('COUNT(vn_trip.id) AS count')
-                .configComplexSimpleKey('DATE(vn_trip.pickup_time_local) AS date')
+                .configComplexSimpleKey(
+                    'CONCAT(YEAR(vn_trip.pickup_time_local),' - ',MONTH(vn_trip.pickup_time_local),' - ',DAY(vn_trip.pickup_time_local)) AS date')
                 .configDateCondition({date_from, date_to, from_key, to_key}, 'vn_trip')
                 .configComplexConditionQueryItem('vn_trip', 'realm_id', realm_id)
                 .configSimpleGroup('DATE(vn_trip.pickup_time_local)')
