@@ -79,6 +79,9 @@ class VNDiscount extends ODInstance {
                 )
                 .configComplexConditionQueryItem(
                     'vn_discount', 'realm_id', realm_id
+                )
+                .configComplexConditionQueryItem(
+                    'vn_discount', 'status', 1
                 );
 
             const [{discount_id, ...record}] = await VNDiscount.findInstanceListWithComplexCondition(
@@ -102,7 +105,7 @@ class VNDiscount extends ODInstance {
             conditions
                 .configComplexConditionKeys(
                     'vn_discount',
-                    ['type', 'rate', 'amount','code',
+                    ['type', 'rate', 'amount', 'code',
                         'min_price', 'cdate', 'udate', 'vdate', 'available_usage',
                         'discount_token', 'status']
                 )
