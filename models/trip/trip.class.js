@@ -447,7 +447,7 @@ class VNTrip extends ODInstance {
 
             const conditions = new ODCondition([], [], [], '', '', 'GROUP BY DATE(vn_trip.pickup_time_local)');
 
-            console.log('I AM HERE');
+            // console.log('I AM HERE');
             conditions
                 .configComplexSimpleKey('COUNT(vn_trip.id) AS count')
                 .configComplexSimpleKey(
@@ -469,11 +469,11 @@ class VNTrip extends ODInstance {
                 conditions.configStatusCondition(8, 'vn_trip');
             }
 
-            console.log('query', conditions.printRecordQuery('vn_trip'));
+            // console.log('query', conditions.printRecordQuery('vn_trip'));
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
 
-            console.log('result', record_list);
+            // console.log('result', record_list);
             return record_list || [];
         } catch (e) {
             throw e;
