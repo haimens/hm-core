@@ -447,6 +447,7 @@ class VNTrip extends ODInstance {
 
             const conditions = new ODCondition([], [], [], '', '', 'GROUP BY DATE(vn_trip.pickup_time_local)');
 
+            console.log('I AM HERE');
             conditions
                 .configComplexSimpleKey('COUNT(vn_trip.id) AS count')
                 .configComplexSimpleKey(
