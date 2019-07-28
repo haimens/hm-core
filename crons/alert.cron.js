@@ -56,7 +56,7 @@ const task = cron.schedule('* * * * *', () => {
 
                 Promise.all(promise_list).then(result_list => {
                     console.log(result_list);
-                });
+                }).catch(e => console.log(e));
             })
 
 
