@@ -16,15 +16,15 @@ class VNFlight extends ODInstance {
             flight_num, dep_airport, arr_airport, dep_terminal, arr_terminal
         } = flight_info;
 
-        if (!flight_key) func.throwErrorWithMissingParam('flight_key');
-        if (!dep_date) func.throwErrorWithMissingParam('dep_date');
-        if (!arr_date) func.throwErrorWithMissingParam('arr_date');
-        if (!carrier_code) func.throwErrorWithMissingParam('carrier_code');
-        if (!flight_num) func.throwErrorWithMissingParam('flight_num');
-        if (!dep_airport) func.throwErrorWithMissingParam('dep_airport');
-        if (!arr_airport) func.throwErrorWithMissingParam('arr_airport');
-        if (!dep_terminal) func.throwErrorWithMissingParam('dep_terminal');
-        if (!arr_terminal) func.throwErrorWithMissingParam('arr_terminal');
+        // if (!flight_key) func.throwErrorWithMissingParam('flight_key');
+        // if (!dep_date) func.throwErrorWithMissingParam('dep_date');
+        // if (!arr_date) func.throwErrorWithMissingParam('arr_date');
+        // if (!carrier_code) func.throwErrorWithMissingParam('carrier_code');
+        // if (!flight_num) func.throwErrorWithMissingParam('flight_num');
+        // if (!dep_airport) func.throwErrorWithMissingParam('dep_airport');
+        // if (!arr_airport) func.throwErrorWithMissingParam('arr_airport');
+        // if (!dep_terminal) func.throwErrorWithMissingParam('dep_terminal');
+        // if (!arr_terminal) func.throwErrorWithMissingParam('arr_terminal');
         try {
             this.flight_key = flight_key;
             const pre_saved = await this.findFlightInfoWithKey();
