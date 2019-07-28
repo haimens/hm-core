@@ -4,6 +4,8 @@ class VNDriverPush {
     //type 1 ask driver share location
     //type 2 ask driver fetch customer message.
     static async sendDriverPush(driver_token, type, customer_token) {
+
+        console.log(`INSIDE PUSH ${driver_token} - TYPE ${type} - ${customer_token || 'NO CUSTOMER'}`);
         return new Promise((resolve, reject) => {
             try {
                 // Push message
@@ -17,13 +19,15 @@ class VNDriverPush {
                 }
 
                 // Additional data
-                let additional_data = { type };
-                if (customer_token) { additional_data.customer_token = customer_token }
+                let additional_data = {type};
+                if (customer_token) {
+                    additional_data.customer_token = customer_token
+                }
 
                 // Push notification content
                 var data = {
                     app_id: process.env.ONE_SIGNAL_APP_ID,
-                    contents: { 'en': push_message },
+                    contents: {'en': push_message},
                     include_external_user_ids: [driver_token],
                     data: additional_data
                 };
