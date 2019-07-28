@@ -13,7 +13,7 @@ class VNOrder extends ODInstance {
 
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
         try {
-            const {lord_id, customer_id, contact_name, contact_cell, typ, note} = info;
+            const {lord_id, customer_id, contact_name, contact_cell, type, note} = info;
 
             if (!customer_id) func.throwErrorWithMissingParam('customer_id');
             if (!contact_name) func.throwErrorWithMissingParam('contact_name');
