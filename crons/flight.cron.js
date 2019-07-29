@@ -8,11 +8,12 @@ const VNSetting = require('../models/setting/setting.class');
 const VNSender = require('../models/realm/sender.class');
 
 
-const task = cron.schedule('*/5 * * * *', async () => {
+const task = cron.schedule('* * * * *', async () => {
     try {
         console.log(`RUNNING FLIGHT ALERT - ${new Date()}`);
         const {record_list: flight_list} = await VNAlert.findFlightAlertInSystem();
 
+        console.log(flight_list);
         for (let i = 0; i < flight_list.length; i++) {
             const {
                 flight_key, twilio_account_id, twilio_auth_token, twilio_from_num,
@@ -32,6 +33,7 @@ const task = cron.schedule('*/5 * * * *', async () => {
                     }, msg, contact_cell);
 
                 await new VNAlert(null, alert_id).updateInstance({status: 3});
+                await new VNFlight().registerFlight(cu)
             }
 
         }
