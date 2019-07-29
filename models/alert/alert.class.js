@@ -76,11 +76,11 @@ class VNAlert extends ODInstance {
                 .configComplexConditionQueryItem('vn_alert', 'status', 2)
                 .configComplexConditionQueryItem('vn_realm', 'status', 2)
                 .configComplexConditionQueryItem('vn_alert', 'type', 4)
-                .configSimpleCondition(`vn_alert.record_time > DATE_SUB(curdate(), INTERVAL 3 HOUR)`)
-                .configSimpleCondition(`vn_alert.record_time < now()`)
+                .configSimpleCondition(`vn_alert.record_time < DATE_ADD(curdate(), INTERVAL 3 HOUR)`)
+                .configSimpleCondition(`vn_alert.record_time > now()`)
                 .configQueryLimit(0, 200);
 
-            // conditions.printRecordQuery('vn_alert');
+            conditions.printRecordQuery('vn_alert');
 
             const record_list = await this.findInstanceListWithComplexCondition('vn_alert', conditions);
 

@@ -13,7 +13,7 @@ const task = cron.schedule('* * * * *', async () => {
         console.log(`RUNNING FLIGHT ALERT - ${new Date()}`);
         const {record_list: flight_list} = await VNAlert.findFlightAlertInSystem();
 
-        console.log(flight_list);
+
         for (let i = 0; i < flight_list.length; i++) {
             const {
                 flight_key, twilio_account_id, twilio_auth_token, twilio_from_num,
