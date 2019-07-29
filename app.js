@@ -9,7 +9,8 @@ const logger = require('morgan');
 const app = express();
 const apiRoute = require('./routes/api.route');
 
-const alertCron = require('./crons/alert.cron');
+const tripCron = require('./crons/trip.cron');
+const flightCron = require('./crons/flight.cron');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -32,8 +33,8 @@ app.get('*', (req, res, next) => {
 app.use((req, res, next) => next(createError(404)));
 
 
-if (process.env.PROGRAMENV === 'PROD') alertCron.start(); else alertCron.stop();
-
+if (process.env.PROGRAMENV === 'PROD') tripCron.start(); else tripCron.stop();
+if (process.env.PROGRAMENV === 'PROD') flightCron.start(); else flightCron.stop();
 
 // error handler
 app.use((err, req, res, next) => {

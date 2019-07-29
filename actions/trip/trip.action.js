@@ -235,9 +235,9 @@ class VNTripAction extends VNAction {
 
             const {
                 vn_trip_id: trip_id, order_id, realm_id: trip_realm_id,
-                driver_id, car_id, customer_id
+                driver_id, car_id, customer_id, flight_id, pickup_time
             } = await tripObj.findInstanceDetailWithToken(
-                ['order_id', 'realm_id', 'driver_id', 'car_id', 'customer_id']
+                ['order_id', 'realm_id', 'driver_id', 'car_id', 'customer_id', 'flight_id', 'pickup_time']
             );
 
             if (realm_id !== trip_realm_id) func.throwError('REALM_ID NOT MATCH');
@@ -254,6 +254,17 @@ class VNTripAction extends VNAction {
                 return new VNAlert().registerAlert({type, record_time}, order_id, customer_id, trip_id, realm_id);
 
             });
+
+            if (flight_id) {
+                alert_promise_list.push(
+                    new VNAlert().registerAlert(
+                        {
+                            type: 4,
+                            record_time: pickup_time
+                        },
+                        order_id, customer_id, trip_id, realm_id)
+                );
+            }
 
             const result_list = (await Promise.all(alert_promise_list)).map(result => result.alert_token);
 

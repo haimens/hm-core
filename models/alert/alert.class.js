@@ -42,6 +42,53 @@ class VNAlert extends ODInstance {
         }
     }
 
+    static async findFlightAlertInSystem() {
+        try {
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys('vn_alert', ['id AS alert_id', 'record_time', 'status', 'type', 'cdate', 'udate', 'alert_token', 'realm_id'])
+                .configComplexConditionKeys('vn_realm', ['realm_token'])
+                .configComplexConditionKeys('vn_message_resource', ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num'])
+                .configComplexConditionKey('vn_alert_type', 'name', 'type_str')
+                .configComplexConditionKeys('vn_trip', ['trip_token'])
+                .configComplexConditionKey('vn_flight', 'flight_key')
+                .configComplexConditionKeys('vn_driver', ['name AS driver_name', 'cell AS driver_cell'])
+                .configComplexConditionKeys('vn_customer', ['name AS customer_name', 'cell AS customer_cell'])
+                .configComplexConditionJoins(
+                    'vn_alert',
+                    [
+                        {key: 'realm_id', tar: 'vn_realm'},
+                        {key: 'trip_id', tar: 'vn_trip'},
+                        {key: 'type', tar: 'vn_alert_type'}
+
+                    ]
+                )
+                .configComplexConditionJoins(
+                    'vn_trip',
+                    [
+                        {key: 'driver_id', tar: 'vn_driver'},
+                        {key: 'customer_id', tar: 'vn_customer'},
+                        {key: 'flight_id', tar: 'vn_flight'}
+                    ]
+                )
+                .configComplexConditionJoin('vn_realm', 'primary_message_resource_id', 'vn_message_resource')
+                .configComplexConditionQueryItem('vn_alert', 'status', 2)
+                .configComplexConditionQueryItem('vn_realm', 'status', 2)
+                .configComplexConditionQueryItem('vn_alert', 'type', 4)
+                .configSimpleCondition(`vn_alert.record_time > DATE_SUB(now(), INTERVAL 3 HOURS)`)
+                .configSimpleCondition(`vn_alert.record_time < 'now()`)
+                .configQueryLimit(0, 200);
+
+            const record_list = await this.findInstanceListWithComplexCondition('vn_alert', conditions);
+
+            return {record_list};
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
     static async findAlertInSystem() {
         try {
             const conditions = new ODCondition();
@@ -74,6 +121,7 @@ class VNAlert extends ODInstance {
                 .configComplexConditionQueryItem('vn_alert', 'status', 2)
                 .configComplexConditionQueryItem('vn_realm', 'status', 2)
                 .configSimpleCondition(`vn_alert.record_time < now()`)
+                .configSimpleCondition(`(vn_alert.type = 1 OR vn_alert.type = 2 OR vn_alert.type = 3)`)
                 .configSimpleCondition(`
                     IF(vn_alert.type = 1, 
                         vn_trip.start_time IS NULL,

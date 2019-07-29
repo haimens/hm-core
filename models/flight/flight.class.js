@@ -37,7 +37,7 @@ class VNFlight extends ODInstance {
                 });
                 return pre_saved
             }
-            ;
+
 
             this.instance_id = await this.insertInstance(
                 {
@@ -98,6 +98,20 @@ class VNFlight extends ODInstance {
             throw e;
         }
     }
+
+    // async compareFlight() {
+    //     try {
+    //         if (!this.instance_id) {
+    //             if (!this.instance_token) func.throwErrorWithMissingParam('instance_token');
+    //             const {vn_flight_id} = await this.findInstanceDetailWithToken();
+    //             this.instance_id = vn_flight_id;
+    //         }
+    //
+    //
+    //     } catch (e) {
+    //         throw e;
+    //     }
+    // }
 
 
 }

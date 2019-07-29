@@ -6,8 +6,7 @@ const VNSender = require('../models/realm/sender.class');
 
 const task = cron.schedule('* * * * *', () => {
     try {
-        console.log(`RUNNING ALERT - ${new Date()}`);
-
+        console.log(`RUNNING TRIP ALERT - ${new Date()}`);
 
         VNAlert
             .findAlertInSystem()
@@ -61,7 +60,7 @@ const task = cron.schedule('* * * * *', () => {
 
 
     } catch (e) {
-        console.log('ALERT CRON ERROR', e);
+        console.log('TRIP ALERT CRON ERROR', e);
     }
 });
 
