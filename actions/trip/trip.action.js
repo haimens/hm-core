@@ -296,7 +296,7 @@ class VNTripAction extends VNAction {
 
                 if (type === 1 || type === 2 || type === 4) {
                     const wage_amount = Math.ceil(amount * rate / 1000);
-                    const {coin_id} = await new VNCoin(null, coin_id).registerCoin(wage_amount);
+                    const {coin_id} = await new VNCoin().registerCoin(wage_amount);
                     await new VNWage().registerWage({
                         type: 1,
                         note: `TRIP INCOME PREPAY - ${trip_token}`
