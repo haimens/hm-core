@@ -8,7 +8,7 @@ const VNSetting = require('../models/setting/setting.class');
 const VNSender = require('../models/realm/sender.class');
 
 
-const task = cron.schedule('* * * * *', async () => {
+const task = cron.schedule('*/5 * * * *', async () => {
     try {
         console.log(`RUNNING FLIGHT ALERT - ${new Date()}`);
         const {record_list: flight_list} = await VNAlert.findFlightAlertInSystem();

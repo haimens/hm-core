@@ -9,6 +9,8 @@ const VNLord = require('../../models/lord/lord.class');
 
 const VNDriver = require('../../models/driver/driver.class');
 
+const VNSetting = require('../../models/setting/setting.class');
+
 
 class VNEmailAction extends VNAction {
 
@@ -65,7 +67,7 @@ class VNEmailAction extends VNAction {
             return {response, lord_token};
 
         } catch (e) {
-            
+
             throw e;
         }
     }
@@ -93,6 +95,32 @@ class VNEmailAction extends VNAction {
 
 
             return {response, driver_token};
+
+        } catch (e) {
+
+            throw e;
+        }
+    }
+
+    static async sendEmailWithRealm(params, body, query) {
+        try {
+
+            const {realm_token} = params;
+
+            const {realm_id} = await this.findRealmIdWithToken(realm_token);
+
+            const {title, msg} = body;
+
+
+            const email_resource = await VNEmailResource.findPrimaryEmailResourceWithRealm(realm_id);
+
+            const {sendgrid_api_key, sendgrid_from_email} = email_resource;
+
+            const {value: contact_email} = await VNSetting.findSettingInfoWithKey(realm_id, 'contact_email');
+
+            const response = await VNSender.sendEmail(sendgrid_api_key, sendgrid_from_email, contact_email, title, msg);
+
+            return {response, realm_token};
 
         } catch (e) {
 

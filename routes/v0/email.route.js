@@ -43,5 +43,16 @@ router.post('/send/driver/:realm_token/:driver_token', async (req, res, next) =>
     }
 });
 
+router.post('/send/realm/:realm_token', async (req, res, next) => {
+    try {
+        const resBody = func.configSuccess(
+            await VNEmailAction.sendEmailWithRealm(req.params, req.body, req.query)
+        );
+        res.json(resBody);
+    } catch (e) {
+        next(e);
+    }
+});
+
 
 module.exports = router;
