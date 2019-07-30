@@ -286,7 +286,7 @@ class VNTripAction extends VNAction {
 
             if (body.status === 7 && status !== 7) {
 
-                const {record_list: addon_list} = await VNAddon.findAddonListInTrip(trip_id, realm_id);
+                // const {record_list: addon_list} = await VNAddon.findAddonListInTrip(trip_id, realm_id);
 
                 const {type} = await new VNOrder(null, order_id).findInstanceDetailWithId(['type']);
 
@@ -319,20 +319,18 @@ class VNTripAction extends VNAction {
                     }, realm_id, driver_id, out_coin_id, order_id);
                 }
 
-                console.log('addon_list', addon_list);
-
                 // ADD TIP FOR DRIVER HERE
-                for (let i = 0; i < addon_list.length; i++) {
-                    const {type: addon_type, amount: tip_amount} = addon_list[i];
-                    if (addon_type === 1) {
-                        const {coin_id: tip_coin_id} = await new VNCoin().registerCoin(tip_amount);
-                        await new VNWage().registerWage({
-                            type: 1,
-                            note: `TRIP TIP INCOME - ${trip_token}`
-                        }, realm_id, driver_id, tip_coin_id, order_id);
-
-                    }
-                }
+                // for (let i = 0; i < addon_list.length; i++) {
+                //     const {type: addon_type, amount: tip_amount} = addon_list[i];
+                //     if (addon_type === 1) {
+                //         const {coin_id: tip_coin_id} = await new VNCoin().registerCoin(tip_amount);
+                //         await new VNWage().registerWage({
+                //             type: 1,
+                //             note: `TRIP TIP INCOME - ${trip_token}`
+                //         }, realm_id, driver_id, tip_coin_id, order_id);
+                //
+                //     }
+                // }
                 //END OF TIP
             }
 
