@@ -50,7 +50,7 @@ class VNCustomerAction extends VNAction {
 
             const customerObj = new VNCustomer(customer_token);
             const {customer_status, realm_id, vn_customer_id, ...customer_info} = await customerObj.findInstanceDetailWithToken([
-                'name', 'cell', 'email', 'username', 'cdate', 'udate',
+                'name', 'cell', 'email', 'username', 'cdate', 'udate', 'img_path',
                 'customer_key', 'status AS customer_status', 'customer_token', 'realm_id'
             ]);
 
