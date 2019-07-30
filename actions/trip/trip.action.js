@@ -255,17 +255,6 @@ class VNTripAction extends VNAction {
 
             });
 
-            // if (flight_id) {
-            //     alert_promise_list.push(
-            //         new VNAlert().registerAlert(
-            //             {
-            //                 type: 4,
-            //                 record_time: pickup_time
-            //             },
-            //             order_id, customer_id, trip_id, realm_id)
-            //     );
-            // }
-
             const result_list = (await Promise.all(alert_promise_list)).map(result => result.alert_token);
 
 
@@ -294,6 +283,10 @@ class VNTripAction extends VNAction {
 
             if (trip_realm_id !== realm_id) func.throwError('REALM_ID NOT MATCH');
 
+            console.log('body.status', body.status);
+            console.log('status', status);
+            console.log('flag', (body.status === 7 && status !== 7));
+            
             if (body.status === 7 && status !== 7) {
 
                 const {record_list: addon_list} = await VNAddon.findAddonListInTrip(trip_id, realm_id);
