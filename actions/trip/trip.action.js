@@ -283,25 +283,16 @@ class VNTripAction extends VNAction {
 
             if (trip_realm_id !== realm_id) func.throwError('REALM_ID NOT MATCH');
 
-            console.log('body.status', body.status);
-            console.log('status', status);
-            console.log('flag', (body.status === 7 && status !== 7));
 
             if (body.status === 7 && status !== 7) {
 
                 const {record_list: addon_list} = await VNAddon.findAddonListInTrip(trip_id, realm_id);
 
-                console.log('order_id', order_id)
-                const type_result = new VNOrder(null, order_id).findInstanceDetailWithId(['type']);
+                const {type} = await new VNOrder(null, order_id).findInstanceDetailWithId(['type']);
 
-                const {type} = type_result;
-                console.log('type_result', type_result);
                 const driverObj = new VNDriver(null, driver_id);
                 const {rate} = await driverObj.findInstanceDetailWithId(['rate']);
 
-                console.log('type', type);
-                console.log('first flag', (type === 1 || type === 2 || type === 4));
-                console.log('second flag', (type === 3));
 
                 if (type === 1 || type === 2 || type === 4) {
                     const wage_amount = Math.ceil(amount * rate / 1000);
