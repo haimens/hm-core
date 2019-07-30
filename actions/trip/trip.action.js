@@ -290,7 +290,12 @@ class VNTripAction extends VNAction {
             if (body.status === 7 && status !== 7) {
 
                 const {record_list: addon_list} = await VNAddon.findAddonListInTrip(trip_id, realm_id);
-                const {type} = new VNOrder(null, order_id).findInstanceDetailWithId(['type']);
+
+                console.log('order_id', order_id)
+                const type_result = new VNOrder(null, order_id).findInstanceDetailWithId(['type']);
+
+                const {type} = type_result;
+                console.log('type_result', type_result);
                 const driverObj = new VNDriver(null, driver_id);
                 const {rate} = await driverObj.findInstanceDetailWithId(['rate']);
 
