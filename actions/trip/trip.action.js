@@ -286,13 +286,17 @@ class VNTripAction extends VNAction {
             console.log('body.status', body.status);
             console.log('status', status);
             console.log('flag', (body.status === 7 && status !== 7));
-            
+
             if (body.status === 7 && status !== 7) {
 
                 const {record_list: addon_list} = await VNAddon.findAddonListInTrip(trip_id, realm_id);
                 const {type} = new VNOrder(null, order_id).findInstanceDetailWithId(['type']);
                 const driverObj = new VNDriver(null, driver_id);
                 const {rate} = await driverObj.findInstanceDetailWithId(['rate']);
+
+                console.log('type', type);
+                console.log('first flag', (type === 1 || type === 2 || type === 4));
+                console.log('second flag', (type === 3));
 
                 if (type === 1 || type === 2 || type === 4) {
                     const wage_amount = Math.ceil(amount * rate / 1000);
@@ -305,11 +309,11 @@ class VNTripAction extends VNAction {
 
                 if (type === 3) {
                     const wage_amount = Math.ceil(amount * rate / 1000);
-                    const {coin_id} = await new VNCoin().registerCoin(wage_amount);
+                    const {coin_id: in_coin_id} = await new VNCoin().registerCoin(wage_amount);
                     await new VNWage().registerWage({
                         type: 1,
                         note: `TRIP INCOME CASH - ${trip_token}`
-                    }, realm_id, driver_id, coin_id, order_id);
+                    }, realm_id, driver_id, in_coin_id, order_id);
 
                     const {coin_id: out_coin_id} = await new VNCoin().registerCoin(amount);
 
@@ -323,7 +327,7 @@ class VNTripAction extends VNAction {
                 for (let i = 0; i < addon_list.length; i++) {
                     const {type: addon_type, amount: tip_amount} = addon_list[i];
                     if (addon_type === 1) {
-                        const {tip_coin_id} = await new VNCoin().registerCoin(tip_amount);
+                        const {coin_id: tip_coin_id} = await new VNCoin().registerCoin(tip_amount);
                         await new VNWage().registerWage({
                             type: 1,
                             note: `TRIP TIP INCOME - ${trip_token}`
