@@ -319,6 +319,8 @@ class VNTripAction extends VNAction {
                     }, realm_id, driver_id, out_coin_id, order_id);
                 }
 
+                console.log('addon_list', addon_list);
+
                 // ADD TIP FOR DRIVER HERE
                 for (let i = 0; i < addon_list.length; i++) {
                     const {type: addon_type, amount: tip_amount} = addon_list[i];

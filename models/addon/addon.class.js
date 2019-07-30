@@ -72,7 +72,7 @@ class VNAddon extends ODInstance {
     }
 
     static async findAddonListInTrip(trip_id, realm_id) {
-        if (!trip_id) func.throwErrorWithMissingParam('order_id');
+        if (!trip_id) func.throwErrorWithMissingParam('trip_id');
         if (!realm_id) func.throwErrorWithMissingParam('realm_id');
 
         try {
