@@ -142,7 +142,10 @@ class VNSetting extends ODInstance {
                 .configComplexConditionQueryItem('vn_setting', 'realm_id', realm_id)
                 .configQueryLimit(0, 1);
 
+
             const [record] = await VNSetting.findInstanceListWithComplexCondition('vn_setting', conditions);
+
+
 
             return record;
         } catch (e) {

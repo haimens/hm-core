@@ -63,8 +63,12 @@ class VNFlightStats {
     }
 
     async findFlight(flight_key) {
+
+        if (!flight_key) func.throwErrorWithMissingParam('flight_key');
         try {
-            if (!flight_key) func.throwErrorWithMissingParam('flight_key');
+
+
+
             const result = await this.api.findFlight(flight_key);
 
             const {flightStatus} = result;
@@ -74,7 +78,7 @@ class VNFlightStats {
                 departureAirportFsCode, arrivalAirportFsCode, departureDate,
                 arrivalDate, airportResources
             } = flightStatus;
-            const flight_key = flightId;
+
             const dep_date = departureDate.dateUtc;
             const arr_date = arrivalDate.dateUtc;
 

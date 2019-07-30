@@ -255,16 +255,16 @@ class VNTripAction extends VNAction {
 
             });
 
-            if (flight_id) {
-                alert_promise_list.push(
-                    new VNAlert().registerAlert(
-                        {
-                            type: 4,
-                            record_time: pickup_time
-                        },
-                        order_id, customer_id, trip_id, realm_id)
-                );
-            }
+            // if (flight_id) {
+            //     alert_promise_list.push(
+            //         new VNAlert().registerAlert(
+            //             {
+            //                 type: 4,
+            //                 record_time: pickup_time
+            //             },
+            //             order_id, customer_id, trip_id, realm_id)
+            //     );
+            // }
 
             const result_list = (await Promise.all(alert_promise_list)).map(result => result.alert_token);
 

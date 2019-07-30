@@ -11,7 +11,7 @@ class VNAlert extends ODInstance {
         super('vn_alert', 'alert_token', alert_token, alert_id);
     }
 
-    async registerAlert(info = {}, order_id, customer_id, trip_id, realm_id) {
+    async registerAlert(info = {}, order_id, customer_id, trip_id, realm_id, status = 2) {
 
         const {record_time, type} = info;
 
@@ -34,7 +34,7 @@ class VNAlert extends ODInstance {
 
             this.instance_token = `ALTR-${func.encodeUnify(this.instance_id, 'altr')}`;
 
-            await this.updateInstance({alert_token: this.instance_token, status: 2});
+            await this.updateInstance({alert_token: this.instance_token, status: status});
 
             return {alert_token: this.instance_token, alert_id: this.alert_id};
         } catch (e) {
@@ -47,45 +47,53 @@ class VNAlert extends ODInstance {
             const conditions = new ODCondition();
 
             conditions
-                .configComplexConditionKeys('vn_alert', ['id AS alert_id', 'record_time', 'status', 'type', 'cdate', 'udate', 'alert_token', 'realm_id'])
                 .configComplexConditionKeys('vn_realm', ['realm_token'])
                 .configComplexConditionKeys('vn_message_resource', ['twilio_account_id', 'twilio_auth_token', 'twilio_from_num'])
-                .configComplexConditionKey('vn_alert_type', 'name', 'type_str')
-                .configComplexConditionKeys('vn_trip', ['trip_token'])
+                .configComplexConditionKeys('vn_trip', ['id AS trip_id', 'trip_token', 'pickup_time', 'order_id', 'realm_id', 'customer_id', 'flight_str'])
                 .configComplexConditionKey('vn_flight', 'flight_key')
                 .configComplexConditionKeys('vn_driver', ['name AS driver_name', 'cell AS driver_cell'])
                 .configComplexConditionKeys('vn_customer', ['name AS customer_name', 'cell AS customer_cell'])
-                .configComplexConditionJoins(
-                    'vn_alert',
-                    [
-                        {key: 'realm_id', tar: 'vn_realm'},
-                        {key: 'trip_id', tar: 'vn_trip'},
-                        {key: 'type', tar: 'vn_alert_type'}
-
-                    ]
-                )
                 .configComplexConditionJoins(
                     'vn_trip',
                     [
                         {key: 'driver_id', tar: 'vn_driver'},
                         {key: 'customer_id', tar: 'vn_customer'},
-                        {key: 'flight_id', tar: 'vn_flight'}
+                        {key: 'flight_id', tar: 'vn_flight'},
+                        {key: 'realm_id', tar: 'vn_realm'},
                     ]
                 )
                 .configComplexConditionJoin('vn_realm', 'primary_message_resource_id', 'vn_message_resource')
-                .configComplexConditionQueryItem('vn_alert', 'status', 2)
                 .configComplexConditionQueryItem('vn_realm', 'status', 2)
-                .configComplexConditionQueryItem('vn_alert', 'type', 4)
-                .configSimpleCondition(`vn_alert.record_time < DATE_ADD(curdate(), INTERVAL 3 HOUR)`)
-                .configSimpleCondition(`vn_alert.record_time > now()`)
+
+                // FOR FUTURE TRIP THAT PICKUP TIME WITHIN 8 HOURS
+                .configSimpleCondition(`vn_trip.pickup_time < DATE_ADD(curtime(), INTERVAL 8 HOUR)`)
+                .configSimpleCondition(`vn_trip.pickup_time > now()`)
+                .configSimpleCondition(`vn_trip.status = 3`)
+                .configComplexConditionQueryItem('vn_trip', 'flight_id', 0, '!=')
                 .configQueryLimit(0, 200);
 
-            conditions.printRecordQuery('vn_alert');
-
-            const record_list = await this.findInstanceListWithComplexCondition('vn_alert', conditions);
+            const record_list = await this.findInstanceListWithComplexCondition('vn_trip', conditions);
 
             return {record_list};
 
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    static async checkTripFlightAlertInserted(trip_id, realm_id) {
+        try {
+            const conditions = new ODCondition();
+
+            conditions
+                .configComplexConditionKeys('vn_alert', ['id AS alert_id'])
+                .configComplexConditionQueryItem('vn_alert', 'type', 4)
+                .configComplexConditionQueryItem('vn_alert', 'realm_id', realm_id)
+                .configComplexConditionQueryItem('vn_alert', 'trip_id', trip_id);
+
+            const count = await this.findCountOfInstance('vn_alert', conditions);
+
+            return count > 0;
         } catch (e) {
             throw e;
         }

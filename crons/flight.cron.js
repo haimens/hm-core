@@ -16,14 +16,23 @@ const task = cron.schedule('* * * * *', async () => {
 
         for (let i = 0; i < flight_list.length; i++) {
             const {
-                flight_key, twilio_account_id, twilio_auth_token, twilio_from_num,
-                type_str, customer_name, customer_cell, driver_name, driver_cell, realm_id, alert_id
+                flight_key, twilio_account_id, twilio_auth_token, twilio_from_num, order_id, trip_id, customer_id,
+                flight_str,
+                customer_name, customer_cell, driver_name, driver_cell, realm_id
             } = flight_list[i];
-            const {is_change, change_str} = await _compareFlightWithKey(flight_key);
+
+            const is_inserted = await VNAlert.checkTripFlightAlertInserted(trip_id, realm_id);
+
+            if (is_inserted) continue;
+
+            const {is_change, change_str, curr_flight} = await _compareFlightWithKey(flight_key);
             if (is_change) {
-                const {contact_cell} = await VNSetting.findSettingInfoWithKey(realm_id, 'contact_cell');
+                const {value: contact_cell} = await VNSetting.findSettingInfoWithKey(realm_id, 'contact_cell');
+
                 const msg =
-                    `*${type_str} ALERT*\n ${change_str} Driver: ${driver_name} - ${driver_cell} \n
+                    `*FLIGHT ALERT*\n
+                    [${flight_str}]
+                    ${change_str} Driver: ${driver_name} - ${driver_cell} \n
                     Customer: ${customer_name} - ${customer_cell} \n`;
                 await VNSender.sendSMS(
                     {
@@ -32,8 +41,11 @@ const task = cron.schedule('* * * * *', async () => {
                         twilio_from_num
                     }, msg, contact_cell);
 
-                await new VNAlert(null, alert_id).updateInstance({status: 3});
-                await new VNFlight().registerFlight(cu)
+                await new VNAlert().registerAlert({
+                    type: 4,
+                    record_time: 'now()'
+                }, order_id, customer_id, trip_id, realm_id);
+                await new VNFlight().registerFlight(curr_flight)
             }
 
         }
@@ -48,8 +60,9 @@ const task = cron.schedule('* * * * *', async () => {
 async function _compareFlightWithKey(flight_key) {
 
     try {
-        const org_flight = await new VNFlight(null, null, flight_key).findFlightInfoWithKey();
+
         const curr_flight = await new VNFlightStats().findFlight(flight_key);
+        const org_flight = await new VNFlight(null, null, flight_key).findFlightInfoWithKey();
 
         let is_change = false;
         const changes = [];
@@ -65,7 +78,7 @@ async function _compareFlightWithKey(flight_key) {
             changes.push(`Arrival Terminal: ${org_flight.arr_terminal} => ${org_flight.arr_terminal}`);
         }
 
-        return {is_change, change_str: changes.join(', ')};
+        return {is_change, change_str: changes.join(', '), curr_flight};
 
     } catch (e) {
         throw e;

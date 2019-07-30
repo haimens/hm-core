@@ -9,6 +9,8 @@ class VNSender {
 
     static async sendSMS(resource_info, msg, cell) {
         try {
+
+
             const {twilio_account_id, twilio_auth_token, twilio_from_num} = resource_info;
             if (!twilio_account_id) func.throwErrorWithMissingParam('twilio_account_id');
             if (!twilio_auth_token) func.throwErrorWithMissingParam('twilio_auth_token');

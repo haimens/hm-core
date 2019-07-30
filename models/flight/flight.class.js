@@ -70,6 +70,7 @@ class VNFlight extends ODInstance {
     }
 
     async findFlightInfoWithKey() {
+
         if (!this.flight_key) func.throwErrorWithMissingParam('flight_key');
 
         try {
@@ -92,6 +93,7 @@ class VNFlight extends ODInstance {
             const [record] = await VNFlight.findInstanceListWithComplexCondition(
                 'vn_flight', conditions
             );
+
 
             return record;
         } catch (e) {
