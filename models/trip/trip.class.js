@@ -75,7 +75,7 @@ class VNTrip extends ODInstance {
                 )
                 .configComplexConditionKeys(
                     'vn_order',
-                    ['order_token', 'contact_name', 'contact_cell', 'type']
+                    ['order_token', 'contact_name', 'contact_cell', 'type', 'note AS order_note']
                 )
                 .configComplexConditionJoin(
                     'vn_trip', 'status', 'vn_trip_status'

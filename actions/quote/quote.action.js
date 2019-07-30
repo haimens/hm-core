@@ -9,6 +9,9 @@ const VNCarType = require('../../models/car/car.type');
 const VNQuote = require('../../models/quote/quote.class');
 
 
+const utility = require('../../services/vn.func');
+
+
 class VNQuoteAction extends VNAction {
 
     static async findPriceQuoteWithAddress(params, body, query) {
@@ -23,6 +26,7 @@ class VNQuoteAction extends VNAction {
 
 
             const {from_address_str, to_address_str, pickup_time, pickup_time_local} = body;
+
 
             const address_results = await Promise.all(
                 [VNGoogleMap.findFormattedAddress(from_address_str), VNGoogleMap.findFormattedAddress(to_address_str)]
