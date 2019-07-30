@@ -1,5 +1,5 @@
 const func = require('od-utility');
-
+const utility = require('../../services/vn.func');
 const VNAction = require('../action.model');
 
 const VNLord = require('../../models/lord/lord.class');
@@ -207,20 +207,23 @@ class VNOrderAction extends VNAction {
             const {realm_token, order_token} = params;
             const {realm_id} = await this.findRealmIdWithToken(realm_token);
 
+            const orderObj = new VNOrder(order_token);
             const {vn_order_id: order_id, realm_id: order_realm_id, customer_id} =
-                await new VNOrder(order_token).findInstanceDetailWithToken(['realm_id', 'customer_id']);
+                await orderObj.findInstanceDetailWithToken(['realm_id', 'customer_id']);
 
             if (realm_id !== order_realm_id) func.throwError('REALM NOT MATCH');
 
 
             const {code} = body;
 
+            const {amount} = await orderObj.findOrderFinalPrice(order_id, realm_id);
 
-            const {discount_id, available_usage} = await new VNDiscount().findDiscountInfoWithKey(code, realm_id);
+            const {discount_id, available_usage, min_price, vdate} = await new VNDiscount().findDiscountInfoWithKey(code, realm_id);
 
+            if (amount < min_price) func.throwError('AMOUNT TOO LOW TO USE THIS COUPON');
+
+            if (utility.compareEarlier(vdate, new Date())) func.throwError('COUPON EXPIRED');
             if (available_usage < 1) func.throwError('NOT ENOUGH AVAILABLE USAGE');
-
-
             const {order_discount_token} =
                 await new VNOrderDiscount().registerOrderDiscount(order_id, customer_id, realm_id, discount_id);
 
