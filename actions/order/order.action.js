@@ -216,7 +216,7 @@ class VNOrderAction extends VNAction {
 
             const {code} = body;
 
-            const {amount} = await orderObj.findOrderFinalPrice(order_id, realm_id);
+            const {amount} = await VNOrder.findOrderFinalPrice(order_id, realm_id);
 
             const {discount_id, available_usage, min_price, vdate} = await new VNDiscount().findDiscountInfoWithKey(code, realm_id);
 
